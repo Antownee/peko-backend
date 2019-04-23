@@ -2,7 +2,13 @@ var express = require('express');
 const faker = require('faker');
 var router = express.Router();
 
-const User = require('../models/user');
+const User = require('../../models/user');
+
+
+router.get('/', (req,res,next)=>{
+    res.send("We're in");
+})
+
 
 router.post('/', (req, res, next) => {
    var newUser = new User({

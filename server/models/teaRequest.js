@@ -4,7 +4,9 @@ var Schema = mongoose.Schema;
 var teaRequestSchema = new Schema({
     teaRequestID: { type: String, unique: true },
     requestDate: Date,
-    teaID: String   
+    teaID: String,
+    amount: Number,
+    notes: String
 });
 
 

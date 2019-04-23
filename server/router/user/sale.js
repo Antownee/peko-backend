@@ -2,7 +2,7 @@ var express = require('express');
 const faker = require('faker');
 var router = express.Router();
 
-const Sale = require('../models/sale');
+const Sale = require('../../models/sale');
 
 //Create new sale
 router.post('/', (req, res, next) => {

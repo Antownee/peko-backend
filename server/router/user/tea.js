@@ -2,7 +2,7 @@ var express = require('express');
 const faker = require('faker');
 var router = express.Router();
 
-const Tea = require('../models/tea');
+const Tea = require('../../models/tea');
 
 //Create new tea 
 router.post('/', (req, res, next) => {
