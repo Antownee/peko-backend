@@ -4,26 +4,28 @@ const bodyParser = require('body-parser');
 const faker = require('faker');
 const logger = require('morgan');
 const errorHandler = require('./utils/errorHandler');
+const cors = require('cors');
+const port = process.env.port;
 
 //Run db
-const { mongoose } = require('./db.js');
+const { mongoose } = require('./utils/db.js');
 
 /// init ///
 const app = express();
-const port = process.env.port;
+const corsOptions = require("./utils/cors");
+app.use(cors());
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(logger('dev'));
+app.use(errorHandler);
 
 //Router
 const userRouter = require('./router/userRouter');
 const adminRouter = require('./router/adminRouter');
 
-app.use('/user', userRouter);
+app.use('/users', userRouter);
 app.use('/admin', adminRouter);
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(logger('dev'));
-app.use(errorHandler);
-
 
 app.get('/', (req, res) => {
     return res.send('Welcome to COJ online portal')

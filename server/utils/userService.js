@@ -1,7 +1,11 @@
 const dotenv = require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const shortid = require('shortid');
 const User = require('../models/user');
+
+//Required
+shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@');
 
 
 module.exports = {
@@ -40,6 +44,7 @@ async function create(userParam) {
     }
 
     const user = new User(userParam);
+    user.userID = `COJ-${shortid.generate()}`;
 
     // hash password
     if (userParam.password) {
@@ -48,6 +53,10 @@ async function create(userParam) {
 
     // save user
     await user.save();
+
+    return {
+
+    }
 }
 
 async function update(id, userParam) {
