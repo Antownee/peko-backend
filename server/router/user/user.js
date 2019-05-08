@@ -1,35 +1,64 @@
 var express = require('express');
 const faker = require('faker');
 var router = express.Router();
-
 const User = require('../../models/user');
+const userService = require('../../utils/userService');
 
 
-router.get('/', (req,res,next)=>{
+
+router.get('/', (req, res, next) => {
     res.send("We're in");
 })
 
 
-router.post('/', (req, res, next) => {
-   var newUser = new User({
-       userID: faker.random.uuid(),
-       firstName: faker.name.firstName(),
-       lastName: faker.name.lastName(),
-       country: faker.address.country(),
-       joinDate: faker.date.recent(2)
-   })
-
-   newUser.save().then(
-       () => {
-           var msg = `New user ${newUser.firstName} ${newUser.lastName} has been created`;
-           console.log(msg);
-           res.status(200).send(msg);
-       },
-       (e) => {
-           console.log(e.message);
-           next(e);
-       }
-   )
+//Sign up
+router.post('/register', (req, res, next) => {
+    userService.create(req.body)
+        .then(() => {
+            res.json({
+                message: "New user has been created"
+            });
+        })
+        .catch(err => next(err));
 })
+
+
+//Login
+router.post('/authenticate', (req, res, next) => {
+    userService.authenticate(req.body)
+        .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
+        .catch(err => next(err));
+})
+
+
+function getAll(req, res, next) {
+    userService.getAll()
+        .then(users => res.json(users))
+        .catch(err => next(err));
+}
+
+function getCurrent(req, res, next) {
+    userService.getById(req.user.sub)
+        .then(user => user ? res.json(user) : res.sendStatus(404))
+        .catch(err => next(err));
+}
+
+function getById(req, res, next) {
+    userService.getById(req.params.id)
+        .then(user => user ? res.json(user) : res.sendStatus(404))
+        .catch(err => next(err));
+}
+
+function update(req, res, next) {
+    userService.update(req.params.id, req.body)
+        .then(() => res.json({}))
+        .catch(err => next(err));
+}
+
+function _delete(req, res, next) {
+    userService.delete(req.params.id)
+        .then(() => res.json({}))
+        .catch(err => next(err));
+}
 
 module.exports = router;

@@ -6,7 +6,10 @@ var userSchema = new Schema({
     firstName: String, 
     lastName: String, 
     country: String,
-    joinDate: Date
+    joinDate: Date,
+    username: String,
+    password: String,
+    hash: String
 });
 
 var userModel = mongoose.model('User', userSchema);

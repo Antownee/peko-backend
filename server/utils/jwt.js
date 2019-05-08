@@ -13,6 +13,6 @@ function isRevoked(req, payload, done) {
         if (err) { return done(err) };
         if (!user) { return done(null, true) };
 
+        done();
     })
-    done();
 };
