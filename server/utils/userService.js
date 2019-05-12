@@ -46,7 +46,6 @@ async function create(userParam) {
         throw `Username ${userParam.username} is already taken`;
     }
 
-<<<<<<< HEAD
     const user = new User({
         userID: `COJ-${shortid.generate()}`,
         firstName: userParam.firstName,
@@ -56,10 +55,6 @@ async function create(userParam) {
         username: userParam.username,
         role: 'User'
     });
-=======
-    const user = new User(userParam);
-    user.userID = `COJ-${shortid.generate()}`;
->>>>>>> 4ef0fce200dade858c103a083612d893080b3fb9
 
     // hash password
     if (userParam.password) {
@@ -67,19 +62,12 @@ async function create(userParam) {
     }
 
     await user.save();
-<<<<<<< HEAD
     const { hash, ...userWithoutHash } = user.toObject();
     const token = jwt.sign({ sub: user.id }, process.env.secret);
     return {
         ...userWithoutHash,
         token
     };
-=======
-
-    return {
-
-    }
->>>>>>> 4ef0fce200dade858c103a083612d893080b3fb9
 }
 
 async function update(id, userParam) {
