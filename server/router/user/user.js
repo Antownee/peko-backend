@@ -1,9 +1,6 @@
 var express = require('express');
-const faker = require('faker');
 var router = express.Router();
-const User = require('../../models/user');
 const userService = require('../../utils/userService');
-
 
 
 router.get('/', (req, res, next) => {
@@ -14,11 +11,7 @@ router.get('/', (req, res, next) => {
 //Sign up
 router.post('/register', (req, res, next) => {
     userService.create(req.body)
-        .then(() => {
-            res.json({
-                message: "New user has been created"
-            });
-        })
+        .then(user => user ? res.json(user) : res.status(400).json({ message: "Username seems to be taken. Try again" }))
         .catch(err => next(err));
 })
 

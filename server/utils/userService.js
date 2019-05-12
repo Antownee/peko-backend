@@ -23,8 +23,11 @@ async function authenticate({ username, password }) {
         const { hash, ...userWithoutHash } = user.toObject();
         const token = jwt.sign({ sub: user.id }, process.env.secret);
         return {
-            ...userWithoutHash,
-            token
+            data: {
+                ...userWithoutHash,
+                token
+            },
+            error: null
         };
     }
 }
@@ -40,23 +43,31 @@ async function getById(id) {
 async function create(userParam) {
     // validate
     if (await User.findOne({ username: userParam.username })) {
-        throw 'Username "' + userParam.username + '" is already taken';
+        throw `Username ${userParam.username} is already taken`;
     }
 
-    const user = new User(userParam);
-    user.userID = `COJ-${shortid.generate()}`;
+    const user = new User({
+        userID: `COJ-${shortid.generate()}`,
+        firstName: userParam.firstName,
+        lastName: userParam.lastName,
+        country: "Kenya",
+        joinDate: Date.now().toString(),
+        username: userParam.username,
+        role: 'User'
+    });
 
     // hash password
     if (userParam.password) {
         user.hash = bcrypt.hashSync(userParam.password, 10);
     }
 
-    // save user
     await user.save();
-
+    const { hash, ...userWithoutHash } = user.toObject();
+    const token = jwt.sign({ sub: user.id }, process.env.secret);
     return {
-
-    }
+        ...userWithoutHash,
+        token
+    };
 }
 
 async function update(id, userParam) {

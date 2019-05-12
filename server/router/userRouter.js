@@ -5,13 +5,13 @@ const router = express.Router();
 const userRouter = require('./user/user');
 const saleRouter = require('./user/sale');
 const teaRouter = require('./user/tea');
-const teaRequestRouter = require('./user/tea-request');
+const orderRequestRouter = require('./user/orderRequest');
 
 
 router.use('/auth', userRouter);
 router.use('/sale', saleRouter);
 router.use('/tea', teaRouter);
-router.use('/tea-request', teaRequestRouter);
+router.use('/order-request', orderRequestRouter);
 
 
 

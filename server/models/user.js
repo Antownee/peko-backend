@@ -3,13 +3,13 @@ var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
     userID: { type: String, unique: true },
-    firstName: String, 
-    lastName: String, 
+    firstName: String,
+    lastName: String,
     country: String,
     joinDate: Date,
     username: String,
-    password: String,
-    hash: String
+    hash: String,
+    role: String
 });
 
 var userModel = mongoose.model('User', userSchema);
