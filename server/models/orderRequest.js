@@ -8,7 +8,10 @@ var orderRequestSchema = new Schema({
     teaID: String,
     amount: Number,
     notes: String,
-    confirmed: Boolean
+    confirmed: Boolean,
+    documents: [{ 
+        path: String
+    }]
 });
 
 

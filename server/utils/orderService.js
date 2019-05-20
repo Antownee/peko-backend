@@ -10,7 +10,7 @@ module.exports = {
     getAllOrdersUser,
     getAllOrdersAdmin,
     confirmOrder,
-    adminUploadDocuments
+    uploadDocuments
 };
 
 //USER
@@ -37,11 +37,6 @@ async function getAllOrdersUser(orderParams) {
     return await orderRequest.find({ userID: orderParams.userID });
 }
 
-async function userUploadDocuments() {
-
-}
-
-
 //ADMIN
 async function getAllOrdersAdmin() {
     return await orderRequest.find({});
@@ -51,7 +46,11 @@ async function confirmOrder(order) {
     return await orderRequest.updateOne({ orderRequestID: order.orderRequestID }, { confirmed: true })
 }
 
-async function adminUploadDocuments(documents) {
-    //save to a folder
-    //save document details to an object
+async function uploadDocuments(documents) {
+    //get order id
+    if (documents.length > 0) {
+        const orderId = documents[0].path;
+        const id = orderId.substr(0, orderId.indexOf('_'));
+        return await orderRequest.updateOne({ orderRequestID: id }, { documents: documents })
+    }
 }
