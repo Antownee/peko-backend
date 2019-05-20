@@ -7,7 +7,8 @@ var orderRequestSchema = new Schema({
     requestDate: Date,
     teaID: String,
     amount: Number,
-    notes: String
+    notes: String,
+    confirmed: Boolean
 });
 
 

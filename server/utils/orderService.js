@@ -7,9 +7,13 @@ shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWX
 
 module.exports = {
     addOrder,
-    getAllOrders
+    getAllOrdersUser,
+    getAllOrdersAdmin,
+    confirmOrder,
+    adminUploadDocuments
 };
 
+//USER
 async function addOrder(orderParams) {
     const order = new orderRequest({
         orderRequestID: `ORQ-${shortid.generate()}`,
@@ -17,7 +21,8 @@ async function addOrder(orderParams) {
         teaID: orderParams.teaID,
         amount: orderParams.amount,
         notes: orderParams.description,
-        userID: orderParams.userID
+        userID: orderParams.userID,
+        confirmed: false
     })
 
     if (await orderRequest.findOne({ orderRequestID: order.orderRequestID })) {
@@ -28,6 +33,25 @@ async function addOrder(orderParams) {
     return "Order successfully added";
 }
 
-async function getAllOrders(orderParams) {
+async function getAllOrdersUser(orderParams) {
     return await orderRequest.find({ userID: orderParams.userID });
+}
+
+async function userUploadDocuments() {
+
+}
+
+
+//ADMIN
+async function getAllOrdersAdmin() {
+    return await orderRequest.find({});
+}
+
+async function confirmOrder(order) {
+    return await orderRequest.updateOne({ orderRequestID: order.orderRequestID }, { confirmed: true })
+}
+
+async function adminUploadDocuments(documents) {
+    //save to a folder
+    //save document details to an object
 }

@@ -3,8 +3,8 @@ const router = express.Router();
 
 
 //Routers
-//const userRouter = require('./user/user');
+const orderRouter = require('./admin/orderRequest');
 
-//router.use('/tea-request', teaRequestRouter);
+router.use('/order', orderRouter);
 
 module.exports = router;
