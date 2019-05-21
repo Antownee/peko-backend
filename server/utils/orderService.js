@@ -1,20 +1,25 @@
 const shortid = require('shortid');
 const orderRequest = require("../models/orderRequest");
+const Tea = require("../models/tea");
+const Email = require("../models/email");
 
 //Required
 shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@');
 
 
 module.exports = {
+    addTeaItem,
     addOrder,
     getAllOrdersUser,
     getAllOrdersAdmin,
     confirmOrder,
-    uploadDocuments
+    uploadDocuments,
+    addEmail
 };
 
 //USER
 async function addOrder(orderParams) {
+    //Sanitise
     const order = new orderRequest({
         orderRequestID: `ORQ-${shortid.generate()}`,
         requestDate: Date.now().toString(),
@@ -53,4 +58,49 @@ async function uploadDocuments(documents) {
         const id = orderId.substr(0, orderId.indexOf('_'));
         return await orderRequest.updateOne({ orderRequestID: id }, { documents: documents })
     }
+}
+
+async function addTeaItem(tea) {
+    //Sanitise
+    const teaItem = new Tea({
+        teaID: `CH-${shortid.generate()}`,
+        teaName: tea.teaName,
+        description: tea.teaDescription
+    });
+
+    if (await Tea.findOne({ teaID: teaItem.teaID })) {
+        throw `Tea has already been created`;
+    }
+
+    await teaItem.save();
+    return "Tea successfully added";
+}
+
+async function addTeaItem(tea) {
+    //Sanitise
+    const teaItem = new Tea({
+        teaID: `CH-${shortid.generate()}`,
+        teaName: tea.teaName,
+        description: tea.teaDescription
+    });
+
+    if (await Tea.findOne({ teaID: teaItem.teaID })) {
+        throw `Tea has already been created`;
+    }
+
+    await teaItem.save();
+    return "Tea successfully added";
+}
+
+async function addEmail(e) {
+    const em = new Email({ email: e.email })
+
+    if (await Email.findOne({ email: em.email })) {
+        throw `Email has already been created`;
+    }
+
+    await em.save();
+    return "Email successfully added";
+
+
 }

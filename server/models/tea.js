@@ -4,8 +4,7 @@ var Schema = mongoose.Schema;
 var teaSchema = new Schema({
     teaID: { type: String, unique: true },
     teaName: String,
-    blend: Boolean
-    //more details  
+    teaDescription: String
 });
 
 
