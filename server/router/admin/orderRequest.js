@@ -32,13 +32,13 @@ const upload = multer({ storage: storage }).array('file');
 //Might be useful later
 router.post('/', (req, res, next) => {
     orderService.addOrder(req.body)
-        .then(user => user ? res.json(user) : res.sendStatus(404))
+        .then(user => user ? res.json(user) :  res.status(404).send({ error: 'Try again later' }))
         .catch(err => next(err));
 });
 
 router.post('/all', (req, res, next) => {
     orderService.getAllOrdersAdmin()
-        .then(orders => orders ? res.json(orders) : res.sendStatus(404))
+        .then(orders => orders ? res.json(orders) :  res.status(404).send({ error: 'Try again later' }))
         .catch(err => next(err));
 })
 
@@ -47,7 +47,7 @@ router.post('/confirm', (req, res, next) => {
     //Also, trigger a background worker to send those emails to people to be notified
     orderService.confirmOrder(req.body)
         .then((ord) => {
-            ord.nModified === 1 ? res.json("Order confirmed.") : res.sendStatus(404);
+            ord.nModified === 1 ? res.send({ msg: 'Order confirmed' }) : res.status(404).send({ error: 'Try again later' });
         })
         .catch(err => next(err));
 })
@@ -64,11 +64,8 @@ router.post('/documents', (req, res, next) => {
         orderService.uploadDocuments(documentNames)
             .then((msg) => {
                 documentNames = [];
-                if (msg) {
-                    return  res.send({ msg: 'Documents successfully submitted' })
-                } else {
-                    return res.status(500).send({ error: 'Try again later' });
-                }
+                msg.nModified === 1 ? res.send({ msg: 'Documents successfully submitted' }) : res.status(404).send({ error: 'Try again later' });
+
             })
             .catch((err) => {
                 res.status(404).send({ error: 'Try again later' });

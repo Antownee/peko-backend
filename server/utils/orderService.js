@@ -52,12 +52,16 @@ async function confirmOrder(order) {
 }
 
 async function uploadDocuments(documents) {
-    //get order id
-    if (documents.length > 0) {
-        const orderId = documents[0].path;
-        const id = orderId.substr(0, orderId.indexOf('_'));
-        return await orderRequest.updateOne({ orderRequestID: id }, { documents: documents })
-    }
+    const orderId = documents[0].path;
+    const id = orderId.substr(0, orderId.indexOf('_'));
+    //Include code in saving details
+    const newDocs = documents.map((doc) => {
+        return {
+            path: doc.path,
+            code
+        }
+    })
+    return await orderRequest.updateOne({ orderRequestID: id }, { $push: { documents: newDocs } })
 }
 
 async function addTeaItem(tea) {
@@ -96,7 +100,7 @@ async function addEmail(e) {
     const em = new Email({ email: e.email })
 
     if (await Email.findOne({ email: em.email })) {
-        throw `Email has already been created`;
+        return `Email has already been created`;
     }
 
     await em.save();
