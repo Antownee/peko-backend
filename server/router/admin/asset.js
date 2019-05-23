@@ -12,7 +12,19 @@ router.post('/tea', (req, res, next) => {
 //List of emails to be notified when an order is made
 router.post('/email', (req, res, next) => {
     orderService.addEmail(req.body)
-        .then(em => em ? res.json(em) :  res.status(404).send({ error: 'Try again later' }))
+        .then(em => em ? res.json(em) : res.status(404).send({ error: 'Try again later' }))
+        .catch(err => next(err));
+})
+
+router.post('/dashboard', (req, res, next) => {
+    orderService.populateAdminDashboard(req.body)
+        .then((em) => {
+            if (em) {
+                res.json(em)
+            } else {
+                res.status(404).send({ error: 'Try again later' })
+            }
+        })
         .catch(err => next(err));
 })
 

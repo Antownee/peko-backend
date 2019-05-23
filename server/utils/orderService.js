@@ -14,7 +14,8 @@ module.exports = {
     getAllOrdersAdmin,
     confirmOrder,
     uploadDocuments,
-    addEmail
+    addEmail,
+    populateAdminDashboard
 };
 
 //USER
@@ -54,7 +55,7 @@ async function confirmOrder(order) {
 async function uploadDocuments(documents) {
     const orderId = documents[0].path;
     const id = orderId.substr(0, orderId.indexOf('_'));
-    const code = (orderId.split('_',2)[1]).split('.', 1)[0];
+    const code = (orderId.split('_', 2)[1]).split('.', 1)[0];
     //Include code in saving details
     const newDocs = documents.map((doc) => {
         return {
@@ -101,11 +102,21 @@ async function addEmail(e) {
     const em = new Email({ email: e.email })
 
     if (await Email.findOne({ email: em.email })) {
-        return `Email has already been created`;
+        throw `Email has already been created`;
     }
 
     await em.save();
     return "Email successfully added";
+}
 
+async function populateAdminDashboard(user) {
+    //Price of tea
+    //Number of orders made
+    const id = user.userID
+    const numberOfOrders = await orderRequest.countDocuments({ });
 
+    //Pending orders
+    const pendingOrders = await orderRequest.countDocuments({  confirmed: false });
+
+    return { numberOfOrders, pendingOrders };
 }
