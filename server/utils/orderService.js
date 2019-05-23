@@ -54,6 +54,7 @@ async function confirmOrder(order) {
 async function uploadDocuments(documents) {
     const orderId = documents[0].path;
     const id = orderId.substr(0, orderId.indexOf('_'));
+    const code = (orderId.split('_',2)[1]).split('.', 1)[0];
     //Include code in saving details
     const newDocs = documents.map((doc) => {
         return {

@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const bull = require('bull')
-
+const worker = require("../../utils/bgworkers/worker");
 const orderService = require("../../utils/orderService");
-var documentNames = [];
+const documentNames = [];
+const emails = [
+    "me@gamil.com",
+    "them@gamil.com"
+]
 
 
 const storage = multer.diskStorage({
@@ -32,24 +35,25 @@ const upload = multer({ storage: storage }).array('file');
 //Might be useful later
 router.post('/', (req, res, next) => {
     orderService.addOrder(req.body)
-        .then(user => user ? res.json(user) :  res.status(404).send({ error: 'Try again later' }))
+        .then(user => user ? res.json(user) : res.status(404).send({ error: 'Try again later' }))
         .catch(err => next(err));
 });
 
 router.post('/all', (req, res, next) => {
     orderService.getAllOrdersAdmin()
-        .then(orders => orders ? res.json(orders) :  res.status(404).send({ error: 'Try again later' }))
+        .then(orders => orders ? res.json(orders) : res.status(404).send({ error: 'Try again later' }))
         .catch(err => next(err));
 })
 
 
 router.post('/confirm', (req, res, next) => {
+    emailNotifier(emails);
     //Also, trigger a background worker to send those emails to people to be notified
-    orderService.confirmOrder(req.body)
-        .then((ord) => {
-            ord.nModified === 1 ? res.send({ msg: 'Order confirmed' }) : res.status(404).send({ error: 'Try again later' });
-        })
-        .catch(err => next(err));
+    // orderService.confirmOrder(req.body)
+    //     .then((ord) => {
+    //         ord.nModified === 1 ? res.send({ msg: 'Order confirmed' }) : res.status(404).send({ error: 'Try again later' });
+    //     })
+    //     .catch(err => next(err));
 })
 
 
@@ -74,6 +78,12 @@ router.post('/documents', (req, res, next) => {
     })
 })
 
+
+function emailNotifier(em) {
+    for (index = 0; index < em.length; ++index) {
+        worker.addEmailJob(em[index]);
+    }
+}
 
 
 
