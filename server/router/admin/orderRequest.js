@@ -47,13 +47,18 @@ router.post('/all', (req, res, next) => {
 
 
 router.post('/confirm', (req, res, next) => {
-    emailNotifier(emails);
-    //Also, trigger a background worker to send those emails to people to be notified
-    // orderService.confirmOrder(req.body)
-    //     .then((ord) => {
-    //         ord.nModified === 1 ? res.send({ msg: 'Order confirmed' }) : res.status(404).send({ error: 'Try again later' });
-    //     })
-    //     .catch(err => next(err));
+    orderService.confirmOrder(req.body)
+        .then((ord) => {
+            if (ord.nModified === 1) {
+                res.send({ msg: 'Order confirmed' });
+
+                //Trigger a background process to send the emails
+                emailNotifier(emails); 
+            } else {
+                res.status(404).send({ error: 'Try again later' });
+            }
+        })
+        .catch(err => next(err));
 })
 
 
