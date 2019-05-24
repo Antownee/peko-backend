@@ -3,11 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const worker = require("../../utils/bgworkers/worker");
 const orderService = require("../../utils/orderService");
-const documentNames = [];
-const emails = [
-    "me@gamil.com",
-    "them@gamil.com"
-]
+let documentNames = [];
 
 
 const storage = multer.diskStorage({
@@ -49,11 +45,12 @@ router.post('/all', (req, res, next) => {
 router.post('/confirm', (req, res, next) => {
     orderService.confirmOrder(req.body)
         .then((ord) => {
-            if (ord.nModified === 1) {
+            if (ord) {
                 res.send({ msg: 'Order confirmed' });
 
                 //Trigger a background process to send the emails
-                emailNotifier(emails); 
+                orderService.getEmails()
+                    .then((em) => emailNotifier(em,ord));
             } else {
                 res.status(404).send({ error: 'Try again later' });
             }
@@ -84,9 +81,9 @@ router.post('/documents', (req, res, next) => {
 })
 
 
-function emailNotifier(em) {
+function emailNotifier(em, order) {
     for (index = 0; index < em.length; ++index) {
-        worker.addEmailJob(em[index]);
+        worker.addEmailJob(em[index].email, order);
     }
 }
 

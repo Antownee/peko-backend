@@ -1,19 +1,19 @@
-var mongoose = require("mongoose");
-var Schema = mongoose.Schema;
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-var orderRequestSchema = new Schema({
+const orderRequestSchema = new Schema({
     orderRequestID: { type: String, unique: true },
     userID: String,
-    requestDate: Date,
+    requestDate: { type: Date },
     teaID: String,
-    amount: Number,
+    amount: Number, //Weight
     notes: String,
     confirmed: Boolean,
-    documents: [{ 
+    documents: [{
         path: String
     }]
 });
 
 
-var orderRequestModel = mongoose.model('OrderRequest', orderRequestSchema);
+const orderRequestModel = mongoose.model('OrderRequest', orderRequestSchema);
 module.exports = orderRequestModel;

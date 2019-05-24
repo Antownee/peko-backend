@@ -17,6 +17,7 @@ module.exports = {
     confirmOrder,
     uploadDocuments,
     addEmail,
+    getEmails,
     populateAdminDashboard
 };
 
@@ -51,7 +52,7 @@ async function getAllOrdersAdmin() {
 }
 
 async function confirmOrder(order) {
-    return await orderRequest.updateOne({ orderRequestID: order.orderRequestID }, { confirmed: true })
+    return await orderRequest.findOneAndUpdate({ orderRequestID: order.orderRequestID }, { confirmed: true }, {new: true})
 }
 
 async function uploadDocuments(documents) {
@@ -111,6 +112,10 @@ async function addEmail(e) {
     return "Email successfully added";
 }
 
+async function getEmails() {
+    return await Email.find({});
+}
+
 async function getPrice() {
     const html = await rp("https://ycharts.com/indicators/mombasa_tea_price");
     const cellvalue = cheerio('table.summData tbody tr td', html)[1].childNodes[0].data;
@@ -121,31 +126,26 @@ async function getMonthData() {
     const html = await rp("https://ycharts.com/indicators/mombasa_tea_price");
     const rows = cheerio('table.histDataTable tbody tr td', html).slice(0, 10);
 
-    let months = [];
-    let prices = [];
+    let data = [];
     for (let i = 0; i < rows.length; i += 2) {
         const month = rows[i].children[0].data;
         const price = parseFloat(rows[i + 1].children[0].data) * 100;
-        months.push(month);
-        prices.push(price);
+        data.push({ month, price });
     }
 
-    return { months, prices }
+    return data
 }
 
-async function populateAdminDashboard(user) {
+
+async function getAdminDashboard() {
     //Historical price 
     const historicalPrices = await getMonthData();
-
     //Price of tea
     const priceOfTea = await getPrice();
-
     //Number of orders made
     const numberOfOrders = await orderRequest.countDocuments({});
-
     //Pending orders
     const pendingOrders = await orderRequest.countDocuments({ confirmed: false });
-
     //Last 5 orders
     const recentOrders = await orderRequest.find().sort('date').limit(5)
 
@@ -158,3 +158,31 @@ async function populateAdminDashboard(user) {
     };
 }
 
+async function getUserDashboard(user) {
+    //Historical price 
+    const historicalPrices = await getMonthData();
+    //Price of tea
+    const priceOfTea = await getPrice();
+    //Number of orders made
+    const numberOfOrders = await orderRequest.countDocuments({ userID: user.userID });
+    //Pending orders
+    const pendingOrders = await orderRequest.countDocuments({ userID: user.userID, confirmed: false });
+    //Last 5 orders
+    const recentOrders = await orderRequest.find({ userID: user.userID }).sort('date').limit(5)
+
+    return {
+        numberOfOrders,
+        pendingOrders,
+        priceOfTea,
+        recentOrders,
+        historicalPrices
+    };
+}
+
+function populateAdminDashboard(user) {
+    if (user.role === "Admin") {
+        return getAdminDashboard();
+    } else {
+        return getUserDashboard(user);
+    }
+}
