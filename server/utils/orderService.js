@@ -1,4 +1,6 @@
 const shortid = require('shortid');
+const rp = require('request-promise');
+const cheerio = require('cheerio');
 const orderRequest = require("../models/orderRequest");
 const Tea = require("../models/tea");
 const Email = require("../models/email");
@@ -109,14 +111,50 @@ async function addEmail(e) {
     return "Email successfully added";
 }
 
+async function getPrice() {
+    const html = await rp("https://ycharts.com/indicators/mombasa_tea_price");
+    const cellvalue = cheerio('table.summData tbody tr td', html)[1].childNodes[0].data;
+    return parseFloat(cellvalue) * 100;
+}
+
+async function getMonthData() {
+    const html = await rp("https://ycharts.com/indicators/mombasa_tea_price");
+    const rows = cheerio('table.histDataTable tbody tr td', html).slice(0, 10);
+
+    let months = [];
+    let prices = [];
+    for (let i = 0; i < rows.length; i += 2) {
+        const month = rows[i].children[0].data;
+        const price = parseFloat(rows[i + 1].children[0].data) * 100;
+        months.push(month);
+        prices.push(price);
+    }
+
+    return { months, prices }
+}
+
 async function populateAdminDashboard(user) {
+    //Historical price 
+    const historicalPrices = await getMonthData();
+
     //Price of tea
+    const priceOfTea = await getPrice();
+
     //Number of orders made
-    const id = user.userID
-    const numberOfOrders = await orderRequest.countDocuments({ });
+    const numberOfOrders = await orderRequest.countDocuments({});
 
     //Pending orders
-    const pendingOrders = await orderRequest.countDocuments({  confirmed: false });
+    const pendingOrders = await orderRequest.countDocuments({ confirmed: false });
 
-    return { numberOfOrders, pendingOrders };
+    //Last 5 orders
+    const recentOrders = await orderRequest.find().sort('date').limit(5)
+
+    return {
+        numberOfOrders,
+        pendingOrders,
+        priceOfTea,
+        recentOrders,
+        historicalPrices
+    };
 }
+
