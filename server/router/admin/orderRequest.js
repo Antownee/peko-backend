@@ -52,7 +52,7 @@ router.post('/confirm', (req, res, next) => {
 
                 //Trigger a background process to send the emails
                 orderService.getEmails()
-                    .then((em) => emailNotifier(em,ord));
+                    .then((em) => emailNotifier(em, ord));
             } else {
                 res.status(404).send({ error: 'Try again later' });
             }
@@ -78,6 +78,18 @@ router.post('/documents', (req, res, next) => {
                 next(err);
             });
     })
+})
+
+router.get('/file', (req, res, next) => {
+    let documentCode = req.query.documentCode;
+    let orderID = req.query.orderID;
+
+    let isWithin = orderService.isDocumentInStorage(orderID, documentCode);
+    if (isWithin === "") {
+        return res.status(404).send({ error: 'Try again later' });
+    }
+    return res.download(`./documents/${isWithin}`);
+
 })
 
 

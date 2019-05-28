@@ -4,6 +4,8 @@ const cheerio = require('cheerio');
 const orderRequest = require("../models/orderRequest");
 const Tea = require("../models/tea");
 const Email = require("../models/email");
+const fs = require('fs');
+require('dotenv').config();
 
 //Required
 shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@');
@@ -18,7 +20,8 @@ module.exports = {
     uploadDocument,
     addEmail,
     getEmails,
-    populateDashboard
+    populateDashboard,
+    isDocumentInStorage
 };
 
 //USER
@@ -64,8 +67,16 @@ async function uploadDocument(receivedDocumentData) {
         return await orderRequest.updateOne({ orderRequestID: orderID }, { $set: { documents: { fileName, documentCode } } });
     } else {
         //if file is new, add the object in the array
-        return await orderRequest.updateOne({ orderRequestID: orderID }, { $push: { documents: { fileName, documentCode } } });
+        return await orderRequest.updateOne({ orderRequestID: orderID }, { $push: { documents: { fileName, documentCode } } }); l
     }
+}
+
+function isDocumentInStorage(orderID, documentCode) {
+    //get files in the documents folder that match the orderID and code
+    let res = fs.readdirSync("./documents").find(file => {
+        if (file.split(".")[0] === `${orderID}_${documentCode}`) {return file }
+    });
+    return res ? res : ""
 }
 
 async function addTeaItem(tea) {

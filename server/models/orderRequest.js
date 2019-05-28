@@ -10,7 +10,8 @@ const orderRequestSchema = new Schema({
     notes: String,
     confirmed: Boolean,
     documents: [{
-        path: String
+        fileName: String,
+        documentCode: String
     }]
 });
 
