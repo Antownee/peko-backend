@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const worker = require("../../utils/bgworkers/worker");
 const orderService = require("../../utils/orderService");
-let documentNames = [];
+let receivedDocumentData = {};
 
 
 const storage = multer.diskStorage({
@@ -19,14 +19,16 @@ const storage = multer.diskStorage({
         cb(null, './documents')
     },
     filename: function (req, file, cb) {
-        let extArray = file.mimetype.split("/");
-        let extension = extArray[extArray.length - 1];
-        let fullName = `${file.originalname}.${extension}`;
-        documentNames.push({ path: fullName });
-        cb(null, fullName)
+        let receivedMetadata = JSON.parse(req.body.filepond);
+        receivedDocumentData = {
+            documentCode: receivedMetadata.documentCode,
+            orderID: receivedMetadata.orderID,
+            fileName: file.originalname
+        }
+        cb(null, file.originalname)
     }
 })
-const upload = multer({ storage: storage }).array('file');
+const upload = multer({ storage: storage }).single("filepond")
 
 //Might be useful later
 router.post('/', (req, res, next) => {
@@ -67,11 +69,9 @@ router.post('/documents', (req, res, next) => {
             return res.status(500).json(err)
         }
 
-        orderService.uploadDocuments(documentNames)
+        orderService.uploadDocument(receivedDocumentData)
             .then((msg) => {
-                documentNames = [];
-                msg.nModified === 1 ? res.send({ msg: 'Documents successfully submitted' }) : res.status(404).send({ error: 'Try again later' });
-
+                msg.nModified === 1 ? res.send({ msg: 'Document successfully added' }) : res.status(404).send({ error: 'Try again later' });
             })
             .catch((err) => {
                 res.status(404).send({ error: 'Try again later' });

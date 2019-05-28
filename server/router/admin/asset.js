@@ -17,7 +17,7 @@ router.post('/email', (req, res, next) => {
 })
 
 router.post('/dashboard', (req, res, next) => {
-    orderService.populateAdminDashboard(req.body)
+    orderService.populateDashboard(req.body)
         .then((em) => {
             if (em) {
                 res.json(em)

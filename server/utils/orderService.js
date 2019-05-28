@@ -15,10 +15,10 @@ module.exports = {
     getAllOrdersUser,
     getAllOrdersAdmin,
     confirmOrder,
-    uploadDocuments,
+    uploadDocument,
     addEmail,
     getEmails,
-    populateAdminDashboard
+    populateDashboard
 };
 
 //USER
@@ -52,21 +52,20 @@ async function getAllOrdersAdmin() {
 }
 
 async function confirmOrder(order) {
-    return await orderRequest.findOneAndUpdate({ orderRequestID: order.orderRequestID }, { confirmed: true }, {new: true})
+    return await orderRequest.findOneAndUpdate({ orderRequestID: order.orderRequestID }, { confirmed: true }, { new: true })
 }
 
-async function uploadDocuments(documents) {
-    const orderId = documents[0].path;
-    const id = orderId.substr(0, orderId.indexOf('_'));
-    const code = (orderId.split('_', 2)[1]).split('.', 1)[0];
-    //Include code in saving details
-    const newDocs = documents.map((doc) => {
-        return {
-            path: doc.path,
-            code
-        }
-    })
-    return await orderRequest.updateOne({ orderRequestID: id }, { $push: { documents: newDocs } })
+async function uploadDocument(receivedDocumentData) {
+    //First look for existing file. If it does exist, update. If new, push
+    let { orderID, documentCode, fileName } = receivedDocumentData;
+    let documentsInObject = await orderRequest.find({ "documents.documentCode": documentCode });
+    if (documentsInObject.length > 0) {
+        //if file exists in db, update the object in the array
+        return await orderRequest.updateOne({ orderRequestID: orderID }, { $set: { documents: { fileName, documentCode } } });
+    } else {
+        //if file is new, add the object in the array
+        return await orderRequest.updateOne({ orderRequestID: orderID }, { $push: { documents: { fileName, documentCode } } });
+    }
 }
 
 async function addTeaItem(tea) {
@@ -179,7 +178,7 @@ async function getUserDashboard(user) {
     };
 }
 
-function populateAdminDashboard(user) {
+function populateDashboard(user) {
     if (user.role === "Admin") {
         return getAdminDashboard();
     } else {
