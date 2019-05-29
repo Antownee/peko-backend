@@ -1,11 +1,9 @@
-const dotenv = require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
-const faker = require('faker');
 const logger = require('morgan');
 const errorHandler = require('./utils/errorHandler');
 const cors = require('cors');
-const port = process.env.port;
+const config = require('./config/config');
 
 //Run db
 const { mongoose } = require('./utils/db.js');
@@ -15,7 +13,7 @@ const app = express();
 const corsOptions = require("./utils/cors");
 app.use(cors());
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
 app.use(errorHandler);
@@ -31,6 +29,6 @@ app.get('/', (req, res) => {
     return res.send('Welcome to COJ online portal')
 })
 
-app.listen(port, () => {
-    console.log(`cup of joe is running on PORT ${port}`)
+app.listen(global.gConfig.port, () => {
+    console.log(`cup of joe is running on PORT ${global.gConfig.port}`)
 })

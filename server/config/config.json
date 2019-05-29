@@ -1,0 +1,20 @@
+{
+    "development": {
+        "config_id": "development",
+        "app_name": "my app",
+        "secret": "a6J2ZWPqxHjXGMLw",
+        "port": 4985,
+        "json_indentation": 4,
+        "database": "mongodb://localhost:27017/coj"
+    },
+    "staging": {
+        "config_id": "staging",
+        "port": 4895,
+        "database": "mongodb://coj:3884fb7acf0fd5c9c6f63da2349d7eb9@dokku-mongo-coj:27017/coj"
+    },
+    "production": {
+        "config_id": "production",
+        "port": 4895,
+        "database": "mongodb://localhost:27017/coj"
+    }
+}
