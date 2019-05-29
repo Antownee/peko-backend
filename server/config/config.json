@@ -11,12 +11,14 @@
     "staging": {
         "config_id": "staging",
         "port": 4895,
+        "secret": "a6J2ZWPqxHjXGMLw",
         "redis": "redis://coj_redis_service:cdd6d3ba21e52c87e0d0348cb39044268c113195174e7894e8ee2648a9aef398@dokku-redis-coj-redis-service:6379",
         "database": "mongodb://coj:3884fb7acf0fd5c9c6f63da2349d7eb9@dokku-mongo-coj:27017/coj"
     },
     "production": {
         "config_id": "production",
         "port": 4895,
+        "secret": "",
         "redis": "",
         "database": "mongodb://localhost:27017/coj"
     }
