@@ -1,7 +1,7 @@
 var Queue = require('bull');
 const { sendEmail } = require("../email");
 
-var emailQueue = new Queue('Sending email', 'redis://127.0.0.1:6379');
+var emailQueue = new Queue('Sending email', global.gConfig.redis);
 
 emailQueue.process(function (job, done) {
     console.log(`Starting job: ${job.data.email}`);
