@@ -3,7 +3,7 @@
         "config_id": "development",
         "app_name": "my app",
         "secret": "a6J2ZWPqxHjXGMLw",
-        "port": 5000,
+        "port": 4985,
         "json_indentation": 4,
         "redis": "redis://127.0.0.1:6379",
         "database": "mongodb://localhost:27017/coj"
