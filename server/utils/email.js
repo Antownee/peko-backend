@@ -24,6 +24,7 @@ function emailToClient(order) {
             Regards,
             Cup of Joe.`
 }
+
 async function sendEmail(email, order) {
     let testAccount = await nodemailer.createTestAccount();
 
