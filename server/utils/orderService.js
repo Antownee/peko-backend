@@ -19,9 +19,10 @@ module.exports = {
     confirmOrder,
     uploadDocument,
     addEmail,
-    getEmails,
+    getCOJEmails,
     populateDashboard,
-    isDocumentInStorage
+    isDocumentInStorage,
+    getOrderConfirmationForm
 };
 
 //USER
@@ -122,7 +123,7 @@ async function addEmail(e) {
     return "Email successfully added";
 }
 
-async function getEmails() {
+async function getCOJEmails() {
     return await Email.find({});
 }
 
@@ -187,6 +188,10 @@ async function getUserDashboard(user) {
         recentOrders,
         historicalPrices
     };
+}
+
+function getOrderConfirmationForm(order){
+
 }
 
 function populateDashboard(user) {

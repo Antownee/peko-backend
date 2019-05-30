@@ -28,6 +28,11 @@ router.post('/dashboard', (req, res, next) => {
         .catch(err => next(err));
 })
 
+router.post('/order-confirmation-form', (req,res,next)=>{
+    const order = req.body.order;
+    orderService.getOrderConfirmationForm()
+})
+
 
 
 module.exports = router;

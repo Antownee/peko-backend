@@ -45,14 +45,15 @@ router.post('/all', (req, res, next) => {
 
 
 router.post('/confirm', (req, res, next) => {
-    orderService.confirmOrder(req.body)
+    const { user, order } = req.body;
+    orderService.confirmOrder(order)
         .then((ord) => {
             if (ord) {
                 res.send({ msg: 'Order confirmed' });
 
-                //Trigger a background process to send the emails
-                orderService.getEmails()
-                    .then((em) => emailNotifier(em, ord));
+                //Trigger a background process to send the email to the client
+                emailNotifier("", ord,user);
+            
             } else {
                 res.status(404).send({ error: 'Try again later' });
             }
@@ -93,9 +94,9 @@ router.get('/file', (req, res, next) => {
 })
 
 
-function emailNotifier(em, order) {
+function emailNotifier(em, order, user) {
     for (index = 0; index < em.length; ++index) {
-        worker.addEmailJob(em[index].email, order);
+        worker.addEmailJob(em[index].email, order, user);
     }
 }
 
