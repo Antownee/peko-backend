@@ -47,6 +47,7 @@ async function create(userParam) {
         userID: `COJ-${shortid.generate()}`,
         firstName: userParam.firstName,
         lastName: userParam.lastName,
+        email: userParam.email,
         country: "Kenya",
         joinDate: Date.now().toString(),
         username: userParam.username,
