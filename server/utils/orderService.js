@@ -2,7 +2,7 @@ const shortid = require('shortid');
 const rp = require('request-promise');
 const cheerio = require('cheerio');
 const orderRequest = require("../models/orderRequest");
-const Tea = require("../models/tea");
+const TeaItem = require("../models/tea");
 const Email = require("../models/email");
 const fs = require('fs');
 require('dotenv').config();
@@ -22,7 +22,8 @@ module.exports = {
     getCOJEmails,
     populateDashboard,
     isDocumentInStorage,
-    getOrderConfirmationForm
+    getOrderConfirmationForm,
+    getTeaItems
 };
 
 //USER
@@ -82,13 +83,13 @@ function isDocumentInStorage(orderID, documentCode) {
 
 async function addTeaItem(tea) {
     //Sanitise
-    const teaItem = new Tea({
+    const teaItem = new TeaItem({
         teaID: `CH-${shortid.generate()}`,
         teaName: tea.teaName,
-        description: tea.teaDescription
+        teaDescription: tea.teaDescription
     });
 
-    if (await Tea.findOne({ teaID: teaItem.teaID })) {
+    if (await TeaItem.findOne({ teaID: teaItem.teaID })) {
         throw `Tea has already been created`;
     }
 
@@ -96,20 +97,8 @@ async function addTeaItem(tea) {
     return "Tea successfully added";
 }
 
-async function addTeaItem(tea) {
-    //Sanitise
-    const teaItem = new Tea({
-        teaID: `CH-${shortid.generate()}`,
-        teaName: tea.teaName,
-        description: tea.teaDescription
-    });
-
-    if (await Tea.findOne({ teaID: teaItem.teaID })) {
-        throw `Tea has already been created`;
-    }
-
-    await teaItem.save();
-    return "Tea successfully added";
+async function getTeaItems(){
+    return await TeaItem.find({});
 }
 
 async function addEmail(e) {

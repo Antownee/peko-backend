@@ -1,8 +1,8 @@
-const dotenv = require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const shortid = require('shortid');
 const User = require('../models/user');
+
 
 //Required
 shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@');
@@ -23,12 +23,9 @@ async function authenticate({ username, password }) {
         const { hash, ...userWithoutHash } = user.toObject();
         const token = jwt.sign({ sub: user.id }, global.gConfig.secret);
         return {
-            data: {
-                ...userWithoutHash,
-                token
-            },
-            error: null
-        };
+            ...userWithoutHash,
+            token
+        }
     }
 }
 
@@ -63,7 +60,7 @@ async function create(userParam) {
 
     await user.save();
     const { hash, ...userWithoutHash } = user.toObject();
-    const token = jwt.sign({ sub: user.id }, process.env.secret);
+    const token = jwt.sign({ sub: user.id }, global.gConfig.secret);
     return {
         ...userWithoutHash,
         token

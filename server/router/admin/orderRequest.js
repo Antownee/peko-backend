@@ -52,7 +52,7 @@ router.post('/confirm', (req, res, next) => {
                 res.send({ msg: 'Order confirmed' });
 
                 //Trigger a background process to send the email to the client
-                emailNotifier("", ord,user);
+                emailNotifier("me@gmail.com", ord,user);
             
             } else {
                 res.status(404).send({ error: 'Try again later' });
@@ -94,12 +94,8 @@ router.get('/file', (req, res, next) => {
 })
 
 
-function emailNotifier(em, order, user) {
-    for (index = 0; index < em.length; ++index) {
-        worker.addEmailJob(em[index].email, order, user);
-    }
+function emailNotifier(email, order, user) {
+    worker.addEmailJob(email, order, user);
 }
-
-
 
 module.exports = router;

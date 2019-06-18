@@ -9,6 +9,12 @@ router.post('/tea', (req, res, next) => {
         .catch(err => next(err));
 })
 
+router.get('/all-tea', (req, res, next) => {
+    orderService.getTeaItems()
+        .then(tea => tea ? res.json(tea) : res.status(404).send({ error: 'Try again later' }))
+        .catch(err => next(err));
+})
+
 //List of emails to be notified when an order is made
 router.post('/email', (req, res, next) => {
     orderService.addEmail(req.body)

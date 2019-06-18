@@ -13,5 +13,7 @@ const finalConfig = _.merge(defaultConfig, environmentConfig);
 // and their names should always begin with g
 global.gConfig = finalConfig;
 
+module.exports = finalConfig;
+
 // log global.gConfig
 //console.log(`global.gConfig: ${JSON.stringify(global.gConfig, undefined, global.gConfig.json_indentation)}`);
