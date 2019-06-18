@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const errorHandler = require('./utils/errorHandler');
 const cors = require('cors');
+const helmet = require('helmet');
 const config = require('./config/config');
 
 //Run db
@@ -12,7 +13,7 @@ const { mongoose } = require('./utils/db.js');
 const app = express();
 const corsOptions = require("./utils/cors");
 app.use(cors());
-
+app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
