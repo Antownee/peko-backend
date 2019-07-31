@@ -2,21 +2,33 @@ const express = require('express');
 const faker = require('faker');
 const router = express.Router();
 const worker = require("../../utils/bgworkers/worker");
+const { check, validationResult } = require('express-validator');
 const orderService = require("../../utils/orderService");
 
 //Create tea request
-router.post('/', (req, res, next) => {
+router.post('/', [
+    //check('order.teaID').isAlphanumeric(),
+   // check('order.userID').isAlphanumeric(),
+    check('order.description').isAlphanumeric().trim().escape(),
+    check('order.amount').isNumeric().trim().escape()
+], (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(404).send({ message: 'Try again later' })
+    }
+
+
     const { user, order } = req.body;
     orderService.addOrder(order)
         .then((result) => {
             if (result) {
                 res.json(result);
-                orderService.getCOJEmails()
+                return orderService.getCOJEmails()
                     .then((em) => {
                         emailNotifier(em, order, user)
                     });
             } else {
-                res.status(404).send({ error: 'Try again later' })
+                return res.status(404).send({ message: 'Try again later' })
             }
         })
         .catch(err => next(err));
@@ -24,7 +36,7 @@ router.post('/', (req, res, next) => {
 
 router.post('/all', (req, res, next) => {
     orderService.getAllOrdersUser(req.body)
-        .then(orders => orders ? res.json(orders) : res.status(404).send({ error: 'Try again later' }))
+        .then(orders => orders ? res.json(orders) : res.status(404).send({ message: 'Try again later' }))
         .catch(err => next(err));
 })
 

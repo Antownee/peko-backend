@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const worker = require("../../utils/bgworkers/worker");
+const { check, validationResult } = require('express-validator');
 const orderService = require("../../utils/orderService");
 let receivedDocumentData = {};
 
@@ -30,11 +31,12 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage: storage }).single("filepond")
 
-//Might be useful later
+//Add orders
 router.post('/', (req, res, next) => {
-    orderService.addOrder(req.body)
-        .then(user => user ? res.json(user) : res.status(404).send({ error: 'Try again later' }))
-        .catch(err => next(err));
+    // orderService.addOrder(req.body)
+    //     .then(user => user ? res.json(user) : res.status(404).send({ error: 'Try again later' }))
+    //     .catch(err => next(err));
+
 });
 
 router.post('/all', (req, res, next) => {
@@ -44,7 +46,7 @@ router.post('/all', (req, res, next) => {
 })
 
 
-router.post('/confirm', (req, res, next) => {
+router.post('/confirm',(req, res, next) => {
     const { user, order } = req.body;
     orderService.confirmOrder(order)
         .then((ord) => {
@@ -52,8 +54,7 @@ router.post('/confirm', (req, res, next) => {
                 res.send({ msg: 'Order confirmed' });
 
                 //Trigger a background process to send the email to the client
-                emailNotifier("me@gmail.com", ord,user);
-            
+                emailNotifier("me@gmail.com", ord, user);
             } else {
                 res.status(404).send({ error: 'Try again later' });
             }
