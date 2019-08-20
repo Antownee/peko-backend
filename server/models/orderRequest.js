@@ -12,7 +12,8 @@ const orderRequestSchema = new Schema({
     documents: [{
         fileName: String,
         documentCode: String
-    }]
+    }], 
+    orderPosition: Number
 });
 
 

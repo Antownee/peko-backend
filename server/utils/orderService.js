@@ -36,7 +36,8 @@ async function addOrder(orderParams) {
         amount: orderParams.amount,
         notes: orderParams.description,
         userID: orderParams.userID,
-        confirmed: false
+        confirmed: false,
+        orderPosition: 0
     })
 
     if (await orderRequest.findOne({ orderRequestID: order.orderRequestID })) {
@@ -57,12 +58,15 @@ async function getAllOrdersAdmin() {
 }
 
 async function confirmOrder(order) {
-    return await orderRequest.findOneAndUpdate({ orderRequestID: order.orderRequestID }, { confirmed: true }, { new: true })
+    return await orderRequest.findOneAndUpdate({ orderRequestID: order.orderRequestID }, { confirmed: true, orderPosition: 1 }, { new: true })
 }
 
 async function uploadDocument(receivedDocumentData) {
-    //First look for existing file. If it does exist, update. If new, push
     let { orderID, documentCode, fileName } = receivedDocumentData;
+    //First update the position/status of the order
+    await orderRequest.findOneAndUpdate({ orderRequestID: orderID }, { orderPosition: 2 }, { new: true });
+   
+    //Look for existing file. If it does exist, update. If new, push
     let documentsInObject = await orderRequest.find({ "documents.documentCode": documentCode });
     if (documentsInObject.length > 0) {
         //if file exists in db, update the object in the array
@@ -76,7 +80,7 @@ async function uploadDocument(receivedDocumentData) {
 function isDocumentInStorage(orderID, documentCode) {
     //get files in the documents folder that match the orderID and code
     let res = fs.readdirSync("./documents").find(file => {
-        if (file.split(".")[0] === `${orderID}_${documentCode}`) {return file }
+        if (file.split(".")[0] === `${orderID}_${documentCode}`) { return file }
     });
     return res ? res : ""
 }
@@ -97,7 +101,7 @@ async function addTeaItem(tea) {
     return "Tea successfully added";
 }
 
-async function getTeaItems(){
+async function getTeaItems() {
     return await TeaItem.find({});
 }
 
@@ -179,7 +183,7 @@ async function getUserDashboard(user) {
     };
 }
 
-function getOrderConfirmationForm(order){
+function getOrderConfirmationForm(order) {
 
 }
 

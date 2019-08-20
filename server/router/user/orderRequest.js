@@ -8,8 +8,8 @@ const orderService = require("../../utils/orderService");
 //Create tea request
 router.post('/', [
     //check('order.teaID').isAlphanumeric(),
-   // check('order.userID').isAlphanumeric(),
-    check('order.description').isAlphanumeric().trim().escape(),
+    // check('order.userID').isAlphanumeric(),
+    //check('order.description').isAlphanumeric().trim().escape(),
     check('order.amount').isNumeric().trim().escape()
 ], (req, res, next) => {
     const errors = validationResult(req);
