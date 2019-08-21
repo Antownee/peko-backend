@@ -4,6 +4,7 @@ const cheerio = require('cheerio');
 const orderRequest = require("../models/orderRequest");
 const TeaItem = require("../models/tea");
 const Email = require("../models/email");
+const User = require('../models/user');
 const fs = require('fs');
 require('dotenv').config();
 
@@ -20,10 +21,12 @@ module.exports = {
     uploadDocument,
     addEmail,
     getCOJEmails,
+    getUserEmail,
     populateDashboard,
     isDocumentInStorage,
     getOrderConfirmationForm,
-    getTeaItems
+    getTeaItems,
+    shipOrder
 };
 
 //USER
@@ -37,7 +40,8 @@ async function addOrder(orderParams) {
         notes: orderParams.description,
         userID: orderParams.userID,
         confirmed: false,
-        orderPosition: 0
+        orderPosition: 0,
+        orderShipped: false
     })
 
     if (await orderRequest.findOne({ orderRequestID: order.orderRequestID })) {
@@ -65,7 +69,7 @@ async function uploadDocument(receivedDocumentData) {
     let { orderID, documentCode, fileName } = receivedDocumentData;
     //First update the position/status of the order
     await orderRequest.findOneAndUpdate({ orderRequestID: orderID }, { orderPosition: 2 }, { new: true });
-   
+
     //Look for existing file. If it does exist, update. If new, push
     let documentsInObject = await orderRequest.find({ "documents.documentCode": documentCode });
     if (documentsInObject.length > 0) {
@@ -75,6 +79,10 @@ async function uploadDocument(receivedDocumentData) {
         //if file is new, add the object in the array
         return await orderRequest.updateOne({ orderRequestID: orderID }, { $push: { documents: { fileName, documentCode } } }); l
     }
+}
+
+async function shipOrder(order) {
+    return await orderRequest.findOneAndUpdate({ orderRequestID: order.orderRequestID }, { orderPosition: 3, orderShipped: true }, { new: true })
 }
 
 function isDocumentInStorage(orderID, documentCode) {
@@ -118,6 +126,10 @@ async function addEmail(e) {
 
 async function getCOJEmails() {
     return await Email.find({});
+}
+
+async function getUserEmail(userID) {
+    return await User.findOne({ userID });
 }
 
 async function getPrice() {

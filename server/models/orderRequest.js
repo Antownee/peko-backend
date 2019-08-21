@@ -13,7 +13,8 @@ const orderRequestSchema = new Schema({
         fileName: String,
         documentCode: String
     }], 
-    orderPosition: Number
+    orderPosition: Number,
+    orderShipped: Boolean
 });
 
 

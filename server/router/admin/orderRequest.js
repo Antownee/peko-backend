@@ -46,15 +46,30 @@ router.post('/all', (req, res, next) => {
 })
 
 
-router.post('/confirm',(req, res, next) => {
+router.post('/confirm', (req, res, next) => {
     const { user, order } = req.body;
     orderService.confirmOrder(order)
         .then((ord) => {
             if (ord) {
-                res.send({ msg: 'Order confirmed' });
+                res.send({ msg: 'Order confirmed!' });
 
                 //Trigger a background process to send the email to the client
-                emailNotifier("me@gmail.com", ord, user);
+                sendEmail(user, order);
+            } else {
+                res.status(404).send({ error: 'Try again later' });
+            }
+        })
+        .catch(err => next(err));
+})
+
+router.post('/ship', (req, res, next) => {
+    const { user, order } = req.body;
+    orderService.shipOrder(order)
+        .then((ord) => {
+            if (ord) {
+                res.send({ msg: 'Order shipped!' });
+                //Trigger a background process to send the shipping email to the client
+                sendEmail(user, order);
             } else {
                 res.status(404).send({ error: 'Try again later' });
             }
@@ -94,9 +109,11 @@ router.get('/file', (req, res, next) => {
 
 })
 
-
-function emailNotifier(email, order, user) {
-    worker.addEmailJob(email, order, user);
+function sendEmail(user, order) {
+    orderService.getUserEmail(order.userID)
+        .then((client) => {
+            worker.addEmailJob(client.email, order, user)
+        })
 }
 
 module.exports = router;

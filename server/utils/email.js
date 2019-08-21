@@ -2,11 +2,40 @@ const nodemailer = require("nodemailer");
 const { format } = require("date-fns");
 
 module.exports = {
-    sendEmailtoCOJ,
-    sendEmailtoClient
+    sendNewOrdertoCOJ,
+    sendOrderConfirmationtoClient,
+    sendShippingEmail
 }
 
-async function sendEmailtoCOJ(email, order) {
+async function sendShippingEmail(email, order) {
+    let testAccount = await nodemailer.createTestAccount();
+
+    let transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        secure: false,
+        auth: {
+            user: testAccount.user,
+            pass: testAccount.pass
+        }
+    });
+
+    let info = await transporter.sendMail({
+        from: '"COJ System" <coj@example.com>',
+        to: `${email}`,
+        subject: "ORDER SHIPPING",
+        text: `Your order ${order.orderRequestID} has been shipped and the estimated time of arrival is 3 months.
+                Your patience while the order arrives is highly appreciated.
+                Thank you for partenering with us
+                
+                Regards,
+                Cup of Joe.`
+    });
+
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+}
+
+async function sendNewOrdertoCOJ(email, order) {
     let testAccount = await nodemailer.createTestAccount();
 
     let transporter = nodemailer.createTransport({
@@ -30,7 +59,7 @@ async function sendEmailtoCOJ(email, order) {
 }
 
 
-async function sendEmailtoClient(email, order) {
+async function sendOrderConfirmationtoClient(email, order) {
     let testAccount = await nodemailer.createTestAccount();
 
     let transporter = nodemailer.createTransport({
@@ -47,7 +76,7 @@ async function sendEmailtoClient(email, order) {
         from: '"Cup of Joe" <coj@example.com>',
         to: `${email}`,
         subject: "ORDER CONFIRMATION",
-        text: `Order No: ${order.orderRequestID} which you placed on the ${order.requestDate}has beeen approved. 
+        text: `Order No: ${order.orderRequestID} which you placed on ${format(order.requestDate, "DD/MM/YYYY")} has beeen approved. 
                 Proceed to the portal to upload the necessary documents to complete your order.
 
 
