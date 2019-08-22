@@ -11,7 +11,8 @@ const orderRequestSchema = new Schema({
     confirmed: Boolean,
     documents: [{
         fileName: String,
-        documentCode: String
+        documentCode: String,
+        dateAdded: Date
     }], 
     orderPosition: Number,
     orderShipped: Boolean

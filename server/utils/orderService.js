@@ -67,6 +67,7 @@ async function confirmOrder(order) {
 
 async function uploadDocument(receivedDocumentData) {
     let { orderID, documentCode, fileName } = receivedDocumentData;
+    let dateAdded = Date.now().toString();
     //First update the position/status of the order
     await orderRequest.findOneAndUpdate({ orderRequestID: orderID }, { orderPosition: 2 }, { new: true });
 
@@ -74,10 +75,10 @@ async function uploadDocument(receivedDocumentData) {
     let documentsInObject = await orderRequest.find({ "documents.documentCode": documentCode });
     if (documentsInObject.length > 0) {
         //if file exists in db, update the object in the array
-        return await orderRequest.updateOne({ orderRequestID: orderID }, { $set: { documents: { fileName, documentCode } } });
+        return await orderRequest.updateOne({ orderRequestID: orderID }, { $set: { documents: { fileName, documentCode, dateAdded } } });
     } else {
         //if file is new, add the object in the array
-        return await orderRequest.updateOne({ orderRequestID: orderID }, { $push: { documents: { fileName, documentCode } } }); l
+        return await orderRequest.updateOne({ orderRequestID: orderID }, { $push: { documents: { fileName, documentCode, dateAdded } } }); l
     }
 }
 
