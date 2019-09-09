@@ -6,6 +6,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const config = require('./config/config');
 const Sentry = require('@sentry/node');
+const seed = require('./utils/seed/seed');
 
 //Sentry config
 Sentry.init({ dsn: 'https://57af6529557442cf95c516bf787d0f08@sentry.io/1546068' });
@@ -32,6 +33,14 @@ app.use('/admin', adminRouter);
 
 app.get('/', (req, res) => {
     return res.send('Welcome to COJ online portal')
+})
+
+app.get('/seed', (req, res) => {
+    //Seed the db with an Admin user and initial tea types as well as the emails to be used for communication
+    seed.createAdmin()
+        .then(() => {
+            seed.addTeaTypes().then(() => { return res.send('Seeding complete.') });
+        })
 })
 
 app.listen(global.gConfig.port, () => {

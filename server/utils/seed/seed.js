@@ -22,6 +22,11 @@ db.once('open', function () {
   console.log('cup of joe has connected to the database.')
 });
 
+module.exports = {
+    createAdmin,
+    addTeaTypes
+}
+
 
 async function createAdmin() {
     const user = new User({
