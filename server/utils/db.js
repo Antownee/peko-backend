@@ -4,7 +4,17 @@ mongoose.Promise = global.Promise;
 mongoose.connect(global.gConfig.database, { useCreateIndex: true, useNewUrlParser: true });
 
 var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
+
+const connectWithRetry = () => {
+  console.log('MongoDB connection retry..')
+  return mongoose.connect(global.gConfig.database, { useCreateIndex: true, useNewUrlParser: true });
+}
+
+
+db.on('error', err=>{
+  console.error.bind(console, 'connection error:')
+  setTimeout(connectWithRetry, 5000)
+});
 
 db.once('open', function () {
   console.log('cup of joe has connected to the database.')

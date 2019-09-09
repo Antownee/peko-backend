@@ -5,6 +5,10 @@ const errorHandler = require('./utils/errorHandler');
 const cors = require('cors');
 const helmet = require('helmet');
 const config = require('./config/config');
+const Sentry = require('@sentry/node');
+
+//Sentry config
+Sentry.init({ dsn: 'https://57af6529557442cf95c516bf787d0f08@sentry.io/1546068' });
 
 //Run db
 const { mongoose } = require('./utils/db.js');

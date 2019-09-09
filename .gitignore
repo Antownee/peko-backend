@@ -87,4 +87,8 @@ typings/
 #image uploads
 documents
 
+#explainers
+stuff.txt
+deploy_instructions.txt
+
 # End of https://www.gitignore.io/api/node

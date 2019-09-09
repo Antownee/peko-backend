@@ -1,2 +1,5 @@
 Redis
 Mongo
+
+Run the seed script 
+Add path that runs the script
