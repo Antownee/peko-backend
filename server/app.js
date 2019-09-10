@@ -1,5 +1,7 @@
 const express = require('express');
+const favicon = require('express-favicon');
 const bodyParser = require('body-parser');
+const path = require('path');
 const logger = require('morgan');
 const errorHandler = require('./utils/errorHandler');
 const cors = require('cors');
@@ -25,9 +27,13 @@ app.use(logger('dev'));
 app.use(errorHandler);
 
 //Router
-const userRouter = require('./router/userRouter');
-const adminRouter = require('./router/adminRouter');
 const apiRouter = require('./router/apiRouter');
+app.use(favicon(__dirname + '/build/favicon.ico'));
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+app.get('/', function (req, res) {
+   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
 
 app.use('/api', apiRouter)
 
