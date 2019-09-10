@@ -27,12 +27,12 @@ app.use(errorHandler);
 //Router
 const userRouter = require('./router/userRouter');
 const adminRouter = require('./router/adminRouter');
+const apiRouter = require('./router/apiRouter');
 
-app.use('/users', userRouter);
-app.use('/admin', adminRouter);
+app.use('/api', apiRouter)
 
-app.get('/', (req, res) => {
-    return res.send('Welcome to COJ online portal')
+app.get('/alive', (req, res) => {
+    return res.send('COJ server is alive.')
 })
 
 app.get('/seed', (req, res) => {

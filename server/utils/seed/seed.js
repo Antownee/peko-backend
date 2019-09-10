@@ -7,20 +7,20 @@ const shortid = require('shortid');
 const User = require('../../models/user');
 const TeaItem = require("../../models/tea");
 const fs = require('fs');
-const mongoose = require('mongoose');
+//const mongoose = require('mongoose');
 const config = require("../../config/config");
 
-mongoose.connect(config.database, { useCreateIndex: true, useNewUrlParser: true });
+// mongoose.connect(config.database, { useCreateIndex: true, useNewUrlParser: true });
 
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
+// var db = mongoose.connection;
+// db.on('error', console.error.bind(console, 'connection error:'));
 
-db.once('open', function () {
-    //seed
-    createAdmin();
-    addTeaTypes();
-  console.log('cup of joe has connected to the database.')
-});
+// db.once('open', function () {
+//     //seed
+//     createAdmin();
+//     addTeaTypes();
+//   console.log('cup of joe has connected to the database.')
+// });
 
 module.exports = {
     createAdmin,
