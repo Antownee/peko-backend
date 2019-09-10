@@ -3,3 +3,6 @@ Mongo
 
 Run the seed script 
 Add path that runs the script
+
+Git submodules
+git submodule add git@github:https://github.com/Antownee/coj-frontend.git ./client
