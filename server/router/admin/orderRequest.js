@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
         cb(null, true);
     },
     destination: function (req, file, cb) {
-        cb(null, './documents')
+        cb(null, './documents/documents')
     },
     filename: function (req, file, cb) {
         let receivedMetadata = JSON.parse(req.body.filepond);
@@ -118,7 +118,6 @@ router.get('/file', (req, res, next) => {
         return res.status(404).send({ error: 'Try again later' });
     }
     return res.download(`./documents/${isWithin}`);
-
 })
 
 function sendEmail(user, order) {

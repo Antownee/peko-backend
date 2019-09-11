@@ -1,7 +1,7 @@
-var Queue = require('bull');
+const Queue = require('bull');
 const { sendNewOrdertoCOJ, sendOrderConfirmationtoClient, sendShippingEmail } = require("../email");
 
-var emailQueue = new Queue('Sending email', global.gConfig.redis);
+const emailQueue = new Queue('Sending email', global.gConfig.redis);
 
 emailQueue.process(function (job, done) {
     let { email, order, user } = job.data;
