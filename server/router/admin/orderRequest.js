@@ -45,6 +45,18 @@ router.post('/all', (req, res, next) => {
         .catch(err => next(err));
 })
 
+router.post('/delete', (req, res, next) => {
+    const { order } = req.body;
+    orderService.deleteOrder(order)
+        .then((ord) => {
+            if (ord) {
+                res.send({ msg: 'Order deleted!' });
+            } else {
+                res.status(404).send({ error: 'Try again later' });
+            }
+        })
+        .catch(err => next(err));
+})
 
 router.post('/confirm', (req, res, next) => {
     const { user, order } = req.body;

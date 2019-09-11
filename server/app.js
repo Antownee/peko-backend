@@ -7,11 +7,11 @@ const errorHandler = require('./utils/errorHandler');
 const cors = require('cors');
 const helmet = require('helmet');
 const config = require('./config/config');
-const Sentry = require('@sentry/node');
+//const Sentry = require('@sentry/node');
 const seed = require('./utils/seed/seed');
 
 //Sentry config
-Sentry.init({ dsn: 'https://57af6529557442cf95c516bf787d0f08@sentry.io/1546068' });
+//Sentry.init({ dsn: 'https://57af6529557442cf95c516bf787d0f08@sentry.io/1546068' });
 
 //Run db
 const { mongoose } = require('./utils/db.js');
@@ -28,9 +28,9 @@ app.use(errorHandler);
 
 //Router
 const apiRouter = require('./router/apiRouter');
-app.use(favicon(__dirname + '/build/favicon.ico'));
+app.use(favicon(path.join(__dirname, '../client/build/favicon.ico')));
 app.use(express.static(path.join(__dirname, '../client/build')));//Front end
-//app.use(express.static(path.join(__dirname, '../documents'))); //Client documents
+app.use(express.static(path.join(__dirname, '../documents'))); //Client documents
 
 app.get('/', function (req, res) {
    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));

@@ -5,9 +5,9 @@ var emailQueue = new Queue('Sending email', global.gConfig.redis);
 
 emailQueue.process(function (job, done) {
     let { email, order, user } = job.data;
-    if (user.role === "User") sendNewOrdertoCOJ(email, order);
-    if (order.orderPosition === 0) sendOrderConfirmationtoClient(email, order);
-    if (order.orderPosition === 2) sendShippingEmail(email, order);
+    if (user.role === "User") return sendNewOrdertoCOJ(email, order);
+    if (order.orderPosition === 0) return sendOrderConfirmationtoClient(email, order);
+    if (order.orderPosition === 2) return sendShippingEmail(email, order);
     done();
 });
 

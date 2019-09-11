@@ -1,6 +1,7 @@
 //Seeding script. Pre-populate the db with
 //1. Tea types defined in a json file and the respective image
 //2. Create an Admin user
+//3. Add emails of COJ users
 
 const bcrypt = require('bcryptjs');
 const shortid = require('shortid');
@@ -9,18 +10,6 @@ const TeaItem = require("../../models/tea");
 const fs = require('fs');
 //const mongoose = require('mongoose');
 const config = require("../../config/config");
-
-// mongoose.connect(config.database, { useCreateIndex: true, useNewUrlParser: true });
-
-// var db = mongoose.connection;
-// db.on('error', console.error.bind(console, 'connection error:'));
-
-// db.once('open', function () {
-//     //seed
-//     createAdmin();
-//     addTeaTypes();
-//   console.log('cup of joe has connected to the database.')
-// });
 
 module.exports = {
     createAdmin,

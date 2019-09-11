@@ -17,6 +17,7 @@ module.exports = {
     addOrder,
     getAllOrdersUser,
     getAllOrdersAdmin,
+    deleteOrder,
     confirmOrder,
     uploadDocument,
     addEmail,
@@ -59,6 +60,10 @@ async function getAllOrdersUser(orderParams) {
 //ADMIN
 async function getAllOrdersAdmin() {
     return await orderRequest.find({});
+}
+
+async function deleteOrder(order) {
+    return await orderRequest.findOneAndDelete({ orderRequestID: order.orderRequestID });
 }
 
 async function confirmOrder(order) {
