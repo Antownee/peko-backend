@@ -3,11 +3,15 @@ const { sendNewOrdertoCOJ, sendOrderConfirmationtoClient, sendShippingEmail } = 
 
 const emailQueue = new Queue('Sending email', global.gConfig.redis);
 
+function addEmailJob(email, order, user) {
+    emailQueue.add({ email, order, user });
+}
+
 emailQueue.process(function (job, done) {
     let { email, order, user } = job.data;
-    if (user.role === "User") return sendNewOrdertoCOJ(email, order);
-    if (order.orderPosition === 0) return sendOrderConfirmationtoClient(email, order);
-    if (order.orderPosition === 2) return sendShippingEmail(email, order);
+    if (user.role === "User")  sendNewOrdertoCOJ(email, order);
+    if (order.orderPosition === 0)  sendOrderConfirmationtoClient(email, order);
+    if (order.orderPosition === 2)  sendShippingEmail(email, order);
     done();
 });
 
@@ -17,10 +21,6 @@ emailQueue.on('completed', (job, result) => {
     if (user.role === "Admin" && order.orderPosition === 0) console.log(`ORDER CONFIRMATION SENT: ${job.data.email}`);
     if (order.orderPosition === 2) console.log(`SHIPPING NOTIFICATION SENT: ${job.data.email}`);
 })
-
-function addEmailJob(email, order, user) {
-    emailQueue.add({ email, order, user });
-}
 
 module.exports = {
     addEmailJob

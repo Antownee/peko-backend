@@ -42,7 +42,6 @@ app.get('/alive', (req, res) => {
     return res.send('COJ server is alive.')
 })
 
-
 app.get('/seed', (req, res) => {
     //Seed the db with an Admin user and initial tea types as well as the emails to be used for communication
     seed.createAdmin()

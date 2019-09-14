@@ -109,16 +109,16 @@ router.post('/documents', (req, res, next) => {
     })
 })
 
-router.get('/file', (req, res, next) => {
-    let documentCode = req.query.documentCode;
-    let orderID = req.query.orderID;
+// router.get('/file', (req, res, next) => {
+//     let documentCode = req.query.documentCode;
+//     let orderID = req.query.orderID;
 
-    let isWithin = orderService.isDocumentInStorage(orderID, documentCode);
-    if (isWithin === "") {
-        return res.status(404).send({ error: 'Try again later' });
-    }
-    return res.download(`./documents/${isWithin}`);
-})
+//     let isWithin = orderService.isDocumentInStorage(orderID, documentCode);
+//     if (isWithin === "") {
+//         return res.status(404).send({ error: 'Try again later' });
+//     }
+//     return res.download(`./documents/${isWithin}`);
+// })
 
 function sendEmail(user, order) {
     orderService.getUserEmail(order.userID)
