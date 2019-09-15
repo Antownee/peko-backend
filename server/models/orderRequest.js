@@ -14,6 +14,10 @@ const orderRequestSchema = new Schema({
         documentCode: String,
         dateAdded: Date
     }], 
+    contract: {
+        contractID: String,
+        isSumbitted: Boolean
+    },
     orderPosition: Number,
     orderShipped: Boolean
 });

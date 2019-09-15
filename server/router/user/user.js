@@ -9,7 +9,7 @@ router.post('/register', [
     check('firstName').isAlphanumeric().trim().escape(),
     check('lastName').isAlphanumeric().trim().escape(),
     check('email').isEmail().normalizeEmail(),
-    check('username').isAlphanumeric().trim().escape(),
+    //check('username').isAlphanumeric().trim().escape(),
 ], (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

@@ -25,6 +25,7 @@
     "express-validator": "^6.1.1",
     "faker": "^4.1.0",
     "helmet": "^3.18.0",
+    "js-quantities": "^1.7.4",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
     "mongoose": "^5.4.12",

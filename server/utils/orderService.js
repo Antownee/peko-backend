@@ -6,6 +6,7 @@ const TeaItem = require("../models/tea");
 const Email = require("../models/email");
 const User = require('../models/user');
 const fs = require('fs');
+const Qty = require('js-quantities');
 require('dotenv').config();
 
 //Required
@@ -158,25 +159,42 @@ async function getMonthData() {
     return data
 }
 
+async function getAdminTotalOrderWeight() {
+    let total = await orderRequest.aggregate([{ $group: { _id: null, amount: { $sum: "$amount" } } }]);
+    return  total.length === 0 ? 0 : `${total[0].amount} kgs`;
+}
+
+async function getUserTotalOrderWeight(userID) {
+    let total = await orderRequest.aggregate([
+        { $match : { userID : userID } },
+        { $group: { _id: null, amount: { $sum: "$amount" } } }
+    ]);
+    return  total.length === 0 ? 0 : `${total[0].amount} kgs`;
+}
+
+
 
 async function getAdminDashboard() {
     //Historical price 
     const historicalPrices = await getMonthData();
     //Price of tea
-    const priceOfTea = await getPrice();
+    //const priceOfTea = await getPrice();
     //Number of orders made
     const numberOfOrders = await orderRequest.countDocuments({});
     //Pending orders
     const pendingOrders = await orderRequest.countDocuments({ confirmed: false });
     //Last 5 orders
     const recentOrders = await orderRequest.find().sort('date').limit(5)
+    //Total kgs moved by all clients to date
+    const totalOrderWeight = await getAdminTotalOrderWeight();
 
     return {
         numberOfOrders,
         pendingOrders,
-        priceOfTea,
+        //priceOfTea,
         recentOrders,
-        historicalPrices
+        historicalPrices,
+        totalOrderWeight
     };
 }
 
@@ -184,20 +202,24 @@ async function getUserDashboard(user) {
     //Historical price 
     const historicalPrices = await getMonthData();
     //Price of tea
-    const priceOfTea = await getPrice();
+    //const priceOfTea = await getPrice();
     //Number of orders made
     const numberOfOrders = await orderRequest.countDocuments({ userID: user.userID });
     //Pending orders
     const pendingOrders = await orderRequest.countDocuments({ userID: user.userID, confirmed: false });
     //Last 5 orders
-    const recentOrders = await orderRequest.find({ userID: user.userID }).sort('date').limit(5)
+    const recentOrders = await orderRequest.find({ userID: user.userID }).sort('date').limit(5);
+    //Total kgs moved by all clients to date
+    const totalOrderWeight = await getUserTotalOrderWeight(user.userID);
+
 
     return {
         numberOfOrders,
         pendingOrders,
-        priceOfTea,
+        //priceOfTea,
         recentOrders,
-        historicalPrices
+        historicalPrices,
+        totalOrderWeight
     };
 }
 
