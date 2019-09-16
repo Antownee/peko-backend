@@ -26,7 +26,7 @@ emailQueue.process(function (job, done) {
             break;
     }
 
-});
+})
 
 emailQueue.on('completed', (job, result) => {
     const { user, order, status } = job.data;
