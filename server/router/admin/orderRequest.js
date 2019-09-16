@@ -66,7 +66,7 @@ router.post('/confirm', (req, res, next) => {
                 res.send({ msg: 'Order confirmed!' });
 
                 //Trigger a background process to send the email to the client
-                sendEmail(user, order);
+                sendEmail(user, order, "CONFIRM");
             } else {
                 res.status(404).send({ error: 'Try again later' });
             }
@@ -81,7 +81,7 @@ router.post('/ship', (req, res, next) => {
             if (ord) {
                 res.send({ msg: 'Order shipped!' });
                 //Trigger a background process to send the shipping email to the client
-                sendEmail(user, order);
+                sendEmail(user, order, "SHIP");
             } else {
                 res.status(404).send({ error: 'Try again later' });
             }
@@ -109,21 +109,11 @@ router.post('/documents', (req, res, next) => {
     })
 })
 
-// router.get('/file', (req, res, next) => {
-//     let documentCode = req.query.documentCode;
-//     let orderID = req.query.orderID;
 
-//     let isWithin = orderService.isDocumentInStorage(orderID, documentCode);
-//     if (isWithin === "") {
-//         return res.status(404).send({ error: 'Try again later' });
-//     }
-//     return res.download(`./documents/${isWithin}`);
-// })
-
-function sendEmail(user, order) {
+function sendEmail(user, order, status) {
     orderService.getUserEmail(order.userID)
         .then((client) => {
-            worker.addEmailJob(client.email, order, user)
+            worker.addEmailJob({email: client.email, order, user, status})
         })
 }
 

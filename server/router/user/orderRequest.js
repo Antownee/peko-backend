@@ -43,7 +43,7 @@ router.post('/all', (req, res, next) => {
 
 function emailNotifier(em, order, user) {
     for (index = 0; index < em.length; ++index) {
-        worker.addEmailJob(em[index].email, order, user);
+        worker.addEmailJob({email: em[index].email, order, user, status: "PLACE ORDER"});
     }
 }
 

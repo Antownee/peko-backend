@@ -3,23 +3,46 @@ const { sendNewOrdertoCOJ, sendOrderConfirmationtoClient, sendShippingEmail } = 
 
 const emailQueue = new Queue('Sending email', global.gConfig.redis);
 
-function addEmailJob(email, order, user) {
-    emailQueue.add({ email, order, user });
+function addEmailJob(orderInfo) {
+    emailQueue.add(orderInfo);
 }
 
 emailQueue.process(function (job, done) {
-    let { email, order, user } = job.data;
-    if (user.role === "User")  sendNewOrdertoCOJ(email, order);
-    if (order.orderPosition === 0)  sendOrderConfirmationtoClient(email, order);
-    if (order.orderPosition === 2)  sendShippingEmail(email, order);
-    done();
+    let { email, order, user, status } = job.data;
+    switch (status) {
+        case "PLACE ORDER":
+            sendNewOrdertoCOJ(email, order);
+            done();
+            break;
+        case "CONFIRM":
+            sendOrderConfirmationtoClient(email, order);
+            done();
+            break;
+        case "SHIP":
+            sendShippingEmail(email, order);
+            done();
+            break;
+        default:
+            break;
+    }
+
 });
 
 emailQueue.on('completed', (job, result) => {
-    const { user, order } = job.data;
-    if (user.role === "User") console.log(`ORDER PLACEMENT NOTIFICATION SENT: ${job.data.email}`);
-    if (user.role === "Admin" && order.orderPosition === 0) console.log(`ORDER CONFIRMATION SENT: ${job.data.email}`);
-    if (order.orderPosition === 2) console.log(`SHIPPING NOTIFICATION SENT: ${job.data.email}`);
+    const { user, order, status } = job.data;
+    switch (status) {
+        case "PLACE ORDER":
+            console.log(`ORDER PLACEMENT NOTIFICATION SENT: ${job.data.email}`);
+            break;
+        case "CONFIRM":
+            console.log(`ORDER CONFIRMATION SENT: ${job.data.email}`);
+            break;
+        case "SHIP":
+            console.log(`SHIPPING NOTIFICATION SENT: ${job.data.email}`);
+            break;
+        default:
+            break;
+    }
 })
 
 module.exports = {
