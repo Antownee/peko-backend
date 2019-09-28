@@ -35,15 +35,16 @@ module.exports = {
 async function addOrder(orderParams) {
     //Sanitise
     const order = new orderRequest({
-        orderRequestID: `ORQ-${shortid.generate()}`,
-        requestDate: Date.now().toString(),
-        teaID: orderParams.teaID,
-        amount: orderParams.amount,
-        notes: orderParams.description,
+        orderRequestID: orderParams.orderRequestID,
         userID: orderParams.userID,
         confirmed: false,
-        orderPosition: 0,
-        orderShipped: false
+        requestDate: Date.now().toString(),
+        orderStatus: "ORDER_INIT",
+        teaOrders: [{
+            teaID: "CH-rMCZVpxPQo",
+            teaName: "BF-1",
+            weight: 2345
+        }]
     })
 
     if (await orderRequest.findOne({ orderRequestID: order.orderRequestID })) {
@@ -67,8 +68,8 @@ async function deleteOrder(order) {
     return await orderRequest.findOneAndDelete({ orderRequestID: order.orderRequestID });
 }
 
-async function confirmOrder(order) {
-    return await orderRequest.findOneAndUpdate({ orderRequestID: order.orderRequestID }, { confirmed: true, orderPosition: 1 }, { new: true })
+async function confirmOrder(orderID) {
+    return await orderRequest.findOneAndUpdate({ orderRequestID: orderID }, { confirmed: true, orderPosition: 1 }, { new: true })
 }
 
 async function uploadDocument(receivedDocumentData) {
@@ -161,15 +162,15 @@ async function getMonthData() {
 
 async function getAdminTotalOrderWeight() {
     let total = await orderRequest.aggregate([{ $group: { _id: null, amount: { $sum: "$amount" } } }]);
-    return  total.length === 0 ? 0 : `${total[0].amount} kgs`;
+    return total.length === 0 ? 0 : `${total[0].amount} kgs`;
 }
 
 async function getUserTotalOrderWeight(userID) {
     let total = await orderRequest.aggregate([
-        { $match : { userID : userID } },
+        { $match: { userID: userID } },
         { $group: { _id: null, amount: { $sum: "$amount" } } }
     ]);
-    return  total.length === 0 ? 0 : `${total[0].amount} kgs`;
+    return total.length === 0 ? 0 : `${total[0].amount} kgs`;
 }
 
 

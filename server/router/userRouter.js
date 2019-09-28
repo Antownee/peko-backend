@@ -4,7 +4,7 @@ const router = express.Router();
 //Routers
 const orderRequestRouter = require('./user/orderRequest');
 
-router.use('/order-request', orderRequestRouter);
+router.use('/order', orderRequestRouter);
 
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 const { format } = require("date-fns");
+const orderService = require("./orderService");
 
 module.exports = {
     sendNewOrdertoCOJ,
@@ -7,7 +8,7 @@ module.exports = {
     sendShippingEmail
 }
 
-async function sendShippingEmail(email, order) {
+async function sendShippingEmail(order) {
     let testAccount = await nodemailer.createTestAccount();
 
     let transporter = nodemailer.createTransport({
@@ -19,7 +20,7 @@ async function sendShippingEmail(email, order) {
             pass: testAccount.pass
         }
     });
-
+    let email = await orderService.getUserEmail(order.userID);
     let info = await transporter.sendMail({
         from: '"COJ System" <coj@example.com>',
         to: `${email}`,
@@ -35,9 +36,8 @@ async function sendShippingEmail(email, order) {
     console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 }
 
-async function sendNewOrdertoCOJ(email, order) {
+async function sendNewOrdertoCOJ(order) {
     let testAccount = await nodemailer.createTestAccount();
-
     let transporter = nodemailer.createTransport({
         host: "smtp.ethereal.email",
         port: 587,
@@ -48,18 +48,23 @@ async function sendNewOrdertoCOJ(email, order) {
         }
     });
 
-    let info = await transporter.sendMail({
-        from: '"COJ System" <coj@example.com>',
-        to: `${email}`,
-        subject: "ORDER CONFIRMATION",
-        text: `A new order has been placed by user id: ${order.userID}. Kindly head to the portal to confirm the order.`
-    });
-
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    let emails = await orderService.getCOJEmails();
+    for (let index = 0; index < emails.length; index++) {
+        let info = await transporter.sendMail({
+            from: '"COJ System" <coj@example.com>',
+            to: `${emails[index]}`,
+            subject: "ORDER CONFIRMATION",
+            text: `A new order has been placed by user id: ${order.userID}. Kindly head to the portal to confirm the order.`
+        });
+    
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info)); 
+        
+    }
+    
 }
 
 
-async function sendOrderConfirmationtoClient(email, order) {
+async function sendOrderConfirmationtoClient(order) {
     let testAccount = await nodemailer.createTestAccount();
 
     let transporter = nodemailer.createTransport({
@@ -72,6 +77,7 @@ async function sendOrderConfirmationtoClient(email, order) {
         }
     });
 
+    let email = await orderService.getUserEmail(order.userID);
     let info = await transporter.sendMail({
         from: '"Cup of Joe" <coj@example.com>',
         to: `${email}`,
@@ -83,8 +89,6 @@ async function sendOrderConfirmationtoClient(email, order) {
                 Regards,
                 Cup of Joe.`
     });
-
-    // console.log("Message sent: %s", info.messageId);
 
     console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 }

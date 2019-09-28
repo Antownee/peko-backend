@@ -22,7 +22,7 @@ function addOrder(order, user) {
         body: JSON.stringify({ order, user })
     };
 
-    return fetch(`${apiUrl}/users/order-request`, requestOptions)
+    return fetch(`${apiUrl}/users/order`, requestOptions)
         .then(handleResponse)
         .then(msg => { return msg })
 }
@@ -40,8 +40,7 @@ function getAllOrders(user) {
             .then(handleResponse)
             .then(msg => { return msg })
     } else {
-
-        return fetch(`${apiUrl}/users/order-request/all`, requestOptions)
+        return fetch(`${apiUrl}/users/order/all`, requestOptions)
             .then(handleResponse)
             .then(msg => { return msg })
     }

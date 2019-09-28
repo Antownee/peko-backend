@@ -3,6 +3,7 @@ const environment = process.env.NODE_ENV || 'development';
 
 module.exports = errorHandler;
 
+//API error handler
 function errorHandler(err, req, res, next) {
     console.log(err);
 

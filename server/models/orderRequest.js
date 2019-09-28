@@ -4,18 +4,23 @@ const Schema = mongoose.Schema;
 const orderRequestSchema = new Schema({
     orderRequestID: { type: String, unique: true },
     userID: String,
-    requestDate: { type: Date },
-    teaID: String,
-    amount: Number, //Weight
-    notes: String,
     confirmed: Boolean,
+    requestDate: { type: Date },
+    orderStatus: String,
+    teaOrders: [{
+        teaID: String,
+        teaName: String,
+        weight: Number
+    }],
+    contract: {
+        fileName: String,
+        dateAdded: Date
+    },
     documents: [{
         fileName: String,
         documentCode: String,
         dateAdded: Date
-    }],
-    orderPosition: Number,
-    orderShipped: Boolean
+    }]
 });
 
 

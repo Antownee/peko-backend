@@ -31,14 +31,6 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage: storage }).single("filepond")
 
-//Add orders
-router.post('/', (req, res, next) => {
-    // orderService.addOrder(req.body)
-    //     .then(user => user ? res.json(user) : res.status(404).send({ error: 'Try again later' }))
-    //     .catch(err => next(err));
-
-});
-
 router.post('/all', (req, res, next) => {
     orderService.getAllOrdersAdmin()
         .then(orders => orders ? res.json(orders) : res.status(404).send({ error: 'Try again later' }))
@@ -50,7 +42,7 @@ router.post('/delete', (req, res, next) => {
     orderService.deleteOrder(order)
         .then((ord) => {
             if (ord) {
-                res.send({ msg: 'Order deleted!' });
+                res.status(200).send({ msg: 'Order deleted!' });
             } else {
                 res.status(404).send({ error: 'Try again later' });
             }
@@ -60,18 +52,22 @@ router.post('/delete', (req, res, next) => {
 
 router.post('/confirm', (req, res, next) => {
     const { user, order } = req.body;
-    orderService.confirmOrder(order)
+    orderService.confirmOrder(order.orderRequestID)
         .then((ord) => {
             if (ord) {
-                res.send({ msg: 'Order confirmed!' });
-
-                //Trigger a background process to send the email to the client
-                sendEmail(user, order, "CONFIRM");
+                worker.emailQueue.add({
+                    status: "ORDER_CONFIRM",
+                    order: ord
+                }).then(() => {
+                    return res.status(200).send({ msg: 'Order confirmed!' });
+                })
             } else {
                 res.status(404).send({ error: 'Try again later' });
             }
         })
-        .catch(err => next(err));
+        .catch((err) => { 
+            next(err)
+         });
 })
 
 router.post('/ship', (req, res, next) => {
@@ -79,7 +75,12 @@ router.post('/ship', (req, res, next) => {
     orderService.shipOrder(order)
         .then((ord) => {
             if (ord) {
-                res.send({ msg: 'Order shipped!' });
+                worker.emailQueue.add({
+                    status: "ORDER_SHIP",
+                    order
+                }).then(() => {
+                    return res.status(200).send({ msg: 'Order shipped!' });
+                })
                 //Trigger a background process to send the shipping email to the client
                 sendEmail(user, order, "SHIP");
             } else {
@@ -113,7 +114,7 @@ router.post('/documents', (req, res, next) => {
 function sendEmail(user, order, status) {
     orderService.getUserEmail(order.userID)
         .then((client) => {
-            worker.addEmailJob({email: client.email, order, user, status})
+            worker.addEmailJob({ email: client.email, order, user, status })
         })
 }
 

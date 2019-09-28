@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node server/app.js",
-    "test": "mocha server/tests/*.js --exit",
+    "test": "mocha --timeout 5000 server/tests/*.js",
     "compile": "babel src --out-dir .compiled --source-maps --watch"
   },
   "author": "",

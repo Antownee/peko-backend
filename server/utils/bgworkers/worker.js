@@ -3,23 +3,20 @@ const { sendNewOrdertoCOJ, sendOrderConfirmationtoClient, sendShippingEmail } = 
 
 const emailQueue = new Queue('Sending email', global.gConfig.redis);
 
-function addEmailJob(orderInfo) {
-    emailQueue.add(orderInfo);
-}
 
 emailQueue.process(function (job, done) {
-    let { email, order, user, status } = job.data;
+    let { order, status } = job.data;
     switch (status) {
-        case "PLACE ORDER":
-            sendNewOrdertoCOJ(email, order);
+        case "ORDER_INIT":
+            sendNewOrdertoCOJ(order);
             done();
             break;
-        case "CONFIRM":
-            sendOrderConfirmationtoClient(email, order);
+        case "ORDER_CONFIRM":
+            sendOrderConfirmationtoClient(order);
             done();
             break;
-        case "SHIP":
-            sendShippingEmail(email, order);
+        case "ORDER_SHIP":
+            sendShippingEmail(order);
             done();
             break;
         default:
@@ -29,17 +26,16 @@ emailQueue.process(function (job, done) {
 })
 
 emailQueue.on('completed', (job, result) => {
-    const { user, order, status } = job.data;
+    const { order, status } = job.data;
     switch (status) {
-        case "PLACE ORDER":
-            
-            console.log(`ORDER PLACEMENT NOTIFICATION SENT: ${job.data.email}`);
+        case "ORDER_INIT":
+            console.log(`ORDER PLACEMENT NOTIFICATION SENT: ${job.data.order.userID}`);
             break;
-        case "CONFIRM":
-            console.log(`ORDER CONFIRMATION SENT: ${job.data.email}`);
+        case "ORDER_CONFIRM":
+            console.log(`ORDER CONFIRMATION SENT: ${job.data.order.userID}`);
             break;
-        case "SHIP":
-            console.log(`SHIPPING NOTIFICATION SENT: ${job.data.email}`);
+        case "ORDER_SHIP":
+            console.log(`SHIPPING NOTIFICATION SENT: ${job.data.order.userID}`);
             break;
         default:
             break;
@@ -47,5 +43,5 @@ emailQueue.on('completed', (job, result) => {
 })
 
 module.exports = {
-    addEmailJob
+    emailQueue
 }
