@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
-const userService = require('../../utils/userService');
+const userService = require('../utils/userService');
 
 
 //Sign up
@@ -23,7 +23,7 @@ router.post('/register', [
 
 
 //Login
-router.post('/authenticate', [
+router.post('/login', [
     check('username').isAlphanumeric(),
 ], (req, res, next) => {
     const errors = validationResult(req);
@@ -32,7 +32,10 @@ router.post('/authenticate', [
     }
     userService.authenticate(req.body)
         .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
-        .catch(err => next(err));
+        .catch((err) => {
+            next(err);
+            return res.status(404).json({ message: 'Unable to login' })
+        });
 })
 
 module.exports = router;

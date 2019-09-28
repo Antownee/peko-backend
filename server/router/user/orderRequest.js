@@ -5,12 +5,11 @@ const worker = require("../../utils/bgworkers/worker");
 const { check, validationResult } = require('express-validator');
 const orderService = require("../../utils/orderService");
 
-//Create tea request
+//Create order
 router.post('/', [
-    //check('order.teaID').isAlphanumeric(),
-    // check('order.userID').isAlphanumeric(),
-    //check('order.description').isAlphanumeric().trim().escape(),
-    check('order.amount').isNumeric().trim().escape()
+    check('order.teaID').not().isEmpty(),
+    check('order.amount').not().isEmpty(),
+    check('order.amount').isNumeric()
 ], (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -22,7 +21,7 @@ router.post('/', [
     orderService.addOrder(order)
         .then((result) => {
             if (result) {
-                res.json(result);
+                res.status(200).json(result);
                 return orderService.getCOJEmails()
                     .then((em) => {
                         emailNotifier(em, order, user)
@@ -36,14 +35,14 @@ router.post('/', [
 
 router.post('/all', (req, res, next) => {
     orderService.getAllOrdersUser(req.body)
-        .then(orders => orders ? res.json(orders) : res.status(404).send({ message: 'Try again later' }))
+        .then(orders => orders ? res.status(200).json(orders) : res.status(404).send({ message: 'Try again later' }))
         .catch(err => next(err));
 })
 
 
 function emailNotifier(em, order, user) {
     for (index = 0; index < em.length; ++index) {
-        worker.addEmailJob({email: em[index].email, order, user, status: "PLACE ORDER"});
+        worker.addEmailJob({ email: em[index].email, order, user, status: "PLACE ORDER" });
     }
 }
 

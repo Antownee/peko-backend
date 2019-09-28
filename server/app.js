@@ -7,6 +7,7 @@ const errorHandler = require('./utils/errorHandler');
 const cors = require('cors');
 const helmet = require('helmet');
 const config = require('./config/config');
+const jwt = require('jsonwebtoken');
 //const Sentry = require('@sentry/node');
 const seed = require('./utils/seed/seed');
 
@@ -28,6 +29,8 @@ app.use(errorHandler);
 
 //Router
 const apiRouter = require('./router/apiRouter');
+const authRouter = require('./router/authRouter');
+
 app.use(favicon(path.join(__dirname, '../client/build/favicon.ico')));
 app.use(express.static(path.join(__dirname, '../client/build')));//Front end
 app.use(express.static(path.join(__dirname, '../documents'))); //Client documents
@@ -39,10 +42,12 @@ app.get('*', function (req, res) {
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'))
 });
 
-app.use('/api', apiRouter)
+
+app.use('/api', apiRouter);
+app.use('/auth', authRouter);
 
 app.get('/alive', (req, res) => {
-    return res.send('COJ server is alive.')
+    return res.status(200).send({ message: 'COJ server is alive.' })
 })
 
 app.get('/seed', (req, res) => {
@@ -56,3 +61,6 @@ app.get('/seed', (req, res) => {
 app.listen(global.gConfig.port, () => {
     console.log(`cup of joe is running on PORT ${global.gConfig.port}`)
 })
+
+// Export our app for testing purposes
+module.exports = app;

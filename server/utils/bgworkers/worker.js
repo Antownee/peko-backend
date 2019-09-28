@@ -32,6 +32,7 @@ emailQueue.on('completed', (job, result) => {
     const { user, order, status } = job.data;
     switch (status) {
         case "PLACE ORDER":
+            
             console.log(`ORDER PLACEMENT NOTIFICATION SENT: ${job.data.email}`);
             break;
         case "CONFIRM":

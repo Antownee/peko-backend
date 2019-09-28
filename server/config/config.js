@@ -1,5 +1,6 @@
 // requires
 const _ = require('lodash');
+const dotenv = require('dotenv');
 
 // module variables
 const config = require('./config.json');

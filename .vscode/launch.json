@@ -10,7 +10,6 @@
             "name": "Script test",
             "program": "${workspaceFolder}/server/utils/seed/seed.js"
         },
-        
         {
             "type": "node",
             "request": "launch",
@@ -18,5 +17,4 @@
             "program": "${workspaceFolder}\\server\\app.js"
         }
     ]
-
 }
