@@ -8,12 +8,12 @@ import {
   CardBody,
   Badge,
   Button,
-  Form
+  Form,
+  FormInput
 } from "shards-react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PageTitle from "../../components/common/PageTitle";
-import OrderInputDetails from "./OrderInputDetails";
 import { orderService } from '../../redux/services/order.service';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 
@@ -24,13 +24,11 @@ class UserPlaceOrder extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleOrderIDInput = this.handleOrderIDInput.bind(this)
 
     this.state = {
-      amount: '',
-      description: '',
-      teaID: '',
       userID: '',
-      selectedTeaItem: {},
+      selectedTeaItems: [],
       submitted: false,
       teaList: [],
     }
@@ -46,32 +44,29 @@ class UserPlaceOrder extends React.Component {
       })
   }
 
-  teaListItemClickable(index) {
-    const teaID = this.state.teaList[index].teaID;
-    this.setState({
-      teaID: teaID,
-      selectedTeaItem: this.state.teaList[index]
-    })
-  }
-
   handleChange(e) {
     const { name, value } = e.target;
-    this.setState({ [name]: value });
+    let teas = Object.assign({}, this.state.selectedTeaItems);
+    teas[name] = value;
+    return this.setState({ selectedTeaItems: teas });
+  }
+
+  handleOrderIDInput(){
+    const { name, value } = e.target;
+    this.setState({ orderRequestID : value });
   }
 
   handleSubmit(e) {
     e.preventDefault();
 
-    this.setState({ submitted: true, selectedTeaItem: {} });
-    const { amount, description, teaID } = this.state;
+    this.setState({ submitted: true });
+    const { selectedTeaItems } = this.state;
     const { user } = this.props;
     const order = {
-      amount,
-      description,
-      teaID,
+      teaOrders: selectedTeaItems,
       userID: user.userID
     }
-    if (amount && description && teaID) {
+    if (selectedTeaItems) {
       orderService.addOrder(order, user)
         .then(
           msg => {
@@ -89,14 +84,13 @@ class UserPlaceOrder extends React.Component {
 
   clearState() {
     this.setState({
-      amount: '',
       description: '',
-      teaID: '',
+      selectedTeaItems: []
     })
   }
 
   render() {
-    const { amount, description } = this.state;
+    const { description, teaList } = this.state;
     const { intl } = this.props;
     const messages = defineMessages({
       header: { id: "placeorder.title" },
@@ -116,21 +110,19 @@ class UserPlaceOrder extends React.Component {
               <span style={{ fontSize: "16px" }} className="d-block mb-2 text-muted">
                 <strong><FormattedMessage id="placeorder.title2" /></strong>
               </span>
+              <FormInput placeholder="ENTER REFERENCE NUMBER" type="text" className="mb-2" onChange={this.handleOrderIDInput} name="orderRequestID" />
+
             </Col>
           </Row>
           <Row>
             {this.state.teaList.map((tea, idx) => (
-              <Col lg="2" md="4" sm="6" className="mb-2" key={idx}>
-                <a style={{ cursor: 'pointer' }} onClick={this.teaListItemClickable.bind(this, idx)}>
-                  <Card small className="card-post card-post--1">
+              <Col lg="2" md="4" sm="7" className="mb-2" key={idx} >
+                <a style={{ cursor: 'pointer' }} >
+                  <Card small className="card-post card-post--1" outline="success">
                     <div
                       className="card-post__image"
                       style={{ backgroundImage: `url(${require("../../images/coj/tea.jpg")})` }}
                     >
-                      {
-                        this.state.selectedTeaItem.teaID === tea.teaID ?
-                          <Badge pill className={`card-post__category bg-warning`}>SELECTED</Badge> : ""
-                      }
                     </div>
                     <CardBody>
                       <h5 className="card-title">
@@ -138,8 +130,7 @@ class UserPlaceOrder extends React.Component {
                           {tea.teaName}
                         </a>
                       </h5>
-                      <p className="card-text d-inline-block mb-3">{tea.teaDescription}</p>
-                      {/* <span className="text-muted">{tea.teaID}</span> */}
+                      <FormInput placeholder="Enter weight (kilograms)" type="Number" className="mb-2" onChange={this.handleChange} name={tea.teaName} />
                     </CardBody>
                   </Card>
                 </a>
@@ -149,13 +140,9 @@ class UserPlaceOrder extends React.Component {
 
           <Row>
             <Col lg="12">
-              <OrderInputDetails
-                handleChange={this.handleChange}
-                amount={amount}
-                description={description} />
             </Col>
           </Row>
-          <Button theme="accent" type="submit"><FormattedMessage id="placeorder.button-place-order"/></Button>
+          <Button theme="accent" type="submit"><FormattedMessage id="placeorder.button-place-order" /></Button>
         </Form>
       </Container>
     )

@@ -8,7 +8,6 @@ const orderRequestSchema = new Schema({
     requestDate: { type: Date },
     orderStatus: String,
     teaOrders: [{
-        teaID: String,
         teaName: String,
         weight: Number
     }],

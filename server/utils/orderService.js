@@ -40,11 +40,7 @@ async function addOrder(orderParams) {
         confirmed: false,
         requestDate: Date.now().toString(),
         orderStatus: "ORDER_INIT",
-        teaOrders: [{
-            teaID: "CH-rMCZVpxPQo",
-            teaName: "BF-1",
-            weight: 2345
-        }]
+        teaOrders
     })
 
     if (await orderRequest.findOne({ orderRequestID: order.orderRequestID })) {
