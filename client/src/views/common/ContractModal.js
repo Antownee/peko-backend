@@ -1,7 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Card, CardHeader, CardBody, Button, ButtonGroup, ButtonToolbar, Modal, ModalHeader, ModalBody, ModalFooter } from "shards-react";
 import { connect } from "react-redux";
-import Steps, { Step } from "rc-steps"
 import { format, parse } from 'date-fns';
 import PageTitle from "../../components/common/PageTitle";
 import { orderService } from "../../redux/services/order.service";
@@ -15,7 +14,7 @@ import ReceivedDocumentsTable from "./ReceivedDocumentsTable";
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 
 
-class ShipmentModal extends React.Component {
+class ContractModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -28,8 +27,9 @@ class ShipmentModal extends React.Component {
         return (
             <Container fluid className="main-content-container px-4">
                 <Modal size="lg" open={modalOpen} toggle={toggleModal}>
-                    <ModalHeader>THGD-675-HJJ -- 30,000 USD</ModalHeader>
+                    <ModalHeader>SHIPMENT ID: THGD-675-HJJ</ModalHeader>
                     <ModalBody>
+
                         <Tabs>
                             <TabList>
                                 <Tab><FormattedMessage id="userorderdetails.sent-documents-title" /></Tab>
@@ -63,4 +63,4 @@ const mapStateToProps = state => {
     return { user }
 }
 
-export default injectIntl(connect(mapStateToProps)(ShipmentModal));
+export default injectIntl(connect(mapStateToProps)(ContractModal));

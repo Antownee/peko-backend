@@ -34,6 +34,7 @@
 	"userorderdetails.label-not_available": "Unavailable",
 	"userorderdetails.label-order-confirmed": "ORDER CONFIRMED",
 	"userorderdetails.label-submitted": "SUBMITTED",
+	"userorderdetails.payments-title": "Payments", 
 	"userorderdetails.order-confirmation": "Order Confirmation",
 	"userorderdetails.packing-list": "Packing List",
 	"userorderdetails.phytosanitary-certificate": "Phytosanitary certificate",

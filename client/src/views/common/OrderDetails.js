@@ -14,6 +14,8 @@ import { userUploads, adminUploads } from "../../documents";
 import ReceivedDocumentsTable from "../common/ReceivedDocumentsTable";
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 import ShipmentModal from './ShipmentModal';
+import PaymentsTable from './PaymentsTable';
+import ShipmentsTable from './ShipmentsTable'
 
 
 class OrderDetails extends React.Component {
@@ -179,8 +181,6 @@ class OrderDetails extends React.Component {
                                     <p className="card-text d-inline-block mb-3">{order.notes}</p><br />
                                     <span className="text-muted">{format(order.requestDate, 'MMMM Do, YYYY')}</span>
                                     <div className="mt-4">
-                                        <Button className="m-2" size="sm" theme="success " onClick={this.toggleModal}>View Shipments</Button>
-
                                         {currentOrder.confirmed && user.role === "User" ?
                                             (<Button className="" size="sm" theme="success">
                                                 <FormattedMessage id="userorderdetails.label-order-confirmed" />
@@ -232,20 +232,11 @@ class OrderDetails extends React.Component {
                             <Card small className="mb-4">
                                 <Tabs>
                                     <TabList>
-                                        <Tab><FormattedMessage id="userorderdetails.sent-documents-title" /></Tab>
-                                        <Tab><FormattedMessage id="userorderdetails.received-documents-title" /></Tab>
+                                        <Tab>Shipments</Tab>
                                     </TabList>
 
                                     <TabPanel>
-                                        <SentDocumentsTable
-                                            displayDocuments={this.state.displaySentDocuments}
-                                            currentOrder={currentOrder}
-                                        />
-                                    </TabPanel>
-                                    <TabPanel>
-                                        <ReceivedDocumentsTable
-                                            currentOrder={currentOrder}
-                                            displayDocuments={this.state.displayReceivedDocuments} />
+                                        <ShipmentsTable toggleModal={this.toggleModal} />
                                     </TabPanel>
                                 </Tabs>
                             </Card>

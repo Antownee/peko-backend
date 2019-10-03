@@ -34,6 +34,7 @@
 	"userorderdetails.label-not_available": "در دسترس نیست",
 	"userorderdetails.label-order-confirmed": "سفارش تأیید شد",
 	"userorderdetails.label-submitted": "ارسال شده",
+	"userorderdetails.payments-title": "مبلغ پرداختی", 
 	"userorderdetails.order-confirmation": "تایید سفارش",
 	"userorderdetails.packing-list": "لیست بسته بندی",
 	"userorderdetails.phytosanitary-certificate": "گواهی گیاهی",
