@@ -13,7 +13,6 @@ import { documentHandler } from '../../utils/documentHandler';
 import { userUploads, adminUploads } from "../../documents";
 import ReceivedDocumentsTable from "../common/ReceivedDocumentsTable";
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
-import ShipmentModal from './ShipmentModal';
 import PaymentsTable from './PaymentsTable';
 import ShipmentsTable from './ShipmentsTable'
 
@@ -35,14 +34,12 @@ class OrderDetails extends React.Component {
                 receivedDocs: adminUploads //what he receives
             },
             stepNumber: 0,
-            modalOpen: false
         }
         this.confirmOrder = this.confirmOrder.bind(this);
         this.goBack = this.goBack.bind(this);
         this.loadDocumentTables = this.loadDocumentTables.bind(this);
         this.shipOrder = this.shipOrder.bind(this);
         this.deleteOrder = this.deleteOrder.bind(this);
-        this.toggleModal = this.toggleModal.bind(this);
     }
 
     componentDidMount() {
@@ -64,7 +61,6 @@ class OrderDetails extends React.Component {
     }
 
     deleteOrder() {
-        const f = this.state;
         orderService.deleteOrder(this.state.currentOrder)
             .then((res) => {
                 toast.success(res.msg);
@@ -121,11 +117,6 @@ class OrderDetails extends React.Component {
         })
     }
 
-    toggleModal() {
-        this.setState({
-            modalOpen: !this.state.modalOpen
-        });
-    }
 
     render() {
         const { order, user, intl } = this.props;
@@ -147,14 +138,6 @@ class OrderDetails extends React.Component {
                 {/* Page Header */}
                 <ToastContainer />
 
-                <ShipmentModal
-                    order={currentOrder}
-                    user={user}
-                    modalOpen={modalOpen}
-                    toggleModal={this.toggleModal}
-                    sentDocuments={this.state.displaySentDocuments}
-                    receivedDocuments={this.state.displayReceivedDocuments}
-                />
 
                 <Button className="mt-4" pill onClick={this.goBack}>&larr; Go Back</Button>
                 <Row noGutters className="page-header py-4">
@@ -198,7 +181,7 @@ class OrderDetails extends React.Component {
                                                                 <Button className="m-2" size="sm" onClick={this.shipOrder}>Ship order</Button>
                                                             ) : <Button className="m-2" size="sm" theme="success">ORDER SHIPPED</Button>}
                                                             <br />
-                                                            <Button className="m-2" size="sm" theme="danger " onClick={this.toggleModal}>Delete order</Button>
+                                                            {/* <Button className="m-2" size="sm" theme="danger " onClick={this.toggleModal}>Delete order</Button> */}
                                                         </ButtonGroup>
                                                     </ButtonToolbar>
                                                 </Col>
@@ -236,7 +219,9 @@ class OrderDetails extends React.Component {
                                     </TabList>
 
                                     <TabPanel>
-                                        <ShipmentsTable toggleModal={this.toggleModal} />
+                                        <ShipmentsTable
+                                            sentDocuments={this.state.displaySentDocuments}
+                                            receivedDocuments={this.state.displayReceivedDocuments} />
                                     </TabPanel>
                                 </Tabs>
                             </Card>

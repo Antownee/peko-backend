@@ -24,11 +24,11 @@ class ShipmentModal extends React.Component {
     }
 
     render() {
-        const { order, user, intl, modalOpen, toggleModal, sentDocuments, receivedDocuments } = this.props;
+        const { order, user, intl, modalOpen, toggleModal, sentDocuments, receivedDocuments, currentShipment } = this.props;
         return (
             <Container fluid className="main-content-container px-4">
                 <Modal size="lg" open={modalOpen} toggle={toggleModal}>
-                    <ModalHeader>THGD-675-HJJ -- 30,000 USD</ModalHeader>
+                    <ModalHeader>{currentShipment.shipmentID} -- {currentShipment.shipmentValue}</ModalHeader>
                     <ModalBody>
                         <Tabs>
                             <TabList>

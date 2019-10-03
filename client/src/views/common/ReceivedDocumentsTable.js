@@ -47,7 +47,7 @@ class ReceivedDocumentsTable extends React.Component {
                 <tbody>
                     {
                         displayDocuments.map((document, idx) => (
-                            <tr>
+                            <tr key={idx}>
                                 <td>{intl.formatMessage(messages[document.documentCode])}</td>
                                 <td>{(document.dateAdded) ? format(document.dateAdded, 'DD/MM/YYYY') : "N/A"}</td>
                                 <td>
