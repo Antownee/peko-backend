@@ -22,15 +22,19 @@ class UserPlaceOrder extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleAmountFieldChange = this.handleAmountFieldChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleOrderIDInput = this.handleOrderIDInput.bind(this)
+    this.handleOrderRequestIDInput = this.handleOrderRequestIDInput.bind(this);
+    this.addteaToState = this.addteaToState.bind(this);
+    this.updateteaToState = this.updateteaToState.bind(this);
+
 
     this.state = {
       userID: '',
       selectedTeaItems: [],
       submitted: false,
       teaList: [],
+      orderRequestID: ''
     }
   }
 
@@ -44,33 +48,55 @@ class UserPlaceOrder extends React.Component {
       })
   }
 
-  handleChange(e) {
-    const { name, value } = e.target;
-    let teas = Object.assign({}, this.state.selectedTeaItems);
-    teas[name] = value;
-    return this.setState({ selectedTeaItems: teas });
+  addteaToState(tea) {
+    this.setState(state => {
+      let list = state.selectedTeaItems.concat(tea);
+      return { selectedTeaItems: list };
+    });
   }
 
-  handleOrderIDInput(){
+  updateteaToState(tea) {
+    this.setState(state => {
+      let list = state.selectedTeaItems.map((el) => {
+        if (el.teaName === tea.teaName) { return tea; } else { return el }
+      });
+      return { selectedTeaItems: list };
+    });
+
+  }
+
+  handleAmountFieldChange(e) {
+    let { selectedTeaItems } = this.state;
+    let { name, value } = e.target;
+    let tea = { teaName: name, weight: value };
+
+    let g = selectedTeaItems.find((el) => el.teaName === name);
+    return g === undefined ? this.addteaToState(tea) : this.updateteaToState(tea);
+  }
+
+  handleOrderRequestIDInput(e) {
     const { name, value } = e.target;
-    this.setState({ orderRequestID : value });
+    this.setState({ orderRequestID: value });
   }
 
   handleSubmit(e) {
     e.preventDefault();
 
     this.setState({ submitted: true });
-    const { selectedTeaItems } = this.state;
+
+    const { selectedTeaItems, orderRequestID } = this.state;
     const { user } = this.props;
     const order = {
       teaOrders: selectedTeaItems,
-      userID: user.userID
+      userID: user.userID,
+      orderRequestID
     }
-    if (selectedTeaItems) {
+
+    if (selectedTeaItems.length > 0) {
       orderService.addOrder(order, user)
         .then(
           msg => {
-            toast.success(msg);
+            toast.success(msg.message);
             this.clearState();
           },
           error => {
@@ -78,19 +104,22 @@ class UserPlaceOrder extends React.Component {
           }
         );
     } else {
-      toast.error("Fill in all required fields before placing the order")
+      toast.error("Fill in all required fields before placing the order.");
     }
   }
 
   clearState() {
+    let teas = Object.assign({}, this.state.selectedTeaItems);
+    teas = [];
     this.setState({
-      description: '',
-      selectedTeaItems: []
+      orderRequestID: '',
+      selectedTeaItems: teas
     })
+    let f = this.state;
   }
 
   render() {
-    const { description, teaList } = this.state;
+    const { orderRequestID, selectedTeaItems } = this.state;
     const { intl } = this.props;
     const messages = defineMessages({
       header: { id: "placeorder.title" },
@@ -110,8 +139,7 @@ class UserPlaceOrder extends React.Component {
               <span style={{ fontSize: "16px" }} className="d-block mb-2 text-muted">
                 <strong><FormattedMessage id="placeorder.title2" /></strong>
               </span>
-              <FormInput placeholder="ENTER REFERENCE NUMBER" type="text" className="mb-2" onChange={this.handleOrderIDInput} name="orderRequestID" />
-
+              <FormInput placeholder="ENTER REFERENCE NUMBER" type="text" className="mb-2" value={orderRequestID} onChange={this.handleOrderRequestIDInput} name="orderRequestID" />
             </Col>
           </Row>
           <Row>
@@ -130,7 +158,7 @@ class UserPlaceOrder extends React.Component {
                           {tea.teaName}
                         </a>
                       </h5>
-                      <FormInput placeholder="Enter weight (kilograms)" type="Number" className="mb-2" onChange={this.handleChange} name={tea.teaName} />
+                      <FormInput placeholder="Enter weight (kilograms)" type="Number" className="mb-2" onChange={this.handleAmountFieldChange} name={tea.teaName} />
                     </CardBody>
                   </Card>
                 </a>

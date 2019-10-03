@@ -1,0 +1,4 @@
+.filepond--root,
+.filepond--root .filepond--drop-label {
+  min-height: 40px;
+}

@@ -1,9 +1,11 @@
 import React from "react";
 import { FilePond, registerPlugin } from 'react-filepond';
 import 'filepond/dist/filepond.min.css';
+import '../style/filepond.css'
 import FilePondPluginFileRename from 'filepond-plugin-file-rename';
 import { authHeader } from '../../redux/helpers';
 import { apiUrl } from '../../config';
+
 
 
 registerPlugin(FilePondPluginFileRename); //Register plugin
@@ -39,7 +41,6 @@ class FileUpload extends React.Component {
     render() {
         const { document, currentOrder } = this.props;
         return (
-            <div className="custom-file" width={100}>
                 <FilePond 
                     server={
                         process = {
@@ -63,7 +64,6 @@ class FileUpload extends React.Component {
                     }
                 >
                 </FilePond>
-            </div>
         )
     }
 }

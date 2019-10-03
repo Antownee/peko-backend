@@ -10,6 +10,8 @@ const config = require('./config/config');
 const jwt = require('jsonwebtoken');
 //const Sentry = require('@sentry/node');
 const seed = require('./utils/seed/seed');
+const hpp = require('hpp');
+const rateLimit = require("express-rate-limit");
 
 //Sentry config
 //Sentry.init({ dsn: 'https://57af6529557442cf95c516bf787d0f08@sentry.io/1546068' });
@@ -19,6 +21,7 @@ const { mongoose } = require('./utils/db.js');
 
 /// init ///
 const app = express();
+app.enable("trust proxy");
 const corsOptions = require("./utils/cors");
 app.use(cors());
 app.use(helmet());
@@ -26,6 +29,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
 app.use(errorHandler);
+app.use(hpp());
+app.disable("x-powered-by");
+app.use(rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100
+}));
+
+
 
 //Router
 const apiRouter = require('./router/apiRouter');

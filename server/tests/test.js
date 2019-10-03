@@ -42,7 +42,6 @@ describe('Order Actions', () => {
                 requestDate: "2019-09-24T11:02:22.848Z",
                 orderStatus: "ORDER_INIT",
                 teaOrders: [{
-                    teaID: "CH-rMCZVpxPQo",
                     teaName: "BF-1",
                     weight: 2345
                 }]

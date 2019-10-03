@@ -40,7 +40,7 @@ async function addOrder(orderParams) {
         confirmed: false,
         requestDate: Date.now().toString(),
         orderStatus: "ORDER_INIT",
-        teaOrders
+        teaOrders: orderParams.teaOrders
     })
 
     if (await orderRequest.findOne({ orderRequestID: order.orderRequestID })) {
@@ -63,6 +63,7 @@ async function getAllOrdersAdmin() {
 async function deleteOrder(order) {
     return await orderRequest.findOneAndDelete({ orderRequestID: order.orderRequestID });
 }
+
 
 async function confirmOrder(orderID) {
     return await orderRequest.findOneAndUpdate({ orderRequestID: orderID }, { confirmed: true, orderPosition: 1 }, { new: true })

@@ -13,6 +13,7 @@ import { documentHandler } from '../../utils/documentHandler';
 import { userUploads, adminUploads } from "../../documents";
 import ReceivedDocumentsTable from "../common/ReceivedDocumentsTable";
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
+import ShipmentModal from './ShipmentModal';
 
 
 class OrderDetails extends React.Component {
@@ -37,7 +38,6 @@ class OrderDetails extends React.Component {
         this.confirmOrder = this.confirmOrder.bind(this);
         this.goBack = this.goBack.bind(this);
         this.loadDocumentTables = this.loadDocumentTables.bind(this);
-        this.getDocument = this.getDocument.bind(this);
         this.shipOrder = this.shipOrder.bind(this);
         this.deleteOrder = this.deleteOrder.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
@@ -119,9 +119,6 @@ class OrderDetails extends React.Component {
         })
     }
 
-    getDocument() {
-    }
-
     toggleModal() {
         this.setState({
             modalOpen: !this.state.modalOpen
@@ -148,16 +145,14 @@ class OrderDetails extends React.Component {
                 {/* Page Header */}
                 <ToastContainer />
 
-                <Modal size="sm" open={modalOpen} toggle={this.toggleModal}>
-                    <ModalHeader>Warning!</ModalHeader>
-                    <ModalBody>
-                        Are you sure you want to delete this order?
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button className="" size="sm" theme="danger " onClick={this.deleteOrder}>Yes</Button>
-                        <Button className="m-2" size="sm" theme="light " onClick={this.toggleModal}>No</Button>
-                    </ModalFooter>
-                </Modal>
+                <ShipmentModal
+                    order={currentOrder}
+                    user={user}
+                    modalOpen={modalOpen}
+                    toggleModal={this.toggleModal}
+                    sentDocuments={this.state.displaySentDocuments}
+                    receivedDocuments={this.state.displayReceivedDocuments}
+                />
 
                 <Button className="mt-4" pill onClick={this.goBack}>&larr; Go Back</Button>
                 <Row noGutters className="page-header py-4">
@@ -184,6 +179,8 @@ class OrderDetails extends React.Component {
                                     <p className="card-text d-inline-block mb-3">{order.notes}</p><br />
                                     <span className="text-muted">{format(order.requestDate, 'MMMM Do, YYYY')}</span>
                                     <div className="mt-4">
+                                        <Button className="m-2" size="sm" theme="success " onClick={this.toggleModal}>View Shipments</Button>
+
                                         {currentOrder.confirmed && user.role === "User" ?
                                             (<Button className="" size="sm" theme="success">
                                                 <FormattedMessage id="userorderdetails.label-order-confirmed" />
@@ -241,7 +238,6 @@ class OrderDetails extends React.Component {
 
                                     <TabPanel>
                                         <SentDocumentsTable
-                                            currentOrder={order}
                                             displayDocuments={this.state.displaySentDocuments}
                                             currentOrder={currentOrder}
                                         />

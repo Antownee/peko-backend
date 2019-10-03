@@ -4,7 +4,6 @@ import { PrivateRoute } from "./views/common/PrivateRoute";
 import { history } from './redux/helpers/history'
 import LoginPage from './views/common/LoginPage';
 import RegisterPage from "./views/common/RegisterPage";
-import { Role } from "./redux/helpers/role";
 import routes from "./routes";
 import withTracker from "./withTracker";
 import { connect } from "react-redux";
@@ -23,19 +22,7 @@ let i18nConfig = {
 class App extends React.Component {
   constructor(props) {
     super(props);
-
-    // this.onChangeLanguage = this.onChangeLanguage.bind(this);
   }
-
-  // onChangeLanguage(lang) {
-  //   switch (lang) {
-  //     case 'FA': i18nConfig.messages = messages_fa; break;
-  //     case 'EN': i18nConfig.messages = messages_en; break;
-  //     default: i18nConfig.messages = messages_en; break;
-  //   }
-  //   this.setState({ locale: lang });
-  //   i18nConfig.locale = lang;
-  // }
 
   render() {
     const { currentLanguage } = this.props;

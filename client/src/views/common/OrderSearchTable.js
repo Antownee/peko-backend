@@ -64,8 +64,10 @@ class OrderSearchTable extends React.Component {
     }
 
     weightFormatter(cell, row) {
-        if (row.amount) {
-            return row.amount.toLocaleString()
+        if (row.teaOrders.length > 0) {
+            return row.teaOrders
+                .map(item => item.weight)
+                .reduce((prev, curr) => prev + curr, 0)
         }
     }
 
@@ -80,9 +82,7 @@ class OrderSearchTable extends React.Component {
         orderService.getAllOrders(user)
             .then((orders) => {
                 this.props.dispatch(loadingActions.toggleLoad(false)); //hide
-                this.setState({
-                    orders: orders
-                })
+                this.setState({ orders })
             })
     }
 

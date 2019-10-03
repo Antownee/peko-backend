@@ -20,12 +20,8 @@ router.post('/', [
     orderService.addOrder(order)
         .then((result) => {
             if (result) {
-                worker.emailQueue.add({
-                    status: "ORDER_INIT",
-                    order
-                }).then(() => {
-                    return res.status(200).send({ message: result });
-                })
+                worker.emailQueue.add({ status: "ORDER_INIT", order });
+                return res.status(200).send({ message: result });
             } else {
                 return res.status(404).send({ message: 'Try again later' })
             }

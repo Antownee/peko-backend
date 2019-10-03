@@ -15,7 +15,6 @@ import { FormattedMessage } from 'react-intl';
 class OrderInputDetails extends React.Component {
   constructor(props) {
     super(props);
-
   }
 
   render() {
