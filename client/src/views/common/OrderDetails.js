@@ -34,16 +34,20 @@ class OrderDetails extends React.Component {
                 receivedDocs: adminUploads //what he receives
             },
             stepNumber: 0,
+            shipments: []
         }
         this.confirmOrder = this.confirmOrder.bind(this);
         this.goBack = this.goBack.bind(this);
         this.loadDocumentTables = this.loadDocumentTables.bind(this);
         this.shipOrder = this.shipOrder.bind(this);
         this.deleteOrder = this.deleteOrder.bind(this);
+        this.getShipments = this.getShipments.bind(this);
     }
 
     componentDidMount() {
         this.loadDocumentTables();
+        //get shipments
+        this.getShipments();
     }
 
     async loadDocumentTables() {
@@ -59,6 +63,15 @@ class OrderDetails extends React.Component {
             displayReceivedDocuments: this.props.user.role === "Admin" ? received : sent
         });
     }
+
+    getShipments() {
+        let orderID = this.state.currentOrder.orderRequestID;
+        orderService.getShipmentsByOrderID({ orderID })
+            .then((res) => {
+                this.setState({ shipments: res });
+            })
+    }
+
 
     deleteOrder() {
         orderService.deleteOrder(this.state.currentOrder)
@@ -104,8 +117,6 @@ class OrderDetails extends React.Component {
         //Change state
         this.props.handleSearchState(false);
         this.setState({
-            documentsToSubmit: [],
-            displayDocuments: [],
             userUploads: {
                 sendDocs: [], //what he is sending
                 receivedDocs: [] //what he receives
@@ -120,7 +131,7 @@ class OrderDetails extends React.Component {
 
     render() {
         const { order, user, intl } = this.props;
-        const { currentOrder, modalOpen } = this.state;
+        const { currentOrder, shipments } = this.state;
         const messages = defineMessages({
             header: { id: "userorderdetails.header" },
             progress1: { id: "userorderdetails.progress-1" },
@@ -220,6 +231,7 @@ class OrderDetails extends React.Component {
 
                                     <TabPanel>
                                         <ShipmentsTable
+                                            shipments={shipments}
                                             sentDocuments={this.state.displaySentDocuments}
                                             receivedDocuments={this.state.displayReceivedDocuments} />
                                     </TabPanel>

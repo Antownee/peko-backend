@@ -11,7 +11,9 @@ export const orderService = {
     addEmailAssets,
     populateDashboard,
     getTeaAssets,
-    shipOrder
+    shipOrder,
+    addShipment,
+    getShipmentsByOrderID,
 };
 
 
@@ -150,6 +152,32 @@ function logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('user');
 }
+
+function addShipment(shipment) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify(shipment)
+    };
+
+    return fetch(`${apiUrl}/admin/shipment`, requestOptions)
+        .then(handleResponse)
+        .then(msg => { return msg })
+}
+
+
+function getShipmentsByOrderID(orderID) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderID)
+    };
+
+    return fetch(`${apiUrl}/admin/shipment/all`, requestOptions)
+        .then(handleResponse)
+        .then(msg => { return msg })
+}
+
 
 function handleResponse(response) {
     return response.text().then(text => {

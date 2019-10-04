@@ -5,6 +5,7 @@ const orderRequest = require("../models/orderRequest");
 const TeaItem = require("../models/tea");
 const Email = require("../models/email");
 const User = require('../models/user');
+const Shipment = require('../models/shipment');
 const fs = require('fs');
 const Qty = require('js-quantities');
 require('dotenv').config();
@@ -26,9 +27,10 @@ module.exports = {
     getUserEmail,
     populateDashboard,
     isDocumentInStorage,
-    getOrderConfirmationForm,
     getTeaItems,
-    shipOrder
+    shipOrder,
+    addShipment,
+    getShipmentsFromOrder
 };
 
 //USER
@@ -221,9 +223,6 @@ async function getUserDashboard(user) {
     };
 }
 
-function getOrderConfirmationForm(order) {
-
-}
 
 function populateDashboard(user) {
     if (user.role === "Admin") {
@@ -231,4 +230,26 @@ function populateDashboard(user) {
     } else {
         return getUserDashboard(user);
     }
+}
+
+
+async function getShipmentsFromOrder(orderID) {
+    return await Shipment.find({ orderID });
+}
+
+async function addShipment(shipmentParam) {
+    let newShipment = new Shipment({
+        shipmentID: `SHP-${shortid.generate()}`,
+        orderID: shipmentParam.orderID,
+        shipmentDate: Date.now().toString(),
+        shipmentValue: shipmentParam.shipmentValue,
+        orderShipped: false
+    })
+
+    if (await Shipment.findOne({ shipmentID: newShipment.shipmentID })) {
+        throw `Shipment has already been created`;
+    }
+
+    await newShipment.save();
+    return "Shipment successfully added";
 }

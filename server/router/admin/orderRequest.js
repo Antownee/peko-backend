@@ -39,6 +39,7 @@ router.post('/all', (req, res, next) => {
 
 router.post('/delete', (req, res, next) => {
     const { order } = req.body;
+    //Sanitize
     orderService.deleteOrder(order)
         .then((ord) => {
             if (ord) {

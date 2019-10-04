@@ -3,8 +3,8 @@ const express = require('express');
 const router = express.Router();
 
 //Routers
-const userRouter = require('./userRouter');
-const adminRouter = require('./adminRouter');
+const userRouter = require('./user/userRouter');
+const adminRouter = require('./admin/adminRouter');
 
 
 router.use((req, res, next) => {

@@ -30,6 +30,7 @@ router.post('/', [
 });
 
 router.post('/all', (req, res, next) => {
+    //sanitize
     orderService.getAllOrdersUser(req.body)
         .then(orders => orders ? res.status(200).json(orders) : res.status(404).send({ message: 'Try again later' }))
         .catch(err => next(err));

@@ -18,19 +18,22 @@ class ShipmentsTable extends React.Component {
 
     }
 
+    componentDidMount() {
+        //get all shipments with the documents here
+    }
+
     toggleModal(msg) {
-        console.log(msg)
         this.setState({
             modalOpen: !this.state.modalOpen,
             currentShipment: {
-                shipmentID: "THGD-536-KFT",
+                shipmentID: msg,
                 shipmentValue: 30000
             }
         });
     }
 
     render() {
-        const { intl, sentDocuments, receivedDocuments } = this.props;
+        const { intl, sentDocuments, receivedDocuments, shipments } = this.props;
         const { modalOpen, currentShipment } = this.state
         return (
             <Container fluid className="main-content-container px-4">
@@ -62,22 +65,18 @@ class ShipmentsTable extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>THGD-675-HJJ</td>
-                            <td>20/08/1019</td>
-                            <td>USD 30,000</td>
-                            <td>
-                                <Button size="sm" theme="success" className="mb-2 mr-1" onClick={() => this.toggleModal('THGD-675-HJJ')}>View Shipment</Button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>THGD-536-KFT</td>
-                            <td>28/08/2019</td>
-                            <td>USD 70,000</td>
-                            <td>
-                                <Button size="sm" theme="success" className="mb-2 mr-1" onClick={() => this.toggleModal('THGD-536-KFT')}>View Shipment</Button>
-                            </td>
-                        </tr>
+                        {
+                            shipments.map((shipment, idx) => (
+                                <tr>
+                                    <td>{shipment.shipmentID}</td>
+                                    <td>{shipment.shipmentDate}</td>
+                                    <td>USD {shipment.shipmentValue}</td>
+                                    <td>
+                                        <Button size="sm" theme="success" className="mb-2 mr-1" onClick={() => this.toggleModal(shipment.shipmentID)}>View Shipment</Button>
+                                    </td>
+                                </tr>
+                            ))
+                        }
                     </tbody>
                 </table>
             </Container>
