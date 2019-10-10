@@ -105,7 +105,6 @@ class OrderDetails extends React.Component {
         })
     }
 
-
     render() {
         const { order, user, intl } = this.props;
         const { currentOrder, shipments } = this.state;
@@ -135,14 +134,14 @@ class OrderDetails extends React.Component {
                 {/* Confirmed tab */}
                 <Row>
                     <Col lg="4">
-                        <OrderDetailsInfo order={order}/>
+                        <OrderDetailsInfo order={order} user={user} />
                     </Col>
                     <Col lg="8">
-                        <OrderDetailsProgress currentOrderPosition={0}/>
+                        <OrderDetailsProgress currentOrderPosition={0} />
                     </Col>
                 </Row>
                 <Col>
-                    
+
                     {
                         user.role === "User" && !currentOrder.confirmed ?
                             <p><FormattedMessage id="userorderdetails.document-unavailable-warning" /></p> :
