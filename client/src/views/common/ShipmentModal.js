@@ -23,35 +23,41 @@ class ShipmentModal extends React.Component {
         }
     }
 
+
     render() {
-        const { order, user, intl, modalOpen, toggleModal, sentDocuments, receivedDocuments, currentShipment } = this.props;
+        const { user, intl, modalOpen, toggleModal, sentDocuments, receivedDocuments, currentShipment } = this.props;
         return (
             <Container fluid className="main-content-container px-4">
-                <Modal size="lg" open={modalOpen} toggle={toggleModal}>
-                    <ModalHeader>{currentShipment.shipmentID} -- {currentShipment.shipmentValue}</ModalHeader>
-                    <ModalBody>
-                        <Tabs>
-                            <TabList>
-                                <Tab><FormattedMessage id="userorderdetails.sent-documents-title" /></Tab>
-                                <Tab><FormattedMessage id="userorderdetails.received-documents-title" /></Tab>
-                            </TabList>
+                {
+                    currentShipment ?
+                        <Modal size="lg" open={modalOpen} toggle={toggleModal}>
+                            <ModalHeader>{currentShipment.shipmentID || ""} -- {currentShipment.shipmentValue || ""}</ModalHeader>
+                            <ModalBody>
+                                <Tabs>
+                                    <TabList>
+                                        <Tab><FormattedMessage id="userorderdetails.sent-documents-title" /></Tab>
+                                        <Tab><FormattedMessage id="userorderdetails.received-documents-title" /></Tab>
+                                    </TabList>
 
-                            <TabPanel>
-                                <SentDocumentsTable
-                                    currentOrder={order}
-                                    displayDocuments={sentDocuments}
-                                />
-                            </TabPanel>
-                            <TabPanel>
-                                <ReceivedDocumentsTable
-                                    currentOrder={order}
-                                    displayDocuments={receivedDocuments} />
-                            </TabPanel>
-                        </Tabs>
-                    </ModalBody>
-                    <ModalFooter>
-                    </ModalFooter>
-                </Modal>
+                                    <TabPanel>
+                                        <SentDocumentsTable
+                                            currentShipment={currentShipment}
+                                            displayDocuments={sentDocuments}
+                                        />
+                                    </TabPanel>
+                                    <TabPanel>
+                                        <ReceivedDocumentsTable
+                                            currentShipment={currentShipment}
+                                            displayDocuments={receivedDocuments} />
+                                    </TabPanel>
+                                </Tabs>
+                            </ModalBody>
+                            <ModalFooter>
+                            </ModalFooter>
+                        </Modal>
+                        : ""
+                }
+
             </Container>
         )
 

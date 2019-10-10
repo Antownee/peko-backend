@@ -19,16 +19,12 @@ class FileUpload extends React.Component {
             labelText: "Choose file..."
         }
 
-        this.submitDocuments = this.submitDocuments.bind(this);
         this.resetState = this.resetState.bind(this);
+        this.updateState = this.updateState.bind(this);
     }
 
-
-    submitDocuments(event) {
-        if (event.target.files.length > 0) {
-            this.setState({ labelText: event.target.files[0].name })
-            this.props.handlesubmitDocuments(event.target.files[0], event.target.id);
-        }
+    updateState(){
+        this.props.onSubmit();
     }
 
     resetState() {
@@ -39,31 +35,36 @@ class FileUpload extends React.Component {
     }
 
     render() {
-        const { document, currentOrder } = this.props;
+        const { document, currentShipment } = this.props;
         return (
-                <FilePond 
-                    server={
-                        process = {
-                            url: `${apiUrl}/admin/order/documents`,
-                            headers: { ...authHeader() },
-                        }
+            <FilePond
+                server={
+                    process = {
+                        url: `${apiUrl}/admin/order/documents`,
+                        headers: { ...authHeader() },
                     }
-                    allowDrop={false}
-                    allowReplace={true}
-                    labelIdle='<span class="filepond--label-action"> Upload file </span>'
-                    fileRenameFunction={(file) => {
-                        return `${currentOrder.orderRequestID}_${document.documentCode}${file.extension}`;
+                }
+                allowDrop={false}
+                allowReplace={true}
+                labelIdle='<span class="filepond--label-action"> Upload file </span>'
+                fileRenameFunction={(file) => {
+                    return `${currentShipment.shipmentID}_${document.documentCode}${file.extension}`;
+                }}
+                onupdatefiles={(files) => {
+                    if (files.length > 0) {
+                        files[0].setMetadata("documentCode", document.documentCode)
+                        files[0].setMetadata("orderID", currentShipment.orderID)
+                        files[0].setMetadata("shipmentID", currentShipment.shipmentID)
                     }
+                }}
+                onaddfile={(err,file)=>{
+                    if(!err){
+                        this.resetState();
+
                     }
-                    onupdatefiles={(files) => {
-                        if (files.length > 0) {
-                            files[0].setMetadata("documentCode", document.documentCode)
-                            files[0].setMetadata("orderID", currentOrder.orderRequestID)
-                        }
-                    }
-                    }
-                >
-                </FilePond>
+                }}
+            >
+            </FilePond>
         )
     }
 }

@@ -7,7 +7,7 @@ import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 class ReceivedDocumentsTable extends React.Component {
 
     render() {
-        let orderID = this.props.currentOrder.orderRequestID;
+        let orderID = this.props.currentShipment.orderID;
         let displayDocuments = this.props.displayDocuments;
         const { intl } = this.props;
 

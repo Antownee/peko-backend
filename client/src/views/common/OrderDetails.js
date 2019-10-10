@@ -13,8 +13,9 @@ import { documentHandler } from '../../utils/documentHandler';
 import { userUploads, adminUploads } from "../../documents";
 import ReceivedDocumentsTable from "../common/ReceivedDocumentsTable";
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
-import PaymentsTable from './PaymentsTable';
 import ShipmentsTable from './ShipmentsTable'
+import OrderDetailsInfo from "./OrderDetailsInfo";
+import OrderDetailsProgress from "./OrderDetailsProgress";
 
 
 class OrderDetails extends React.Component {
@@ -23,46 +24,22 @@ class OrderDetails extends React.Component {
         this.state = {
             backgroundImage: require("../../images/content-management/17.jpg"),
             currentOrder: this.props.order,
-            displaySentDocuments: [],
-            displayReceivedDocuments: [],
-            userUploads: {
-                sendDocs: userUploads, //what he is sending
-                receivedDocs: adminUploads //what he receives
-            },
-            adminUploads: {
-                sendDocs: userUploads, //what he is sending
-                receivedDocs: adminUploads //what he receives
-            },
+
             stepNumber: 0,
             shipments: []
         }
         this.confirmOrder = this.confirmOrder.bind(this);
         this.goBack = this.goBack.bind(this);
-        this.loadDocumentTables = this.loadDocumentTables.bind(this);
         this.shipOrder = this.shipOrder.bind(this);
         this.deleteOrder = this.deleteOrder.bind(this);
         this.getShipments = this.getShipments.bind(this);
     }
 
     componentDidMount() {
-        this.loadDocumentTables();
         //get shipments
         this.getShipments();
     }
 
-    async loadDocumentTables() {
-        //if admin, set your sent and received. if user, set their sent and received
-        let received_source = this.props.user.role === "User" ? this.state.userUploads.sendDocs : this.state.adminUploads.sendDocs;
-        let sent_source = this.props.user.role === "User" ? this.state.userUploads.receivedDocs : this.state.adminUploads.receivedDocs;
-
-        let received = await documentHandler(received_source, this.state.currentOrder);
-        let sent = await documentHandler(sent_source, this.state.currentOrder)
-
-        this.setState({
-            displaySentDocuments: this.props.user.role === "Admin" ? sent : received,
-            displayReceivedDocuments: this.props.user.role === "Admin" ? received : sent
-        });
-    }
 
     getShipments() {
         let orderID = this.state.currentOrder.orderRequestID;
@@ -156,70 +133,16 @@ class OrderDetails extends React.Component {
                 </Row>
 
                 {/* Confirmed tab */}
+                <Row>
+                    <Col lg="4">
+                        <OrderDetailsInfo order={order}/>
+                    </Col>
+                    <Col lg="8">
+                        <OrderDetailsProgress currentOrderPosition={0}/>
+                    </Col>
+                </Row>
                 <Col>
-                    <CardBody>
-                        <Col lg="12" sm="12" className="mb-4" >
-                            <Card small className="card-post card-post--aside card-post--1">
-                                <div
-                                    className="card-post__image"
-                                    style={{ backgroundImage: `url(${this.state.backgroundImage})` }}
-                                >
-                                </div>
-                                <CardBody>
-                                    <h5 className="card-title">
-                                        <a className="text-fiord-blue" href="#">
-                                            {order.orderRequestID}
-                                        </a>
-                                    </h5>
-                                    <p className="card-text d-inline-block mb-3">{order.teaID}</p><br />
-                                    <p className="card-text d-inline-block mb-3">{order.notes}</p><br />
-                                    <span className="text-muted">{format(order.requestDate, 'MMMM Do, YYYY')}</span>
-                                    <div className="mt-4">
-                                        {currentOrder.confirmed && user.role === "User" ?
-                                            (<Button className="" size="sm" theme="success">
-                                                <FormattedMessage id="userorderdetails.label-order-confirmed" />
-                                            </Button>) : ""}
-                                        {user.role === "Admin" ?
-                                            (<Row>
-                                                <Col className="mb-4">
-                                                    <ButtonToolbar>
-                                                        <ButtonGroup>
-                                                            {!currentOrder.confirmed ? (
-                                                                <Button className="m-2" size="sm" onClick={this.confirmOrder}>Confirm order</Button>
-                                                            ) : <Button className="m-2" size="sm" theme="success">ORDER CONFIRMED</Button>}
-                                                            <br />
-                                                            {!currentOrder.orderShipped ? (
-                                                                <Button className="m-2" size="sm" onClick={this.shipOrder}>Ship order</Button>
-                                                            ) : <Button className="m-2" size="sm" theme="success">ORDER SHIPPED</Button>}
-                                                            <br />
-                                                            {/* <Button className="m-2" size="sm" theme="danger " onClick={this.toggleModal}>Delete order</Button> */}
-                                                        </ButtonGroup>
-                                                    </ButtonToolbar>
-                                                </Col>
-                                            </Row>)
-                                            : ""
-                                        }
-                                    </div>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    </CardBody>
-
-
-                    <Card small className="mb-4">
-                        <CardHeader className="border-bottom">
-                            <h6 className="m-0"> <FormattedMessage id="userorderdetails.progressheader" /></h6>
-                        </CardHeader>
-                        <CardBody>
-                            <Steps current={currentOrder.orderPosition} style={{ marginTop: 10 }}>
-                                <Step title={intl.formatMessage(messages.progress1)} description={intl.formatMessage(messages.progress1_text)} />
-                                <Step title={intl.formatMessage(messages.progress2)} description={intl.formatMessage(messages.progress2_text)} />
-                                <Step title={intl.formatMessage(messages.progress3)} description={intl.formatMessage(messages.progress3_text)} />
-                                <Step title={intl.formatMessage(messages.progress4)} description={intl.formatMessage(messages.progress4_text)} />
-                            </Steps>
-                        </CardBody>
-                    </Card>
-
+                    
                     {
                         user.role === "User" && !currentOrder.confirmed ?
                             <p><FormattedMessage id="userorderdetails.document-unavailable-warning" /></p> :

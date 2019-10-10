@@ -25,12 +25,13 @@ module.exports = {
     addEmail,
     getCOJEmails,
     getUserEmail,
-    populateDashboard,
     isDocumentInStorage,
     getTeaItems,
     shipOrder,
     addShipment,
-    getShipmentsFromOrder
+    getShipmentsFromOrder,
+    getAdminDashboard,
+    getUserDashboard,
 };
 
 //USER
@@ -72,19 +73,19 @@ async function confirmOrder(orderID) {
 }
 
 async function uploadDocument(receivedDocumentData) {
-    let { orderID, documentCode, fileName } = receivedDocumentData;
+    let { orderID, documentCode, fileName, shipmentID } = receivedDocumentData;
     let dateAdded = Date.now().toString();
     //First update the position/status of the order
-    await orderRequest.findOneAndUpdate({ orderRequestID: orderID }, { orderPosition: 2 }, { new: true });
+    //await orderRequest.findOneAndUpdate({ orderRequestID: orderID }, { orderPosition: 2 }, { new: true });
 
     //Look for existing file. If it does exist, update. If new, push
-    let documentsInObject = await orderRequest.find({ "documents.documentCode": documentCode });
+    let documentsInObject = await Shipment.find({ shipmentID, "documents.documentCode": documentCode });
     if (documentsInObject.length > 0) {
         //if file exists in db, update the object in the array
-        return await orderRequest.updateOne({ orderRequestID: orderID }, { $set: { documents: { fileName, documentCode, dateAdded } } });
+        return await Shipment.updateOne({ shipmentID }, { $set: { documents: { fileName, documentCode, dateAdded, submitted: true } } });
     } else {
         //if file is new, add the object in the array
-        return await orderRequest.updateOne({ orderRequestID: orderID }, { $push: { documents: { fileName, documentCode, dateAdded } } }); l
+        return await Shipment.updateOne({ shipmentID }, { $push: { documents: { fileName, documentCode, dateAdded, submitted: true } } }); 
     }
 }
 
@@ -221,15 +222,6 @@ async function getUserDashboard(user) {
         historicalPrices,
         totalOrderWeight
     };
-}
-
-
-function populateDashboard(user) {
-    if (user.role === "Admin") {
-        return getAdminDashboard();
-    } else {
-        return getUserDashboard(user);
-    }
 }
 
 

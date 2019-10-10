@@ -24,7 +24,8 @@ const storage = multer.diskStorage({
         receivedDocumentData = {
             documentCode: receivedMetadata.documentCode,
             orderID: receivedMetadata.orderID,
-            fileName: file.originalname
+            fileName: file.originalname,
+            shipmentID: receivedMetadata.shipmentID
         }
         cb(null, file.originalname)
     }

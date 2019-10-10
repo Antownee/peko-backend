@@ -119,7 +119,7 @@ function getTeaAssets() {
         headers: { ...authHeader(), 'Content-Type': 'application/json' }
     };
 
-    return fetch(`${apiUrl}/admin/asset/alltea`, requestOptions)
+    return fetch(`${apiUrl}/users/asset/alltea`, requestOptions)
         .then(handleResponse)
         .then(msg => { return msg })
 }
@@ -143,9 +143,15 @@ function populateDashboard(user) {
         body: JSON.stringify(user)
     };
 
-    return fetch(`${apiUrl}/admin/asset/dashboard`, requestOptions)
-        .then(handleResponse)
-        .then(msg => { return msg })
+    if (user.role === "Admin") {
+        return fetch(`${apiUrl}/admin/asset/dashboard`, requestOptions)
+            .then(handleResponse)
+            .then(msg => { return msg })
+    } else {
+        return fetch(`${apiUrl}/users/asset/dashboard`, requestOptions)
+            .then(handleResponse)
+            .then(msg => { return msg })
+    }
 }
 
 function logout() {

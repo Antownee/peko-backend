@@ -4,6 +4,9 @@ import { connect } from "react-redux";
 import { apiUrl, fileUrl } from "../../config";
 import { format } from 'date-fns';
 import ShipmentModal from './ShipmentModal';
+import { documentHandler } from '../../utils/documentHandler';
+import { userUploads, adminUploads } from "../../documents";
+
 
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 
@@ -12,29 +15,52 @@ class ShipmentsTable extends React.Component {
         super(props);
         this.state = {
             modalOpen: false,
-            currentShipment: {}
+            currentShipment: {},
+            displaySentDocuments: [],
+            displayReceivedDocuments: [],
+            userUploads: {
+                sendDocs: userUploads, //what he is sending
+                receivedDocs: adminUploads //what he receives
+            },
+            adminUploads: {
+                sendDocs: userUploads, //what he is sending
+                receivedDocs: adminUploads //what he receives
+            },
         }
         this.toggleModal = this.toggleModal.bind(this);
-
+        this.loadDocumentTables = this.loadDocumentTables.bind(this);
     }
 
-    componentDidMount() {
-        //get all shipments with the documents here
+    async loadDocumentTables(currentShipment) {
+        //if admin, set your sent and received. if user, set their sent and received
+        let received_source = this.props.user.role === "User" ? this.state.userUploads.sendDocs : this.state.adminUploads.sendDocs;
+        let sent_source = this.props.user.role === "User" ? this.state.userUploads.receivedDocs : this.state.adminUploads.receivedDocs;
+
+        let received = await documentHandler(received_source, currentShipment);
+        let sent = await documentHandler(sent_source, currentShipment)
+
+        this.setState({
+            displaySentDocuments: this.props.user.role === "Admin" ? sent : received,
+            displayReceivedDocuments: this.props.user.role === "Admin" ? received : sent
+        });
     }
 
-    toggleModal(msg) {
+
+    toggleModal(shipment) {
         this.setState({
             modalOpen: !this.state.modalOpen,
-            currentShipment: {
-                shipmentID: msg,
-                shipmentValue: 30000
-            }
         });
+        if (shipment) {
+            this.loadDocumentTables(shipment);
+            this.setState({
+                currentShipment: shipment
+            });
+        }
     }
 
     render() {
         const { intl, sentDocuments, receivedDocuments, shipments } = this.props;
-        const { modalOpen, currentShipment } = this.state
+        const { modalOpen, currentShipment, displaySentDocuments, displayReceivedDocuments } = this.state
         return (
             <Container fluid className="main-content-container px-4">
                 <ShipmentModal
@@ -43,8 +69,8 @@ class ShipmentsTable extends React.Component {
                     currentShipment={currentShipment}
                     modalOpen={modalOpen}
                     toggleModal={this.toggleModal}
-                    sentDocuments={sentDocuments}
-                    receivedDocuments={receivedDocuments}
+                    sentDocuments={displaySentDocuments}
+                    receivedDocuments={displayReceivedDocuments}
                 />
 
                 <table className="table mb-0">
@@ -67,12 +93,12 @@ class ShipmentsTable extends React.Component {
                     <tbody>
                         {
                             shipments.map((shipment, idx) => (
-                                <tr>
+                                <tr key={idx}>
                                     <td>{shipment.shipmentID}</td>
                                     <td>{shipment.shipmentDate}</td>
                                     <td>USD {shipment.shipmentValue}</td>
                                     <td>
-                                        <Button size="sm" theme="success" className="mb-2 mr-1" onClick={() => this.toggleModal(shipment.shipmentID)}>View Shipment</Button>
+                                        <Button size="sm" theme="success" className="mb-2 mr-1" onClick={() => this.toggleModal(shipment)}>View Shipment</Button>
                                     </td>
                                 </tr>
                             ))

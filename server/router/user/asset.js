@@ -23,7 +23,7 @@ router.post('/email', (req, res, next) => {
 })
 
 router.post('/dashboard', (req, res, next) => {
-    orderService.getAdminDashboard()
+    orderService.getUserDashboard(req.body)
         .then((em) => {
             if (em) {
                 res.json(em)

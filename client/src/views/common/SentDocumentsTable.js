@@ -7,11 +7,10 @@ import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 class SentDocumentsTable extends React.Component {
     constructor(props) {
         super(props);
-
     }
 
     render() {
-        const { displayDocuments, intl } = this.props;
+        const { displayDocuments, intl, currentShipment } = this.props;
 
         const messages = defineMessages({
             CNSGN: { id: "userorderdetails.consignee-details" },
@@ -29,8 +28,8 @@ class SentDocumentsTable extends React.Component {
             ALSYSCRT: { id: "userorderdetails.analysis-certificate" },
             BOL: { id: "userorderdetails.bill-of-lading" },
             CRTPHY: { id: "userorderdetails.phytosanitary-certificate" }
-          })
-          
+        })
+
         return (
             <table className="table mb-0">
                 <thead className="bg-light">
@@ -58,15 +57,16 @@ class SentDocumentsTable extends React.Component {
                                     <td>
                                         {
                                             document.submitted ?
-                                                <span className="badge badge-success"><FormattedMessage id="userorderdetails.label-submitted"/></span> :
-                                                <span className="badge badge-danger"><FormattedMessage id="userorderdetails.label-not-submitted"/></span>
+                                                <span className="badge badge-success"><FormattedMessage id="userorderdetails.label-submitted" /></span> :
+                                                <span className="badge badge-danger"><FormattedMessage id="userorderdetails.label-not-submitted" /></span>
                                         }
                                     </td>
                                     <td>{(document.dateAdded) ? format(document.dateAdded, 'DD/MM/YYYY') : "N/A"}</td>
                                     <td>
                                         <FileUpload
+                                            onSubmit={this.onSubmit}
                                             document={document}
-                                            currentOrder={this.props.currentOrder} />
+                                            currentShipment={this.props.currentShipment} />
                                     </td>
                                 </tr>
                             )) :
