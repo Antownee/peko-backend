@@ -32,6 +32,7 @@ module.exports = {
     getShipmentsFromOrder,
     getAdminDashboard,
     getUserDashboard,
+    deleteShipment
 };
 
 //USER
@@ -85,7 +86,7 @@ async function uploadDocument(receivedDocumentData) {
         return await Shipment.updateOne({ shipmentID }, { $set: { documents: { fileName, documentCode, dateAdded, submitted: true } } });
     } else {
         //if file is new, add the object in the array
-        return await Shipment.updateOne({ shipmentID }, { $push: { documents: { fileName, documentCode, dateAdded, submitted: true } } }); 
+        return await Shipment.updateOne({ shipmentID }, { $push: { documents: { fileName, documentCode, dateAdded, submitted: true } } });
     }
 }
 
@@ -231,7 +232,7 @@ async function getShipmentsFromOrder(orderID) {
 
 async function addShipment(shipmentParam) {
     let newShipment = new Shipment({
-        shipmentID: `SHP-${shortid.generate()}`,
+        shipmentID: shipmentParam.shipmentID,
         orderID: shipmentParam.orderID,
         shipmentDate: Date.now().toString(),
         shipmentValue: shipmentParam.shipmentValue,
@@ -239,9 +240,17 @@ async function addShipment(shipmentParam) {
     })
 
     if (await Shipment.findOne({ shipmentID: newShipment.shipmentID })) {
-        throw `Shipment has already been created`;
+        return { error: `Shipment has already been created` }
     }
 
-    await newShipment.save();
-    return "Shipment successfully added";
+    return await newShipment.save()
+        .then((doc) => {
+            return { shipment: doc, message: "Shipment successfully added" }
+        }).catch((err) => {
+            throw err
+        })
+}
+
+async function deleteShipment(shipmentID) {
+    return await Shipment.findOneAndDelete({ shipmentID });
 }

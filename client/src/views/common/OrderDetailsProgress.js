@@ -26,7 +26,7 @@ class OrderDetailsProgress extends React.Component {
       progress4: { id: "userorderdetails.progress-4" },
       progress4_text: { id: "userorderdetails.progress-4-text" },
     })
-    
+
     return (
       <Card small className="mb-4">
         <CardHeader className="border-bottom">
@@ -39,6 +39,12 @@ class OrderDetailsProgress extends React.Component {
             <Step title={intl.formatMessage(messages.progress3)} description={intl.formatMessage(messages.progress3_text)} />
             <Step title={intl.formatMessage(messages.progress4)} description={intl.formatMessage(messages.progress4_text)} />
           </Steps>
+          <div className="mb-3 mx-auto text-center">
+            <img
+              src={require("./../../images/coj/ship.png")}
+              width="110"
+            />
+          </div>
         </CardBody>
       </Card>
     )

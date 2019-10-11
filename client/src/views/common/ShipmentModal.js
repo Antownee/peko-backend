@@ -31,7 +31,12 @@ class ShipmentModal extends React.Component {
                 {
                     currentShipment ?
                         <Modal size="lg" open={modalOpen} toggle={toggleModal}>
-                            <ModalHeader>{currentShipment.shipmentID || ""} -- {currentShipment.shipmentValue || ""}</ModalHeader>
+                            <ModalHeader>
+                                <div>
+                                    <h4 className="mb-0">{currentShipment.shipmentID || ""}</h4>
+                                    <span className="text-muted d-block mb-2">{`USD ${currentShipment.shipmentValue}` || ""}</span>
+                                </div>
+                            </ModalHeader>
                             <ModalBody>
                                 <Tabs>
                                     <TabList>

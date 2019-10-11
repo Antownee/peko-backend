@@ -7,7 +7,7 @@ import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 class ReceivedDocumentsTable extends React.Component {
 
     render() {
-        let orderID = this.props.currentShipment.orderID;
+        let shipmentID = this.props.currentShipment.shipmentID;
         let displayDocuments = this.props.displayDocuments;
         const { intl } = this.props;
 
@@ -54,8 +54,8 @@ class ReceivedDocumentsTable extends React.Component {
                                     {
                                         document.submitted ?
                                             <a style={{ display: "table-cell" }}
-                                                href={`${fileUrl}/documents/${orderID}_${document.documentCode}.pdf`}
-                                                download={`${orderID}_${document.documentCode}.pdf`}
+                                                href={`${fileUrl}/documents/${shipmentID}_${document.documentCode}.pdf`}
+                                                download={`${shipmentID}_${document.documentCode}.pdf`}
                                                 target="_blank" 
                                                 rel="noopener " >
                                                     <FormattedMessage id="userorderdetails.label-download"defaultMessage="Download" />

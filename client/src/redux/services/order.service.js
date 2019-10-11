@@ -6,7 +6,6 @@ export const orderService = {
     deleteOrder,
     getAllOrders,
     confirmOrder,
-    uploadDocuments,
     addTeaAssets,
     addEmailAssets,
     populateDashboard,
@@ -14,6 +13,7 @@ export const orderService = {
     shipOrder,
     addShipment,
     getShipmentsByOrderID,
+    deleteShipment
 };
 
 
@@ -84,22 +84,6 @@ function shipOrder(order, user) {
         .then((msg) => { return msg })
 }
 
-function uploadDocuments(documents, orderid) {
-    const formData = new FormData();
-    formData.append('orderID', orderid);
-    for (var x = 0; x < documents.length; x++) {
-        formData.append('file', documents[x].document, orderid + "_" + documents[x].id)
-    }
-
-    const requestOptions = {
-        method: 'POST',
-        headers: { ...authHeader() },
-        body: formData
-    };
-
-    return fetch(`${apiUrl}/admin/order/documents`, requestOptions)
-        .then(handleResponse)
-}
 
 function addTeaAssets(tea) {
     const requestOptions = {
@@ -172,16 +156,32 @@ function addShipment(shipment) {
 }
 
 
-function getShipmentsByOrderID(orderID) {
+function getShipmentsByOrderID(orderID, role) {
     const requestOptions = {
         method: 'POST',
         headers: { ...authHeader(), 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderID)
+        body: JSON.stringify({ orderID })
     };
 
-    return fetch(`${apiUrl}/admin/shipment/all`, requestOptions)
+    return role === "Admin" ?
+        fetch(`${apiUrl}/admin/shipment/all`, requestOptions)
+            .then(handleResponse)
+            .then(msg => { return msg }) :
+        fetch(`${apiUrl}/users/shipment/all`, requestOptions)
+            .then(handleResponse)
+            .then(msg => { return msg })
+}
+
+function deleteShipment(shipmentID) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shipmentID })
+    };
+
+    return fetch(`${apiUrl}/admin/shipment/delete`, requestOptions)
         .then(handleResponse)
-        .then(msg => { return msg })
+        .then((msg) => { return msg })
 }
 
 

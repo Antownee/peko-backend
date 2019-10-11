@@ -24,7 +24,6 @@ class OrderDetails extends React.Component {
         this.state = {
             backgroundImage: require("../../images/content-management/17.jpg"),
             currentOrder: this.props.order,
-
             stepNumber: 0,
             shipments: []
         }
@@ -33,6 +32,8 @@ class OrderDetails extends React.Component {
         this.shipOrder = this.shipOrder.bind(this);
         this.deleteOrder = this.deleteOrder.bind(this);
         this.getShipments = this.getShipments.bind(this);
+        this.addShipmentToState = this.addShipmentToState.bind(this);
+        this.removeShipmentfromState = this.removeShipmentfromState.bind(this);
     }
 
     componentDidMount() {
@@ -42,11 +43,28 @@ class OrderDetails extends React.Component {
 
 
     getShipments() {
-        let orderID = this.state.currentOrder.orderRequestID;
-        orderService.getShipmentsByOrderID({ orderID })
-            .then((res) => {
-                this.setState({ shipments: res });
-            })
+        let { currentOrder } = this.state;
+        let { user } = this.props;
+        return Object.keys(currentOrder).length > 0 ?
+            orderService.getShipmentsByOrderID(currentOrder.orderRequestID, user.role)
+                .then((res) => {
+                    this.setState({ shipments: res });
+                })
+            : ""
+    }
+
+    addShipmentToState(shipment) {
+        this.setState(state => {
+            let shipments = state.shipments.concat(shipment);
+            return { shipments };
+        });
+    }
+
+    removeShipmentfromState(shipmentID) {
+        this.setState(state => {
+            let shipments = state.shipments.filter((shipment) => shipment.shipmentID !== shipmentID);
+            return { shipments };
+        });
     }
 
 
@@ -134,7 +152,7 @@ class OrderDetails extends React.Component {
                 {/* Confirmed tab */}
                 <Row>
                     <Col lg="4">
-                        <OrderDetailsInfo order={order} user={user} />
+                        <OrderDetailsInfo order={order} user={user} addShipmentToState={this.addShipmentToState} />
                     </Col>
                     <Col lg="8">
                         <OrderDetailsProgress currentOrderPosition={0} />
@@ -142,24 +160,24 @@ class OrderDetails extends React.Component {
                 </Row>
                 <Col>
 
-                    {
+                    {/* {
                         user.role === "User" && !currentOrder.confirmed ?
                             <p><FormattedMessage id="userorderdetails.document-unavailable-warning" /></p> :
-                            <Card small className="mb-4">
-                                <Tabs>
-                                    <TabList>
-                                        <Tab>Shipments</Tab>
-                                    </TabList>
 
-                                    <TabPanel>
-                                        <ShipmentsTable
-                                            shipments={shipments}
-                                            sentDocuments={this.state.displaySentDocuments}
-                                            receivedDocuments={this.state.displayReceivedDocuments} />
-                                    </TabPanel>
-                                </Tabs>
-                            </Card>
-                    }
+                    } */}
+                    <Card small className="mb-4">
+                        <CardHeader className="border-bottom">
+                            <h6 className="m-0">Shipments</h6>
+                        </CardHeader>
+                        <CardBody>
+                            <ShipmentsTable
+                                shipments={shipments}
+                                sentDocuments={this.state.displaySentDocuments}
+                                receivedDocuments={this.state.displayReceivedDocuments}
+                                removeShipmentfromState={this.removeShipmentfromState} />
+                        </CardBody>
+
+                    </Card>
 
                 </Col>
             </Container>

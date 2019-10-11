@@ -1,13 +1,12 @@
 import React from 'react';
 import { Container, Button } from "shards-react";
 import { connect } from "react-redux";
-import { apiUrl, fileUrl } from "../../config";
 import { format } from 'date-fns';
 import ShipmentModal from './ShipmentModal';
 import { documentHandler } from '../../utils/documentHandler';
 import { userUploads, adminUploads } from "../../documents";
-
-
+import { orderService } from "../../redux/services/order.service";
+import { ToastContainer, toast } from 'react-toastify';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 
 class ShipmentsTable extends React.Component {
@@ -29,6 +28,7 @@ class ShipmentsTable extends React.Component {
         }
         this.toggleModal = this.toggleModal.bind(this);
         this.loadDocumentTables = this.loadDocumentTables.bind(this);
+        this.deleteShipment = this.deleteShipment.bind(this);
     }
 
     async loadDocumentTables(currentShipment) {
@@ -58,11 +58,25 @@ class ShipmentsTable extends React.Component {
         }
     }
 
+    deleteShipment(shipmentID) {
+        orderService.deleteShipment(shipmentID)
+            .then((res) => {
+                //Remove shipment from state
+                this.props.removeShipmentfromState(shipmentID);
+                toast.success(res.message);
+            })
+            .catch((e) => {
+                toast.err("Try again later");
+            })
+    }
+
     render() {
-        const { intl, sentDocuments, receivedDocuments, shipments } = this.props;
+        const { shipments } = this.props;
         const { modalOpen, currentShipment, displaySentDocuments, displayReceivedDocuments } = this.state
         return (
             <Container fluid className="main-content-container px-4">
+                                <ToastContainer />
+
                 <ShipmentModal
                     // order={currentOrder}
                     //user={user}
@@ -95,10 +109,13 @@ class ShipmentsTable extends React.Component {
                             shipments.map((shipment, idx) => (
                                 <tr key={idx}>
                                     <td>{shipment.shipmentID}</td>
-                                    <td>{shipment.shipmentDate}</td>
+                                    <td>{format(shipment.shipmentDate, 'MMMM Do, YYYY')}</td>
                                     <td>USD {shipment.shipmentValue}</td>
                                     <td>
                                         <Button size="sm" theme="success" className="mb-2 mr-1" onClick={() => this.toggleModal(shipment)}>View Shipment</Button>
+                                    </td>
+                                    <td>
+                                        <Button size="sm" theme="danger" className="mb-2 mr-1" onClick={() => this.deleteShipment(shipment.shipmentID)}>Delete</Button>
                                     </td>
                                 </tr>
                             ))

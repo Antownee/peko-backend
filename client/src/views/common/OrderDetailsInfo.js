@@ -40,7 +40,7 @@ class OrderDetailsInfo extends React.Component {
 
 
   render() {
-    let { order, user } = this.props;
+    let { order, user, addShipmentToState } = this.props;
     let { addShipmentModalOpen, contractModalOpen } = this.state;
 
     return (
@@ -49,7 +49,9 @@ class OrderDetailsInfo extends React.Component {
           user.role === "Admin" ?
             <AddShipmentmodal
               modalOpen={addShipmentModalOpen}
-              toggleModal={this.toggleAddShipmentModal}
+              toggleAddShipmentModal={this.toggleAddShipmentModal}
+              order={order}
+              addShipmentToState={addShipmentToState}
             /> : ""
         }
 
@@ -63,9 +65,12 @@ class OrderDetailsInfo extends React.Component {
           <CardHeader className="border-bottom text-center">
             <h4 className="mb-0">{order.orderRequestID}</h4>
             <span className="text-muted d-block mb-2">{format(order.requestDate, 'MMMM Do, YYYY')}</span>
-            <Button pill outline size="sm" className="mb-2 mr-2" onClick={this.toggleAddShipmentModal}>
-              <i className="material-icons mr-1">person_add</i> Add shipment
-          </Button>
+            {
+              user.role === "Admin" ?
+                <Button pill outline size="sm" className="mb-2 mr-2" onClick={this.toggleAddShipmentModal}>
+                  <i className="material-icons mr-1">person_add</i> Add shipment
+                </Button> : ""
+            }
             <Button pill outline size="sm" className="mb-2" onClick={this.toggleContractModal}>
               <i className="material-icons mr-1">person_add</i> View contract
           </Button>
