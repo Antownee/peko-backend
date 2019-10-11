@@ -20,19 +20,18 @@ module.exports = {
     getAllOrdersUser,
     getAllOrdersAdmin,
     deleteOrder,
-    confirmOrder,
     uploadDocument,
     addEmail,
     getCOJEmails,
     getUserEmail,
     isDocumentInStorage,
     getTeaItems,
-    shipOrder,
     addShipment,
     getShipmentsFromOrder,
     getAdminDashboard,
     getUserDashboard,
-    deleteShipment
+    deleteShipment,
+    updateOrderStatus
 };
 
 //USER
@@ -69,15 +68,10 @@ async function deleteOrder(order) {
 }
 
 
-async function confirmOrder(orderID) {
-    return await orderRequest.findOneAndUpdate({ orderRequestID: orderID }, { confirmed: true, orderPosition: 1 }, { new: true })
-}
-
 async function uploadDocument(receivedDocumentData) {
     let { orderID, documentCode, fileName, shipmentID } = receivedDocumentData;
     let dateAdded = Date.now().toString();
     //First update the position/status of the order
-    //await orderRequest.findOneAndUpdate({ orderRequestID: orderID }, { orderPosition: 2 }, { new: true });
 
     //Look for existing file. If it does exist, update. If new, push
     let documentsInObject = await Shipment.find({ shipmentID, "documents.documentCode": documentCode });
@@ -88,10 +82,6 @@ async function uploadDocument(receivedDocumentData) {
         //if file is new, add the object in the array
         return await Shipment.updateOne({ shipmentID }, { $push: { documents: { fileName, documentCode, dateAdded, submitted: true } } });
     }
-}
-
-async function shipOrder(order) {
-    return await orderRequest.findOneAndUpdate({ orderRequestID: order.orderRequestID }, { orderPosition: 3, orderShipped: true }, { new: true })
 }
 
 function isDocumentInStorage(orderID, documentCode) {
@@ -253,4 +243,9 @@ async function addShipment(shipmentParam) {
 
 async function deleteShipment(shipmentID) {
     return await Shipment.findOneAndDelete({ shipmentID });
+}
+
+
+async function updateOrderStatus(orderRequestID, orderStatus) {
+    return await orderRequest.findOneAndUpdate({ orderRequestID: orderRequestID }, { orderStatus }, { new: true })
 }

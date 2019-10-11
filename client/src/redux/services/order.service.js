@@ -5,12 +5,10 @@ export const orderService = {
     addOrder,
     deleteOrder,
     getAllOrders,
-    confirmOrder,
     addTeaAssets,
     addEmailAssets,
     populateDashboard,
     getTeaAssets,
-    shipOrder,
     addShipment,
     getShipmentsByOrderID,
     deleteShipment
@@ -59,31 +57,6 @@ function deleteOrder(order) {
         .then(handleResponse)
         .then((msg) => { return msg })
 }
-
-function confirmOrder(order, user) {
-    const requestOptions = {
-        method: 'POST',
-        headers: { ...authHeader(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order, user })
-    };
-
-    return fetch(`${apiUrl}/admin/order/confirm`, requestOptions)
-        .then(handleResponse)
-        .then((msg) => { return msg })
-}
-
-function shipOrder(order, user) {
-    const requestOptions = {
-        method: 'POST',
-        headers: { ...authHeader(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order, user })
-    };
-
-    return fetch(`${apiUrl}/admin/order/ship`, requestOptions)
-        .then(handleResponse)
-        .then((msg) => { return msg })
-}
-
 
 function addTeaAssets(tea) {
     const requestOptions = {

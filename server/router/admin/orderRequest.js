@@ -4,6 +4,7 @@ const multer = require('multer');
 const worker = require("../../utils/bgworkers/worker");
 const { check, validationResult } = require('express-validator');
 const orderService = require("../../utils/orderService");
+const orderConstants = require("../../utils/orderConstants");4
 let receivedDocumentData = {};
 
 
@@ -52,13 +53,14 @@ router.post('/delete', (req, res, next) => {
         .catch(err => next(err));
 })
 
-router.post('/confirm', (req, res, next) => {
-    const { user, order } = req.body;
-    orderService.confirmOrder(order.orderRequestID)
+router.post('/update-status', (req, res, next) => {
+    const { status, orderRequestID } = req.body;
+    
+    orderService.confirmOrder(orderRequestID, status)
         .then((ord) => {
             if (ord) {
                 worker.emailQueue.add({
-                    status: "ORDER_CONFIRM",
+                    status,
                     order: ord
                 }).then(() => {
                     return res.status(200).send({ msg: 'Order confirmed!' });

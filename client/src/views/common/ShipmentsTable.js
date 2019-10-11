@@ -112,8 +112,6 @@ class ShipmentsTable extends React.Component {
                 <ToastContainer />
 
                 <ShipmentModal
-                    // order={currentOrder}
-                    //user={user}
                     currentShipment={currentShipment}
                     modalOpen={modalOpen}
                     toggleModal={this.toggleModal}

@@ -16,6 +16,7 @@ import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 import ShipmentsTable from './ShipmentsTable'
 import OrderDetailsInfo from "./OrderDetailsInfo";
 import OrderDetailsProgress from "./OrderDetailsProgress";
+import UploadContract from '../admin/UploadContract';
 
 
 class OrderDetails extends React.Component {
@@ -27,9 +28,7 @@ class OrderDetails extends React.Component {
             stepNumber: 0,
             shipments: []
         }
-        this.confirmOrder = this.confirmOrder.bind(this);
         this.goBack = this.goBack.bind(this);
-        this.shipOrder = this.shipOrder.bind(this);
         this.deleteOrder = this.deleteOrder.bind(this);
         this.getShipments = this.getShipments.bind(this);
         this.addShipmentToState = this.addShipmentToState.bind(this);
@@ -80,34 +79,6 @@ class OrderDetails extends React.Component {
             })
     }
 
-    confirmOrder() {
-        orderService.confirmOrder(this.state.currentOrder, this.props.user)
-            .then((res) => {
-                toast.success(res.msg);
-                let order = Object.assign({}, this.state.currentOrder);
-                order["confirmed"] = true;
-                order["orderPosition"] = 1;
-                return this.setState({ currentOrder: order });
-            })
-            .catch((e) => {
-                toast.error(e.message);
-            })
-    }
-
-    shipOrder() {
-        orderService.shipOrder(this.state.currentOrder, this.props.user)
-            .then((res) => {
-                toast.success(res.msg);
-                let order = Object.assign({}, this.state.currentOrder);
-                order["orderShipped"] = true;
-                order["orderPosition"] = 3;
-                return this.setState({ currentOrder: order });
-            })
-            .catch((e) => {
-                toast.error(e.message);
-            })
-    }
-
     goBack() {
         //Change state
         this.props.handleSearchState(false);
@@ -131,43 +102,41 @@ class OrderDetails extends React.Component {
 
         return (
             <Container fluid className="main-content-container">
-                {/* Page Header */}
                 <ToastContainer />
-
 
                 <Button className="mt-4" pill onClick={this.goBack}>&larr; Go Back</Button>
                 <Row noGutters className="page-header py-4">
                     <PageTitle sm="4" title={intl.formatMessage(messages.header)} className="text-sm-left" />
                 </Row>
+                {
+                    order.orderStatus !== "ORDER_CONF" ?
+                        <div>
+                            <Row>
+                                <Col lg="4">
+                                    <OrderDetailsInfo order={order} user={user} addShipmentToState={this.addShipmentToState} />
+                                </Col>
+                                <Col lg="8">
+                                    <OrderDetailsProgress currentOrderPosition={0} />
+                                </Col>
+                            </Row>
+                            <Row noGutters className="page-header py-4">
+                                <Col lg="12">
+                                    <Card small className="mb-4">
+                                        <CardHeader className="border-bottom">
+                                            <h6 className="m-0">Shipments</h6>
+                                        </CardHeader>
+                                        <CardBody>
+                                            <ShipmentsTable shipments={shipments} removeShipmentfromState={this.removeShipmentfromState} />
+                                        </CardBody>
+                                    </Card>
+                                </Col>
+                            </Row>
+                        </div> :
+                        <div>
+                            <UploadContract user={user} currentOrder={currentOrder} />
+                        </div>
+                }
 
-                {/* Confirmed tab */}
-                <Row>
-                    <Col lg="4">
-                        <OrderDetailsInfo order={order} user={user} addShipmentToState={this.addShipmentToState} />
-                    </Col>
-                    <Col lg="8">
-                        <OrderDetailsProgress currentOrderPosition={0} />
-                    </Col>
-                </Row>
-                <Col>
-
-                    {/* {
-                        user.role === "User" && !currentOrder.confirmed ?
-                            <p><FormattedMessage id="userorderdetails.document-unavailable-warning" /></p> :
-
-                    } */}
-                    <Card small className="mb-4">
-                        <CardHeader className="border-bottom">
-                            <h6 className="m-0">Shipments</h6>
-                        </CardHeader>
-                        <CardBody>
-                            <ShipmentsTable                                shipments={shipments}
-                                removeShipmentfromState={this.removeShipmentfromState} />
-                        </CardBody>
-
-                    </Card>
-
-                </Col>
             </Container>
         )
 

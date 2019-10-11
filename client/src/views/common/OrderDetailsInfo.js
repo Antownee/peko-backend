@@ -86,7 +86,7 @@ class OrderDetailsInfo extends React.Component {
                   value={74}
                 >
                   <span className="progress-value">
-                    {74}%
+                    {300000} USD
             </span>
                 </Progress>
               </div>
@@ -99,9 +99,11 @@ class OrderDetailsInfo extends React.Component {
                 {
                   Object.keys(order).length > 0 ?
                     order.teaOrders.map((teaOrder, idx) => (
-                      <li key={idx}>
-                        <p> {teaOrder.teaName} - {`${teaOrder.weight} kgs`}</p>
-                      </li>
+                      <ul>
+                        <li >
+                          <strong> {teaOrder.teaName} - {`${teaOrder.weight} kgs`}</strong>
+                        </li>
+                      </ul>
                     )) : ""
                 }
               </div>
