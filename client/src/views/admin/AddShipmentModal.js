@@ -6,7 +6,7 @@ import {
     Modal,
     ModalHeader,
     ModalBody,
-    ModalFooter
+    ModalFooter, FormInput, Row
 } from "shards-react";
 import { connect } from "react-redux";
 import "react-tabs/style/react-tabs.css";
@@ -62,16 +62,18 @@ class AddShipmentModal extends React.Component {
                             render={({ errors, status, touched, isSubmitting }) => (
                                 <Col>
                                     <Form>
-                                        <Col className="form-group">
-                                            <label htmlFor="shipmentID">Shipment ID</label>
-                                            <Field name="shipmentID" type="text" className={'form-control' + (errors.shipmentID && touched.shipmentID ? ' is-invalid' : '')} />
-                                            <ErrorMessage name="shipmentID" component="div" className="invalid-feedback" />
-                                        </Col>
-                                        <Col className="form-group">
-                                            <label htmlFor="shipmentValue">Value Of Shipment</label>
-                                            <Field name="shipmentValue" type="number" className={'form-control' + (errors.shipmentValue && touched.shipmentValue ? ' is-invalid' : '')} />
-                                            <ErrorMessage name="shipmentValue" component="div" className="invalid-feedback" />
-                                        </Col>
+                                        <Row>
+                                            <Col md="6" className="form-group">
+                                                <label htmlFor="shipmentID">Shipment ID</label>
+                                                <Field name="shipmentID" type="text" className={'form-control' + (errors.shipmentID && touched.shipmentID ? ' is-invalid' : '')} />
+                                                <ErrorMessage name="shipmentID" component="div" className="invalid-feedback" />
+                                            </Col>
+                                            <Col md="6" className="form-group">
+                                                <label htmlFor="shipmentValue">Value Of Shipment</label>
+                                                <Field name="shipmentValue" type="number" className={'form-control' + (errors.shipmentValue && touched.shipmentValue ? ' is-invalid' : '')} />
+                                                <ErrorMessage name="shipmentValue" component="div" className="invalid-feedback" />
+                                            </Col>
+                                        </Row>
                                         <div className="form-group">
                                             <button type="submit" className="btn btn-primary" disabled={isSubmitting}>Add</button>
                                             {isSubmitting &&

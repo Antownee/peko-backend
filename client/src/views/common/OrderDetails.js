@@ -111,16 +111,7 @@ class OrderDetails extends React.Component {
     goBack() {
         //Change state
         this.props.handleSearchState(false);
-        this.setState({
-            userUploads: {
-                sendDocs: [], //what he is sending
-                receivedDocs: [] //what he receives
-            },
-            adminUploads: {
-                sendDocs: [], //what he is sending
-                receivedDocs: [] //what he receives
-            }
-        })
+        this.setState({});
     }
 
     render() {
@@ -170,10 +161,7 @@ class OrderDetails extends React.Component {
                             <h6 className="m-0">Shipments</h6>
                         </CardHeader>
                         <CardBody>
-                            <ShipmentsTable
-                                shipments={shipments}
-                                sentDocuments={this.state.displaySentDocuments}
-                                receivedDocuments={this.state.displayReceivedDocuments}
+                            <ShipmentsTable                                shipments={shipments}
                                 removeShipmentfromState={this.removeShipmentfromState} />
                         </CardBody>
 

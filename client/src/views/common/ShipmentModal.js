@@ -9,8 +9,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import "react-tabs/style/react-tabs.css";
 import SentDocumentsTable from "./SentDocumentsTable";
-import { documentHandler } from '../../utils/documentHandler';
-import { userUploads, adminUploads } from "../../documents";
 import ReceivedDocumentsTable from "./ReceivedDocumentsTable";
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 
@@ -18,14 +16,11 @@ import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 class ShipmentModal extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-
-        }
     }
 
 
     render() {
-        const { user, intl, modalOpen, toggleModal, sentDocuments, receivedDocuments, currentShipment } = this.props;
+        const { user, intl, modalOpen, toggleModal, sentDocuments, receivedDocuments, currentShipment, updateShipmentDocuments } = this.props;
         return (
             <Container fluid className="main-content-container px-4">
                 {
@@ -48,6 +43,7 @@ class ShipmentModal extends React.Component {
                                         <SentDocumentsTable
                                             currentShipment={currentShipment}
                                             displayDocuments={sentDocuments}
+                                            updateShipmentDocuments={updateShipmentDocuments}
                                         />
                                     </TabPanel>
                                     <TabPanel>

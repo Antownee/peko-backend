@@ -3,6 +3,7 @@ import FileUpload from "./FileUpload";
 import { connect } from "react-redux";
 import { format } from 'date-fns';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
+import { Col, Row, FormInput } from "shards-react";
 
 class SentDocumentsTable extends React.Component {
     constructor(props) {
@@ -10,7 +11,7 @@ class SentDocumentsTable extends React.Component {
     }
 
     render() {
-        const { displayDocuments, intl, currentShipment } = this.props;
+        const { displayDocuments, intl, currentShipment, updateShipmentDocuments } = this.props;
 
         const messages = defineMessages({
             CNSGN: { id: "userorderdetails.consignee-details" },
@@ -31,56 +32,45 @@ class SentDocumentsTable extends React.Component {
         })
 
         return (
-            <table className="table mb-0">
-                <thead className="bg-light">
-                    <tr>
-                        <th scope="col" className="border-0">
-                            Name
-                                            </th>
-                        <th scope="col" className="border-0">
-                            Link
-                                            </th>
-                        <th scope="col" className="border-0">
-                            Date
-                                            </th>
-                        <th scope="col" className="border-0">
-                            Upload document
-                                            </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        displayDocuments ?
-                            displayDocuments.map((document, idx) => (
-                                <tr key={idx}>
-                                    <td>{intl.formatMessage(messages[document.documentCode])}</td>
-                                    <td>
-                                        {
-                                            document.submitted ?
-                                                <span className="badge badge-success"><FormattedMessage id="userorderdetails.label-submitted" /></span> :
-                                                <span className="badge badge-danger"><FormattedMessage id="userorderdetails.label-not-submitted" /></span>
-                                        }
-                                    </td>
-                                    <td>{(document.dateAdded) ? format(document.dateAdded, 'DD/MM/YYYY') : "N/A"}</td>
-                                    <td>
-                                        <FileUpload
-                                            onSubmit={this.onSubmit}
-                                            document={document}
-                                            currentShipment={this.props.currentShipment} />
-                                    </td>
-                                </tr>
-                            )) :
-                            <h6 className="card-title">
-                                <i className="material-icons">search</i>
-                                <a className="text-fiord-blue" href="#">
-                                    You cannot view any documents yet because the order is yet to be confirmed.
-                                </a>
-                            </h6>
-                    }
-                </tbody>
-            </table>
+        < Row >
+            {
+                displayDocuments ?
+                    displayDocuments.map((document, idx) => (
+                        <Col md="6" key={idx}>
+                            <div className="blog-comments__item p-3">
+                                <div className="blog-comments__content">
+                                    <div className="blog-comments__meta text-mutes">
+                                        <a className="text-secondary" >
+                                            {intl.formatMessage(messages[document.documentCode])}
+                                        </a>{" "}
+                                        <div>
+                                            {
+                                                document.submitted ?
+                                                    <span className="badge badge-success mr-2"><FormattedMessage id="userorderdetails.label-submitted" /></span> :
+                                                    <span className="badge badge-danger mr-2"><FormattedMessage id="userorderdetails.label-not-submitted" /></span>
+                                            }
+                                            <span>{(document.dateAdded) ? format(document.dateAdded, 'DD/MM/YYYY') : ""}</span>
+                                            <div className="mt-2">
+                                                <FileUpload
+                                                    document={document}
+                                                    currentShipment={this.props.currentShipment}
+                                                    updateShipmentDocuments={updateShipmentDocuments}
+                                                    user={this.props.user} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </Col>
+                    )) :
+                    <h6 className="card-title">
+                        <a className="text-fiord-blue" href="#">
+                            You cannot view any documents yet because the order is yet to be confirmed by Cup Of Joe.
+                                 </a>
+                    </h6>
+            }
+        </Row >
         )
-
     }
 }
 

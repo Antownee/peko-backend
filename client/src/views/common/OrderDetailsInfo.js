@@ -93,13 +93,22 @@ class OrderDetailsInfo extends React.Component {
             </ListGroupItem>
             <ListGroupItem className="p-4">
               <strong className="text-muted d-block mb-2">
-                Description
-        </strong>
-              <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio eaque, quidem, commodi soluta qui quae minima obcaecati quod dolorum sint alias, possimus illum assumenda eligendi cumque?</span>
+                Particulars
+              </strong>
+              <div>
+                {
+                  Object.keys(order).length > 0 ?
+                    order.teaOrders.map((teaOrder, idx) => (
+                      <li key={idx}>
+                        <p> {teaOrder.teaName} - {`${teaOrder.weight} kgs`}</p>
+                      </li>
+                    )) : ""
+                }
+              </div>
             </ListGroupItem>
           </ListGroup>
         </Card>
-      </div>
+      </div >
 
     )
   }

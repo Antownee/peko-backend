@@ -35,12 +35,13 @@ class FileUpload extends React.Component {
     }
 
     render() {
-        const { document, currentShipment } = this.props;
+        let { document, currentShipment, user } = this.props;
+        let uploadUrl = user.role === "Admin" ?  `${apiUrl}/admin/order/documents` : `${apiUrl}/users/order/documents`;
         return (
             <FilePond
                 server={
                     process = {
-                        url: `${apiUrl}/admin/order/documents`,
+                        url: uploadUrl,
                         headers: { ...authHeader() },
                     }
                 }
@@ -57,12 +58,13 @@ class FileUpload extends React.Component {
                         files[0].setMetadata("shipmentID", currentShipment.shipmentID)
                     }
                 }}
-                onaddfile={(err,file)=>{
-                    if(!err){
-                        this.resetState();
-
+                onprocessfile={(err,file)=>{
+                    if(file){
+                        this.props.updateShipmentDocuments(document.documentCode, file.filename)
                     }
                 }}
+                
+
             >
             </FilePond>
         )

@@ -29,6 +29,7 @@ class ShipmentsTable extends React.Component {
         this.toggleModal = this.toggleModal.bind(this);
         this.loadDocumentTables = this.loadDocumentTables.bind(this);
         this.deleteShipment = this.deleteShipment.bind(this);
+        this.updateShipmentDocuments = this.updateShipmentDocuments.bind(this);
     }
 
     async loadDocumentTables(currentShipment) {
@@ -70,12 +71,45 @@ class ShipmentsTable extends React.Component {
             })
     }
 
+    updateShipmentDocuments(documentCode, fileName) {
+        this.setState(state => {
+            //update currentShipment
+            let newDocuments = state.currentShipment.documents.concat({
+                dateAdded: new Date().toLocaleDateString(),
+                documentCode: documentCode,
+                fileName,
+                name: fileName,
+                submitted: true
+            })
+
+            let { currentShipment } = state ;
+            currentShipment['documents'] = newDocuments;
+
+            //update displayDocuments
+            let docs = state.displaySentDocuments.map((doc) => {
+                if (doc.documentCode === documentCode) {
+                    return {
+                        dateAdded: new Date().toLocaleDateString(),
+                        documentCode: doc.documentCode,
+                        fileName,
+                        name: doc.name,
+                        submitted: true
+                    };
+                } else {
+                    return doc;
+                }
+            });
+            return { displaySentDocuments: docs, currentShipment };
+        })
+    }
+
+
     render() {
         const { shipments } = this.props;
         const { modalOpen, currentShipment, displaySentDocuments, displayReceivedDocuments } = this.state
         return (
             <Container fluid className="main-content-container px-4">
-                                <ToastContainer />
+                <ToastContainer />
 
                 <ShipmentModal
                     // order={currentOrder}
@@ -85,6 +119,7 @@ class ShipmentsTable extends React.Component {
                     toggleModal={this.toggleModal}
                     sentDocuments={displaySentDocuments}
                     receivedDocuments={displayReceivedDocuments}
+                    updateShipmentDocuments={this.updateShipmentDocuments}
                 />
 
                 <table className="table mb-0">
