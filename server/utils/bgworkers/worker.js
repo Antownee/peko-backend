@@ -1,23 +1,19 @@
 const Queue = require('bull');
-const { sendNewOrdertoCOJ, sendOrderConfirmationtoClient, sendShippingEmail } = require("../email");
+const { sendNewOrdertoCOJ, sendShipmentNotificationtoClient } = require("../email");
 
 const emailQueue = new Queue('Sending email', global.gConfig.redis);
 
 
 emailQueue.process(function (job, done) {
-    let { order, status } = job.data;
+    let { order, status, shipment } = job.data;
     switch (status) {
         case "ORDER_INIT":
             sendNewOrdertoCOJ(order);
             done();
             break;
-        case "ORDER_CONFIRM":
-            sendOrderConfirmationtoClient(order);
-            done();
-            break;
-        case "ORDER_SHIP":
-            sendShippingEmail(order);
-            done();
+        case "ORDER_SHIPMENT_ADDED":
+            sendShipmentNotificationtoClient(shipment);
+            done()
             break;
         default:
             break;
@@ -26,16 +22,13 @@ emailQueue.process(function (job, done) {
 })
 
 emailQueue.on('completed', (job, result) => {
-    const { order, status } = job.data;
+    const { order, status, shipment } = job.data;
     switch (status) {
         case "ORDER_INIT":
-            console.log(`ORDER PLACEMENT NOTIFICATION SENT BY USER: ${job.data.order.userID}`);
+            console.log(`ORDER PLACED BY USER: ${order.userID}`);
             break;
-        case "ORDER_CONFIRM":
-            console.log(`ORDER CONFIRMATION SENT BY USER: ${job.data.order.userID}`);
-            break;
-        case "ORDER_SHIP":
-            console.log(`SHIPPING NOTIFICATION SENT BY USER ${job.data.order.userID}`);
+        case "ORDER_SHIPMENT_ADDED":
+            console.log(`SHIPMENT ADDED: ${shipment.shipmentID}`);
             break;
         default:
             break;

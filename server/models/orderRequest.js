@@ -7,14 +7,11 @@ const orderRequestSchema = new Schema({
     confirmed: Boolean,
     requestDate: { type: Date },
     orderStatus: String,
+    orderValue: Number,
     teaOrders: [{
         teaName: String,
         weight: Number
     }],
-    contract: {
-        fileName: String,
-        dateAdded: Date
-    },
     documents: [{
         fileName: String,
         documentCode: String,

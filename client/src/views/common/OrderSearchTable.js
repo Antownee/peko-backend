@@ -50,11 +50,10 @@ class OrderSearchTable extends React.Component {
     }
 
     statusFormatter(cell, row) {
-        if (row.confirmed) {
-            return (<Button size="sm" theme="success" className="mb-2 mr-1"><FormattedMessage id="userorderslist.label-confirmed" /></Button>)
-        } else {
-            return (<Button size="sm" theme="warning" className="mb-2 mr-1"><FormattedMessage id="userorderslist.label-pending" /></Button>)
+        if (row.orderStatus === "ORDER_INIT") {
+            return (<Button size="sm" theme="warning" className="mb-2 mr-1"><FormattedMessage id="userorderslist.label-orderPlaced" /></Button>)
         }
+        return (<Button size="sm" theme="success" className="mb-2 mr-1"><FormattedMessage id="userorderslist.label-shipmentAdded" /></Button>)
     }
 
     dateFormatter(cell, row) {

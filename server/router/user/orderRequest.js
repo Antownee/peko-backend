@@ -84,13 +84,4 @@ router.post('/documents', (req, res, next) => {
 })
 
 
-function emailNotifier(em, order, user) {
-    for (index = 0; index < em.length; ++index) {
-        worker.addEmailJob({ email: em[index].email, order, user, status: "PLACE ORDER" });
-    }
-}
-
-
-
-
 module.exports = router;

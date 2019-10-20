@@ -21,7 +21,7 @@ const DashboardOrderTable = ({ recentOrders }) => (
               <th scope="col" className="border-0"></th>
               <th scope="col" className="border-0"><FormattedMessage id="dashboard.last5orders-orderid"/></th>
               <th scope="col" className="border-0"><FormattedMessage id="dashboard.last5orders-date" /></th>
-              <th scope="col" className="border-0"><FormattedMessage id="dashboard.last5orders-amount" /></th>
+              <th scope="col" className="border-0"><FormattedMessage id="dashboard.last5orders-status" /></th>
             </tr>
           </thead>
           <tbody>
@@ -32,7 +32,7 @@ const DashboardOrderTable = ({ recentOrders }) => (
                     <td>{idx + 1}</td>
                     <td>{ord.orderRequestID}</td>
                     <td>{format(ord.requestDate, 'MMMM Do, YYYY')}</td>
-                    {/* <td>{ord.amount.toLocaleString()}</td> */}
+                    <td>{ord.orderStatus}</td>
                   </tr>
                 )
               )

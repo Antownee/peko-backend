@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const worker = require("../../utils/bgworkers/worker");
 const { check, validationResult } = require('express-validator');
 const orderService = require("../../utils/orderService");
 const orderConstants = require("../../utils/orderConstants");4
@@ -47,53 +46,11 @@ router.post('/delete', (req, res, next) => {
             if (ord) {
                 res.status(200).send({ msg: 'Order deleted!' });
             } else {
-                res.status(404).send({ error: 'Try again later' });
+                res.status(404).send({ error: ord.error });
             }
         })
         .catch(err => next(err));
 })
-
-router.post('/update-status', (req, res, next) => {
-    const { status, orderRequestID } = req.body;
-    
-    orderService.confirmOrder(orderRequestID, status)
-        .then((ord) => {
-            if (ord) {
-                worker.emailQueue.add({
-                    status,
-                    order: ord
-                }).then(() => {
-                    return res.status(200).send({ msg: 'Order confirmed!' });
-                })
-            } else {
-                res.status(404).send({ error: 'Try again later' });
-            }
-        })
-        .catch((err) => { 
-            next(err)
-         });
-})
-
-router.post('/ship', (req, res, next) => {
-    const { user, order } = req.body;
-    orderService.shipOrder(order)
-        .then((ord) => {
-            if (ord) {
-                worker.emailQueue.add({
-                    status: "ORDER_SHIP",
-                    order
-                }).then(() => {
-                    return res.status(200).send({ msg: 'Order shipped!' });
-                })
-                //Trigger a background process to send the shipping email to the client
-                sendEmail(user, order, "SHIP");
-            } else {
-                res.status(404).send({ error: 'Try again later' });
-            }
-        })
-        .catch(err => next(err));
-})
-
 
 router.post('/documents', (req, res, next) => {
     upload(req, res, function (err) {
@@ -113,13 +70,5 @@ router.post('/documents', (req, res, next) => {
             });
     })
 })
-
-
-function sendEmail(user, order, status) {
-    orderService.getUserEmail(order.userID)
-        .then((client) => {
-            worker.addEmailJob({ email: client.email, order, user, status })
-        })
-}
 
 module.exports = router;

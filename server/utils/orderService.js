@@ -127,8 +127,9 @@ async function getCOJEmails() {
     return await Email.find({});
 }
 
-async function getUserEmail(userID) {
-    return await User.findOne({ userID });
+async function getUserEmail(orderID) {
+    let order = await orderRequest.findOne({ orderRequestID: orderID });
+    return await User.findOne({ userID: order.userID });
 }
 
 async function getPrice() {
@@ -152,8 +153,11 @@ async function getMonthData() {
 }
 
 async function getAdminTotalOrderWeight() {
-    let total = await orderRequest.aggregate([{ $group: { _id: null, amount: { $sum: "$amount" } } }]);
-    return total.length === 0 ? 0 : `${total[0].amount} kgs`;
+    //Sum all the shipmentWeight in shipment collection
+    // let total = await orderRequest.aggregate([{ $group: { _id: null, amount: { $sum: "$amount" } } }]);
+    // return total.length === 0 ? 0 : `${total[0].amount} kgs`;
+    let total = await Shipment.aggregate([{ $group: { _id: null, shipmentWeight: { $sum: "$shipmentWeight" } } }]);
+    return total.length === 0 ? 0 : `${total[0].shipmentWeight} kgs`;
 }
 
 async function getUserTotalOrderWeight(userID) {
@@ -226,6 +230,7 @@ async function addShipment(shipmentParam) {
         orderID: shipmentParam.orderID,
         shipmentDate: Date.now().toString(),
         shipmentValue: shipmentParam.shipmentValue,
+        shipmentWeight: shipmentParam.shipmentWeight,
         orderShipped: false
     })
 

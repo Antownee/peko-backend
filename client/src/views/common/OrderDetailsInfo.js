@@ -10,8 +10,9 @@ import {
 } from "shards-react";
 import { format, parse } from 'date-fns';
 import AddShipmentmodal from '../admin/AddShipmentModal';
-import ViewContractModal from '../admin/ViewContractModal';
 
+import { orderService } from "../../redux/services/order.service";
+import { ToastContainer, toast } from 'react-toastify';
 
 class OrderDetailsInfo extends React.Component {
   constructor(props) {
@@ -19,11 +20,12 @@ class OrderDetailsInfo extends React.Component {
 
     this.state = {
       addShipmentModalOpen: false,
-      contractModalOpen: false
+      orderEditModalOpen: false
     }
 
+    this.deleteOrder = this.deleteOrder.bind(this);
+
     this.toggleAddShipmentModal = this.toggleAddShipmentModal.bind(this);
-    this.toggleContractModal = this.toggleContractModal.bind(this);
   }
 
   toggleAddShipmentModal() {
@@ -32,34 +34,32 @@ class OrderDetailsInfo extends React.Component {
     });
   }
 
-  toggleContractModal() {
-    this.setState({
-      contractModalOpen: !this.state.contractModalOpen,
-    });
+  deleteOrder() {
+    orderService.deleteOrder(this.props.order)
+      .then((res) => {
+        toast.success(res.msg);
+        return this.props.handleSearchState(false);//go back
+      })
+      .catch((e) => {
+        toast.error(e.message);
+      })
   }
 
 
   render() {
     let { order, user, addShipmentToState } = this.props;
-    let { addShipmentModalOpen, contractModalOpen } = this.state;
+    let { addShipmentModalOpen } = this.state;
 
     return (
       <div>
-        {
-          user.role === "Admin" ?
-            <AddShipmentmodal
-              modalOpen={addShipmentModalOpen}
-              toggleAddShipmentModal={this.toggleAddShipmentModal}
-              order={order}
-              addShipmentToState={addShipmentToState}
-            /> : ""
-        }
+        <ToastContainer />
 
-        <ViewContractModal
-          modalOpen={contractModalOpen}
-          toggleModal={this.toggleContractModal}
+        <AddShipmentmodal
+          modalOpen={addShipmentModalOpen}
+          toggleAddShipmentModal={this.toggleAddShipmentModal}
+          order={order}
+          addShipmentToState={addShipmentToState}
         />
-
 
         <Card small className="mb-4 pt-3">
           <CardHeader className="border-bottom text-center">
@@ -67,13 +67,18 @@ class OrderDetailsInfo extends React.Component {
             <span className="text-muted d-block mb-2">{format(order.requestDate, 'MMMM Do, YYYY')}</span>
             {
               user.role === "Admin" ?
-                <Button pill outline size="sm" className="mb-2 mr-2" onClick={this.toggleAddShipmentModal}>
-                  <i className="material-icons mr-1">person_add</i> Add shipment
-                </Button> : ""
-            }
-            <Button pill outline size="sm" className="mb-2" onClick={this.toggleContractModal}>
-              <i className="material-icons mr-1">person_add</i> View contract
+                <div>
+                  <Button pill outline size="sm" className="mb-2 mr-2" onClick={this.toggleAddShipmentModal}>
+                    <i className="material-icons mr-1">person_add</i> Add shipment
+                </Button>
+                  <Button pill outline size="sm" className="mb-2" theme="danger" onClick={this.deleteOrder}>
+                    <i className="material-icons mr-1">delete</i> Delete Order
           </Button>
+                </div>
+
+                : ""
+            }
+
           </CardHeader>
           <ListGroup flush>
             <ListGroupItem className="px-4">
@@ -86,7 +91,7 @@ class OrderDetailsInfo extends React.Component {
                   value={74}
                 >
                   <span className="progress-value">
-                    {300000} USD
+                    {order.orderValue} USD
             </span>
                 </Progress>
               </div>
@@ -99,7 +104,7 @@ class OrderDetailsInfo extends React.Component {
                 {
                   Object.keys(order).length > 0 ?
                     order.teaOrders.map((teaOrder, idx) => (
-                      <ul>
+                      <ul key={idx}>
                         <li >
                           <strong> {teaOrder.teaName} - {`${teaOrder.weight} kgs`}</strong>
                         </li>

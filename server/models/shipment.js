@@ -9,8 +9,10 @@ var shipmentSchema = new Schema({
         dateAdded: Date
     }],
     orderID: String,
+    userID: String,
     shipmentDate: Date,
     shipmentValue: Number, //Amount the shipment is worth = contract value
+    shipmentWeight: Number,
     orderShipped: Boolean
 });
 

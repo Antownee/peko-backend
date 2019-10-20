@@ -16,7 +16,6 @@ import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 import ShipmentsTable from './ShipmentsTable'
 import OrderDetailsInfo from "./OrderDetailsInfo";
 import OrderDetailsProgress from "./OrderDetailsProgress";
-import UploadContract from '../admin/UploadContract';
 
 
 class OrderDetails extends React.Component {
@@ -72,7 +71,7 @@ class OrderDetails extends React.Component {
             .then((res) => {
                 toast.success(res.msg);
                 this.setState({ currentOrder: {} });
-                return this.props.handleSearchState(false);//go back
+                return this.goBack();
             })
             .catch((e) => {
                 toast.error(e.message);
@@ -86,7 +85,7 @@ class OrderDetails extends React.Component {
     }
 
     render() {
-        const { order, user, intl } = this.props;
+        const { order, user, intl, handleSearchState } = this.props;
         const { currentOrder, shipments } = this.state;
         const messages = defineMessages({
             header: { id: "userorderdetails.header" },
@@ -113,10 +112,10 @@ class OrderDetails extends React.Component {
                         <div>
                             <Row>
                                 <Col lg="4">
-                                    <OrderDetailsInfo order={order} user={user} addShipmentToState={this.addShipmentToState} />
+                                    <OrderDetailsInfo order={order} user={user} addShipmentToState={this.addShipmentToState}  deleteOrder={this.deleteOrder} handleSearchState={handleSearchState} />
                                 </Col>
                                 <Col lg="8">
-                                    <OrderDetailsProgress currentOrderPosition={0} />
+                                    <OrderDetailsProgress order={order}/>
                                 </Col>
                             </Row>
                             <Row noGutters className="page-header py-4">
@@ -133,7 +132,6 @@ class OrderDetails extends React.Component {
                             </Row>
                         </div> :
                         <div>
-                            <UploadContract user={user} currentOrder={currentOrder} />
                         </div>
                 }
 

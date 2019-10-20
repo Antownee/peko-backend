@@ -82,7 +82,7 @@ class ShipmentsTable extends React.Component {
                 submitted: true
             })
 
-            let { currentShipment } = state ;
+            let { currentShipment } = state;
             currentShipment['documents'] = newDocuments;
 
             //update displayDocuments
@@ -105,7 +105,7 @@ class ShipmentsTable extends React.Component {
 
 
     render() {
-        const { shipments } = this.props;
+        const { shipments, user } = this.props;
         const { modalOpen, currentShipment, displaySentDocuments, displayReceivedDocuments } = this.state
         return (
             <Container fluid className="main-content-container px-4">
@@ -120,44 +120,60 @@ class ShipmentsTable extends React.Component {
                     updateShipmentDocuments={this.updateShipmentDocuments}
                 />
 
-                <table className="table mb-0">
-                    <thead className="bg-light">
-                        <tr>
-                            <th scope="col" className="border-0">
-                                Shipment ID
+                {
+                    shipments.length > 0 ? <table className="table mb-0">
+                        <thead className="bg-light">
+                            <tr>
+                                <th scope="col" className="border-0">
+                                    Shipment ID
                             </th>
-                            <th scope="col" className="border-0">
-                                Date
+                                <th scope="col" className="border-0">
+                                    Date
                                             </th>
-                            <th scope="col" className="border-0">
-                                Value
+                                <th scope="col" className="border-0">
+                                    Value
                                             </th>
-                            <th scope="col" className="border-0">
+                                <th scope="col" className="border-0">
 
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            shipments.map((shipment, idx) => (
-                                <tr key={idx}>
-                                    <td>{shipment.shipmentID}</td>
-                                    <td>{format(shipment.shipmentDate, 'MMMM Do, YYYY')}</td>
-                                    <td>USD {shipment.shipmentValue}</td>
-                                    <td>
-                                        <Button size="sm" theme="success" className="mb-2 mr-1" onClick={() => this.toggleModal(shipment)}>View Shipment</Button>
-                                    </td>
-                                    <td>
-                                        <Button size="sm" theme="danger" className="mb-2 mr-1" onClick={() => this.deleteShipment(shipment.shipmentID)}>Delete</Button>
-                                    </td>
-                                </tr>
-                            ))
-                        }
-                    </tbody>
-                </table>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                shipments.map((shipment, idx) => (
+                                    <tr key={idx}>
+                                        <td>{shipment.shipmentID}</td>
+                                        <td>{format(shipment.shipmentDate, 'MMMM Do, YYYY')}</td>
+                                        <td>USD {shipment.shipmentValue}</td>
+                                        <td>
+                                            <Button size="sm" theme="success" className="mb-2 mr-1" onClick={() => this.toggleModal(shipment)}>View Shipment</Button>
+                                        </td>
+                                        {
+                                            user.role === "Admin" ?
+                                                <td>
+                                                    <Button
+                                                        size="sm"
+                                                        theme="danger"
+                                                        className="mb-2 mr-1"
+                                                        onClick={() => this.deleteShipment(shipment.shipmentID)}>
+                                                        Delete
+                                                     </Button>
+                                                </td> : ""
+                                        }
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    </table> :
+                        <div className="mb-3 text-center">
+                            <img
+                                src={require("./../../images/coj/box.png")}
+                                width="110"
+                            />
+                            <span className="text-muted d-block mt-2">No shipment has been added.</span>
+                        </div>
+                }
             </Container>
-
-
         )
     }
 }

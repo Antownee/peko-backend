@@ -13,7 +13,7 @@ const config = require("../../config/config");
 
 module.exports = {
     createAdmin,
-    addTeaTypes
+    addTeaTypes,
 }
 
 
@@ -29,7 +29,7 @@ async function createAdmin() {
     });
 
     // hash password
-    user.hash = bcrypt.hashSync("password", 10);
+    user.hash = bcrypt.hashSync("12", 10);
 
     await user.save();
     console.log("Admin user added.");
