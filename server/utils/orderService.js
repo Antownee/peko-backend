@@ -154,20 +154,31 @@ async function getMonthData() {
 
 async function getAdminTotalOrderWeight() {
     //Sum all the shipmentWeight in shipment collection
-    // let total = await orderRequest.aggregate([{ $group: { _id: null, amount: { $sum: "$amount" } } }]);
-    // return total.length === 0 ? 0 : `${total[0].amount} kgs`;
-    let total = await Shipment.aggregate([{ $group: { _id: null, shipmentWeight: { $sum: "$shipmentWeight" } } }]);
-    return total.length === 0 ? 0 : `${total[0].shipmentWeight} kgs`;
+    let total = await orderRequest.aggregate([
+        { $unwind: "$teaOrders" },
+        {
+            $group: {
+                _id: null,
+                totalOrderWeight: { $sum: "$teaOrders.weight" }
+            }
+        }
+    ]);
+    return total.length === 0 ? 0 : `${total[0].totalOrderWeight} kgs`;
 }
 
 async function getUserTotalOrderWeight(userID) {
     let total = await orderRequest.aggregate([
         { $match: { userID: userID } },
-        { $group: { _id: null, amount: { $sum: "$amount" } } }
+        { $unwind: "$teaOrders" },
+        {
+            $group: {
+                _id: null,
+                totalOrderWeight: { $sum: "$teaOrders.weight" }
+            }
+        }
     ]);
-    return total.length === 0 ? 0 : `${total[0].amount} kgs`;
+    return total.length === 0 ? 0 : `${total[0].shipmentWeight} kgs`;
 }
-
 
 
 async function getAdminDashboard() {
@@ -178,7 +189,7 @@ async function getAdminDashboard() {
     //Number of orders made
     const numberOfOrders = await orderRequest.countDocuments({});
     //Pending orders
-    const pendingOrders = await orderRequest.countDocuments({ confirmed: false });
+    const shippedOrders = await orderRequest.countDocuments({ orderStatus: "ORDER_SHIPMENT_ADDED" });
     //Last 5 orders
     const recentOrders = await orderRequest.find().sort('date').limit(5)
     //Total kgs moved by all clients to date
@@ -186,7 +197,7 @@ async function getAdminDashboard() {
 
     return {
         numberOfOrders,
-        pendingOrders,
+        shippedOrders,
         //priceOfTea,
         recentOrders,
         historicalPrices,
@@ -202,7 +213,7 @@ async function getUserDashboard(user) {
     //Number of orders made
     const numberOfOrders = await orderRequest.countDocuments({ userID: user.userID });
     //Pending orders
-    const pendingOrders = await orderRequest.countDocuments({ userID: user.userID, confirmed: false });
+    const shippedOrders = await orderRequest.countDocuments({ userID: user.userID, orderStatus: "ORDER_SHIPMENT_ADDED" });
     //Last 5 orders
     const recentOrders = await orderRequest.find({ userID: user.userID }).sort('date').limit(5);
     //Total kgs moved by all clients to date
@@ -211,7 +222,7 @@ async function getUserDashboard(user) {
 
     return {
         numberOfOrders,
-        pendingOrders,
+        shippedOrders,
         //priceOfTea,
         recentOrders,
         historicalPrices,
@@ -224,8 +235,9 @@ async function getShipmentsFromOrder(orderID) {
     return await Shipment.find({ orderID });
 }
 
-async function addShipment(shipmentParam) {
+async function addShipment(shipmentParam, ) {
     let newShipment = new Shipment({
+        userID: shipmentParam.userID,
         shipmentID: shipmentParam.shipmentID,
         orderID: shipmentParam.orderID,
         shipmentDate: Date.now().toString(),

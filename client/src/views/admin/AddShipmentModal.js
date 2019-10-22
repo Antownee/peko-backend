@@ -48,7 +48,7 @@ class AddShipmentModal extends React.Component {
                                 })}
                                 onSubmit={({ shipmentID, shipmentValue, shipmentWeight }, { setStatus, setSubmitting, resetForm }) => {
                                     setStatus();
-                                    orderService.addShipment({ shipmentID, shipmentValue, orderID: order.orderRequestID, shipmentWeight })
+                                    orderService.addShipment({ shipmentID, shipmentValue, orderID: order.orderRequestID, shipmentWeight, userID: order.userID })
                                         .then((res) => {
                                             resetForm();
                                             setSubmitting(false);

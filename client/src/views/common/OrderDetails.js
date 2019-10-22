@@ -112,10 +112,15 @@ class OrderDetails extends React.Component {
                         <div>
                             <Row>
                                 <Col lg="4">
-                                    <OrderDetailsInfo order={order} user={user} addShipmentToState={this.addShipmentToState}  deleteOrder={this.deleteOrder} handleSearchState={handleSearchState} />
+                                    <OrderDetailsInfo
+                                        order={order}
+                                        user={user}
+                                        addShipmentToState={this.addShipmentToState}
+                                        deleteOrder={this.deleteOrder}
+                                        handleSearchState={handleSearchState} />
                                 </Col>
                                 <Col lg="8">
-                                    <OrderDetailsProgress order={order}/>
+                                    <OrderDetailsProgress order={order} />
                                 </Col>
                             </Row>
                             <Row noGutters className="page-header py-4">

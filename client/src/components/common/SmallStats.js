@@ -5,6 +5,7 @@ import shortid from "shortid";
 import { Card, CardBody } from "shards-react";
 
 import Chart from "../../utils/chart";
+import { formatNumber } from "../../utils/numberFormatter";
 
 class SmallStats extends React.Component {
   constructor(props) {
@@ -131,7 +132,7 @@ class SmallStats extends React.Component {
           <div className={innerWrapperClasses}>
             <div className={dataFieldClasses}>
               <span className={labelClasses}>{label}</span>
-              <h6 className={valueClasses}>{value}</h6>
+              <h6 className={valueClasses}> {formatNumber(value)}</h6>
             </div>
             {/* <div className={innerDataFieldClasses}>
               <span className={percentageClasses}>{percentage}</span>

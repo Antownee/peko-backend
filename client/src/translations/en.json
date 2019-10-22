@@ -42,7 +42,7 @@
 	"userorderdetails.progress-1": "Start",
 	"userorderdetails.progress-1-text": "Order has been placed",
 	"userorderdetails.progress-2": "Second",
-	"userorderdetails.progress-2-text": "Order confirmed awaiting customer to upload documents",
+	"userorderdetails.progress-2-text": "Shipment has been added",
 	"userorderdetails.progress-3": "Third",
 	"userorderdetails.progress-3-text": "Documents uploaded. Awaiting shipping of cargo",
 	"userorderdetails.progress-4": "Fourth",

@@ -10,7 +10,7 @@ import {
 } from "shards-react";
 import { format, parse } from 'date-fns';
 import AddShipmentmodal from '../admin/AddShipmentModal';
-
+import { formatNumber } from "../../utils/numberFormatter";
 import { orderService } from "../../redux/services/order.service";
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -20,12 +20,12 @@ class OrderDetailsInfo extends React.Component {
 
     this.state = {
       addShipmentModalOpen: false,
-      orderEditModalOpen: false
+      orderEditModalOpen: false,
     }
 
     this.deleteOrder = this.deleteOrder.bind(this);
-
     this.toggleAddShipmentModal = this.toggleAddShipmentModal.bind(this);
+    this.getTotalOrderWeight = this.getTotalOrderWeight.bind(this);
   }
 
   toggleAddShipmentModal() {
@@ -45,6 +45,11 @@ class OrderDetailsInfo extends React.Component {
       })
   }
 
+  getTotalOrderWeight(order) {
+      return order.teaOrders
+        .map(item => item.weight)
+        .reduce((prev, curr) => formatNumber(prev + curr), 0)
+  }
 
   render() {
     let { order, user, addShipmentToState } = this.props;
@@ -64,7 +69,10 @@ class OrderDetailsInfo extends React.Component {
         <Card small className="mb-4 pt-3">
           <CardHeader className="border-bottom text-center">
             <h4 className="mb-0">{order.orderRequestID}</h4>
-            <span className="text-muted d-block mb-2">{format(order.requestDate, 'MMMM Do, YYYY')}</span>
+            <span className="text-muted d-block mb-1">{format(order.requestDate, 'MMMM Do, YYYY')}</span>
+            <span className="text-muted d-block mb-1">
+              {Object.keys(order).length > 0 ? `${this.getTotalOrderWeight(order)} kgs` : "0 kgs"}
+            </span>
             {
               user.role === "Admin" ?
                 <div>

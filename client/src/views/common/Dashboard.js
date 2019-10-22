@@ -34,7 +34,7 @@ class Dashboard extends React.Component {
         //number of orders made
         smallStats[0].value = res.numberOfOrders;
         //pending orders
-        smallStats[1].value = res.pendingOrders;
+        smallStats[1].value = res.shippedOrders;
         //total weight of orders
         smallStats[2].value = res.totalOrderWeight;
 
@@ -46,7 +46,7 @@ class Dashboard extends React.Component {
 
       })
       .catch((e) => {
-
+        //Throw and error
       })
   }
 
@@ -56,11 +56,11 @@ class Dashboard extends React.Component {
     const { isLoading, intl } = this.props;
     const messages = defineMessages({
       header: { id: "dashboard.header" },
-      card1: { id: "dashboard.card1-title"},
-      card2: { id: "dashboard.card2-title"},
-      card3: { id: "dashboard.card3-title"}
+      card1: { id: "dashboard.card1-title" },
+      card2: { id: "dashboard.card2-title" },
+      card3: { id: "dashboard.card3-title" }
     })
-    
+
     return (
       <div>
         {

@@ -9,6 +9,7 @@ import { orderService } from "../../redux/services/order.service";
 import Loading from "../common/Loading";
 import { loadingActions } from "../../redux/actions"
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
+import { formatNumber } from "../../utils/numberFormatter";
 
 const { SearchBar } = Search;
 
@@ -66,7 +67,7 @@ class OrderSearchTable extends React.Component {
         if (row.teaOrders.length > 0) {
             return row.teaOrders
                 .map(item => item.weight)
-                .reduce((prev, curr) => prev + curr, 0)
+                .reduce((prev, curr) => formatNumber(prev + curr), 0)
         }
     }
 
