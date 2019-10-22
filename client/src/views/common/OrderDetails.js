@@ -32,6 +32,7 @@ class OrderDetails extends React.Component {
         this.getShipments = this.getShipments.bind(this);
         this.addShipmentToState = this.addShipmentToState.bind(this);
         this.removeShipmentfromState = this.removeShipmentfromState.bind(this);
+        this.getPaymentProgress = this.getPaymentProgress.bind(this);
     }
 
     componentDidMount() {
@@ -78,6 +79,21 @@ class OrderDetails extends React.Component {
             })
     }
 
+
+    getPaymentProgress() {
+        //get total order value, get total of all shipments value
+        const { shipments } = this.state;
+        const { order } = this.props;
+
+        let totalShipmentValue = shipments
+            .map(item => item.shipmentValue)
+            .reduce((prev, curr) => prev + curr, 0);
+
+        let totalOrderValue = 20000; //order.totalValue
+
+        return (totalShipmentValue / totalOrderValue * 100);
+    }
+
     goBack() {
         //Change state
         this.props.handleSearchState(false);
@@ -86,7 +102,7 @@ class OrderDetails extends React.Component {
 
     render() {
         const { order, user, intl, handleSearchState } = this.props;
-        const { currentOrder, shipments } = this.state;
+        const { shipments } = this.state;
         const messages = defineMessages({
             header: { id: "userorderdetails.header" },
             progress1: { id: "userorderdetails.progress-1" },
@@ -117,7 +133,8 @@ class OrderDetails extends React.Component {
                                         user={user}
                                         addShipmentToState={this.addShipmentToState}
                                         deleteOrder={this.deleteOrder}
-                                        handleSearchState={handleSearchState} />
+                                        handleSearchState={handleSearchState}
+                                        totalOrderValue={Object.keys(order).length > 0 ? `${this.getPaymentProgress()}` : 0} />
                                 </Col>
                                 <Col lg="8">
                                     <OrderDetailsProgress order={order} />

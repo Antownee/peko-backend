@@ -51,9 +51,10 @@ class OrderDetailsInfo extends React.Component {
         .reduce((prev, curr) => formatNumber(prev + curr), 0)
   }
 
+
   render() {
     let { order, user, addShipmentToState } = this.props;
-    let { addShipmentModalOpen } = this.state;
+    let { addShipmentModalOpen, totalOrderValue } = this.state;
 
     return (
       <div>
@@ -96,7 +97,7 @@ class OrderDetailsInfo extends React.Component {
                </strong>
                 <Progress
                   className="progress-sm"
-                  value={74}
+                  value={totalOrderValue}
                 >
                   <span className="progress-value">
                     {order.orderValue} USD
