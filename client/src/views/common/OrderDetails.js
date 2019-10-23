@@ -91,7 +91,7 @@ class OrderDetails extends React.Component {
 
         let totalOrderValue = 20000; //order.totalValue
 
-        return (totalShipmentValue / totalOrderValue * 100);
+        return  Math.floor((totalShipmentValue / totalOrderValue * 100));
     }
 
     goBack() {
@@ -134,7 +134,7 @@ class OrderDetails extends React.Component {
                                         addShipmentToState={this.addShipmentToState}
                                         deleteOrder={this.deleteOrder}
                                         handleSearchState={handleSearchState}
-                                        totalOrderValue={Object.keys(order).length > 0 ? `${this.getPaymentProgress()}` : 0} />
+                                        paymentProgress={Object.keys(order).length > 0 ? this.getPaymentProgress() : 0} />
                                 </Col>
                                 <Col lg="8">
                                     <OrderDetailsProgress order={order} />

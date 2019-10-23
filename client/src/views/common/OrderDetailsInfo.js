@@ -53,8 +53,8 @@ class OrderDetailsInfo extends React.Component {
 
 
   render() {
-    let { order, user, addShipmentToState } = this.props;
-    let { addShipmentModalOpen, totalOrderValue } = this.state;
+    let { order, user, addShipmentToState, paymentProgress, totalShipmentValue } = this.props;
+    let { addShipmentModalOpen } = this.state;
 
     return (
       <div>
@@ -97,10 +97,10 @@ class OrderDetailsInfo extends React.Component {
                </strong>
                 <Progress
                   className="progress-sm"
-                  value={totalOrderValue}
+                  value={paymentProgress}
                 >
                   <span className="progress-value">
-                    {order.orderValue} USD
+                    {paymentProgress} %
             </span>
                 </Progress>
               </div>
