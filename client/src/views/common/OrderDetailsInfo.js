@@ -10,6 +10,7 @@ import {
 } from "shards-react";
 import { format, parse } from 'date-fns';
 import AddShipmentmodal from '../admin/AddShipmentModal';
+import EditorderModal from '../admin/EditOrderModal';
 import { formatNumber } from "../../utils/numberFormatter";
 import { orderService } from "../../redux/services/order.service";
 import { ToastContainer, toast } from 'react-toastify';
@@ -25,12 +26,18 @@ class OrderDetailsInfo extends React.Component {
 
     this.deleteOrder = this.deleteOrder.bind(this);
     this.toggleAddShipmentModal = this.toggleAddShipmentModal.bind(this);
+    this.toggleEditOrderModal = this.toggleEditOrderModal.bind(this);
     this.getTotalOrderWeight = this.getTotalOrderWeight.bind(this);
   }
 
   toggleAddShipmentModal() {
     this.setState({
       addShipmentModalOpen: !this.state.addShipmentModalOpen,
+    });
+  }
+  toggleEditOrderModal() {
+    this.setState({
+      orderEditModalOpen: !this.state.orderEditModalOpen,
     });
   }
 
@@ -46,26 +53,34 @@ class OrderDetailsInfo extends React.Component {
   }
 
   getTotalOrderWeight(order) {
-      return order.teaOrders
-        .map(item => item.weight)
-        .reduce((prev, curr) => formatNumber(prev + curr), 0)
+    return order.teaOrders
+      .map(item => item.weight)
+      .reduce((prev, curr) => formatNumber(prev + curr), 0)
   }
 
 
   render() {
     let { order, user, addShipmentToState, paymentProgress, totalShipmentValue } = this.props;
-    let { addShipmentModalOpen } = this.state;
+    let { addShipmentModalOpen, orderEditModalOpen } = this.state;
 
     return (
       <div>
         <ToastContainer />
 
+        <EditorderModal
+          modalOpen={orderEditModalOpen}
+          toggleEditOrderModal={this.toggleEditOrderModal}
+          order={order}
+        />
+        
         <AddShipmentmodal
           modalOpen={addShipmentModalOpen}
           toggleAddShipmentModal={this.toggleAddShipmentModal}
           order={order}
           addShipmentToState={addShipmentToState}
         />
+
+
 
         <Card small className="mb-4 pt-3">
           <CardHeader className="border-bottom text-center">
@@ -79,6 +94,9 @@ class OrderDetailsInfo extends React.Component {
                 <div>
                   <Button pill outline size="sm" className="mb-2 mr-2" onClick={this.toggleAddShipmentModal}>
                     <i className="material-icons mr-1">person_add</i> Add shipment
+                </Button>
+                  <Button pill outline size="sm" className="mb-2 mr-2" onClick={this.toggleEditOrderModal} >
+                    <i className="material-icons mr-1">delete</i> Edit Order
                 </Button>
                   <Button pill outline size="sm" className="mb-2" theme="danger" onClick={this.deleteOrder}>
                     <i className="material-icons mr-1">delete</i> Delete Order
@@ -113,9 +131,12 @@ class OrderDetailsInfo extends React.Component {
                 {
                   Object.keys(order).length > 0 ?
                     order.teaOrders.map((teaOrder, idx) => (
-                      <ul key={idx}>
+                      <ul className="mb-2" key={idx}>
                         <li >
                           <strong> {teaOrder.teaName} - {`${teaOrder.weight} kgs`}</strong>
+                          <Button pill outline size="sm" className="ml-3" onClick={this.toggleAddShipmentModal}>
+                            <i className="material-icons mr-1">attach_money</i> Edit price
+                    </Button>
                         </li>
                       </ul>
                     )) : ""

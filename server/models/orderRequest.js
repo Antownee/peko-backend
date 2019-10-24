@@ -11,11 +11,6 @@ const orderRequestSchema = new Schema({
     teaOrders: [{
         teaName: String,
         weight: Number
-    }],
-    documents: [{
-        fileName: String,
-        documentCode: String,
-        dateAdded: Date
     }]
 });
 

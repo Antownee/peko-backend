@@ -1,13 +1,6 @@
 import React from "react";
-import {
-    Container,
-    Col,
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter, FormInput, Row, CardBody
-} from "shards-react";
+import { Container, Col, Row } from "shards-react";
+import Modal from 'react-bootstrap/modal';
 import { connect } from "react-redux";
 import "react-tabs/style/react-tabs.css";
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
@@ -29,11 +22,11 @@ class AddShipmentModal extends React.Component {
         return (
             <Container fluid className="main-content-container px-4">
                 <ToastContainer />
-                <Modal size="lg" open={modalOpen} toggle={toggleAddShipmentModal}>
-                    <ModalHeader>Edit Order</ModalHeader>
-                    <ModalBody>
-                        <span>Create a shipment</span>
-
+                <Modal size="lg" show={modalOpen} onHide={toggleAddShipmentModal}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Add Shipment</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
                         <Row>
                             <Formik
                                 initialValues={{
@@ -93,9 +86,7 @@ class AddShipmentModal extends React.Component {
                                 )}
                             />
                         </Row>
-                    </ModalBody>
-                    <ModalFooter>
-                    </ModalFooter>
+                    </Modal.Body>
                 </Modal>
             </Container>
         )

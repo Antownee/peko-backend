@@ -153,6 +153,12 @@ class ShipmentsTable extends React.Component {
                                                 <td>
                                                     <Button
                                                         size="sm"
+                                                        theme="success"
+                                                        className="mb-2 mr-1">
+                                                        Edit Shipment
+                                                     </Button>
+                                                     <Button
+                                                        size="sm"
                                                         theme="danger"
                                                         className="mb-2 mr-1"
                                                         onClick={() => this.deleteShipment(shipment.shipmentID)}>
