@@ -39,9 +39,9 @@ router.post('/all', (req, res, next) => {
 })
 
 router.post('/update', (req, res, next) => {
-    const { orderID, orderValue } = req.body;
+    const { orderID, orderValue, teaOrders } = req.body;
     //Sanitize
-    orderService.updateOrderValue(orderID, orderValue)
+    orderService.updateOrderValue(orderID, orderValue, teaOrders)
         .then((ord) => {
             if (ord) {
                 res.status(200).send({ msg: 'Order updated!', order: ord });

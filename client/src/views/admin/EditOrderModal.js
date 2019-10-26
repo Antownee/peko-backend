@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Col, Row } from "shards-react";
+import { Container, Col, Row, ListGroup, ListGroupItem, FormInput } from "shards-react";
 import "react-tabs/style/react-tabs.css";
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 import Modal from 'react-bootstrap/modal';
@@ -14,13 +14,24 @@ class EditOrderModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            orderValue: 0
+            orderValue: 0,
+            teaOrders: []
         }
+        this.onTeaOrderWeightChange = this.onTeaOrderWeightChange.bind(this);
     }
+    onTeaOrderWeightChange(e) {
+        const { name, value } = e.target;
+        let { teaOrders } = this.props.order;
+        let newTeaOrders = teaOrders.map(to =>
+            to.teaName === name ? { ...to, weight: value } : to
+        );
 
+        this.setState({ teaOrders: newTeaOrders });
+    }
 
     render() {
         let { modalOpen, toggleEditOrderModal, order, updatePaymentProgress } = this.props;
+        let { teaOrders } = this.state;
         return (
             <Container fluid className="main-content-container px-4">
                 <ToastContainer />
@@ -36,10 +47,11 @@ class EditOrderModal extends React.Component {
                             validationSchema={Yup.object().shape({
                                 orderValue: Yup.number().required('Cannot be empty')
                             })}
-                            onSubmit={({ orderID, orderValue }, { setStatus, setSubmitting, resetForm }) => {
+                            onSubmit={({ orderValue }, { setStatus, setSubmitting, resetForm }) => {
                                 setStatus();
                                 //Post to server. Update Order
-                                orderService.updateOrder({ orderID:  order.orderRequestID, orderValue })
+                                if (teaOrders.length === 0) { setSubmitting(false); return toast.error("Kindly enter the weight of the tea") }
+                                orderService.updateOrder({ orderID: order.orderRequestID, orderValue, teaOrders })
                                     .then((res) => {
                                         resetForm();
                                         setSubmitting(false);
@@ -67,6 +79,21 @@ class EditOrderModal extends React.Component {
                                                 <label htmlFor="orderValue">Order Value (USD)</label>
                                                 <Field name="orderValue" type="number" className={'form-control' + (errors.orderValue && touched.orderValue ? ' is-invalid' : '')} />
                                                 <ErrorMessage name="orderValue" component="div" className="invalid-feedback" />
+                                            </Col>
+                                            <Col md="6" className="form-group">
+                                                <ListGroup flush className="list-group">
+                                                    <label htmlFor="orderValue">List of Tea Orders</label>
+                                                    {order.teaOrders.map((item, idx) => (
+                                                        <ListGroupItem key={idx} className="d-flex px-3">
+                                                            <Col md="6" className="form-group">
+                                                                <span className="text-semibold text-fiord-blue">{item.teaName}</span>
+                                                            </Col>
+                                                            <Col md="6" className="form-group">
+                                                                <FormInput type="number" placeholder={item.weight} name={item.teaName} className="mb-2" onChange={this.onTeaOrderWeightChange} />
+                                                            </Col>
+                                                        </ListGroupItem>
+                                                    ))}
+                                                </ListGroup>
                                             </Col>
                                         </Row>
                                         <div className="form-group">

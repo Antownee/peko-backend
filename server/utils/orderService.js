@@ -272,6 +272,6 @@ async function updateOrderStatus(orderRequestID, orderStatus) {
     return await orderRequest.findOneAndUpdate({ orderRequestID: orderRequestID }, { orderStatus }, { new: true })
 }
 
-async function updateOrderValue(orderRequestID, orderValue) {
-    return await orderRequest.findOneAndUpdate({ orderRequestID: orderRequestID }, { orderValue }, { new: true })
+async function updateOrderValue(orderRequestID, orderValue, teaOrders) {
+    return await orderRequest.findOneAndUpdate({ orderRequestID: orderRequestID }, { orderValue, teaOrders }, { new: true })
 }
