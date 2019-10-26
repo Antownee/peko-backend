@@ -13,11 +13,14 @@ import { orderService } from "../../redux/services/order.service";
 class EditOrderModal extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            orderValue: 0
+        }
     }
 
 
     render() {
-        let { modalOpen, toggleEditOrderModal, order } = this.props;
+        let { modalOpen, toggleEditOrderModal, order, updatePaymentProgress } = this.props;
         return (
             <Container fluid className="main-content-container px-4">
                 <ToastContainer />
@@ -28,26 +31,38 @@ class EditOrderModal extends React.Component {
                     <Modal.Body>
                         <Formik
                             initialValues={{
-                                orderID: order.orderRequestID,
-                                orderValue: 0,
+                                orderValue: this.state.orderValue || order.orderValue,
                             }}
                             validationSchema={Yup.object().shape({
-                                orderID: Yup.string().required('Cannot be empty'),
                                 orderValue: Yup.number().required('Cannot be empty')
                             })}
                             onSubmit={({ orderID, orderValue }, { setStatus, setSubmitting, resetForm }) => {
                                 setStatus();
-
+                                //Post to server. Update Order
+                                orderService.updateOrder({ orderID:  order.orderRequestID, orderValue })
+                                    .then((res) => {
+                                        resetForm();
+                                        setSubmitting(false);
+                                        toast.success(res.msg);
+                                        this.setState({ orderValue })
+                                        updatePaymentProgress(res.order)
+                                        toggleEditOrderModal();
+                                    })
+                                    .catch((e) => {
+                                        setSubmitting(false);
+                                        setStatus(e);
+                                        toast.error("Try again later");
+                                    })
                             }}
                             render={({ errors, status, touched, isSubmitting }) => (
                                 <Col>
                                     <Form>
                                         <Row>
-                                            <Col md="6" className="form-group">
+                                            {/* <Col md="6" className="form-group">
                                                 <label htmlFor="orderID">Order ID</label>
                                                 <Field name="orderID" type="text" className={'form-control' + (errors.orderID && touched.orderID ? ' is-invalid' : '')} />
                                                 <ErrorMessage name="orderID" component="div" className="invalid-feedback" />
-                                            </Col>
+                                            </Col> */}
                                             <Col md="6" className="form-group">
                                                 <label htmlFor="orderValue">Order Value (USD)</label>
                                                 <Field name="orderValue" type="number" className={'form-control' + (errors.orderValue && touched.orderValue ? ' is-invalid' : '')} />

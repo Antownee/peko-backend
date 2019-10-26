@@ -5,9 +5,11 @@ import { format } from 'date-fns';
 import ShipmentModal from './ShipmentModal';
 import { documentHandler } from '../../utils/documentHandler';
 import { userUploads, adminUploads } from "../../documents";
+import EditShipmentModal from '../admin/EditShipmentModal';
 import { orderService } from "../../redux/services/order.service";
 import { ToastContainer, toast } from 'react-toastify';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
+import { formatNumber } from "../../utils/numberFormatter";
 
 class ShipmentsTable extends React.Component {
     constructor(props) {
@@ -25,11 +27,13 @@ class ShipmentsTable extends React.Component {
                 sendDocs: userUploads, //what he is sending
                 receivedDocs: adminUploads //what he receives
             },
+            editShipmentModalOpen: false
         }
         this.toggleModal = this.toggleModal.bind(this);
         this.loadDocumentTables = this.loadDocumentTables.bind(this);
         this.deleteShipment = this.deleteShipment.bind(this);
         this.updateShipmentDocuments = this.updateShipmentDocuments.bind(this);
+        this.toggleEditShipmentModal = this.toggleEditShipmentModal.bind(this);
     }
 
     async loadDocumentTables(currentShipment) {
@@ -58,6 +62,18 @@ class ShipmentsTable extends React.Component {
             });
         }
     }
+
+    toggleEditShipmentModal(shipment) {
+        this.setState({
+            editShipmentModalOpen: !this.state.editShipmentModalOpen,
+        });
+        if (shipment) {
+            this.setState({
+                currentShipment: shipment
+            });
+        }
+    }
+
 
     deleteShipment(shipmentID) {
         orderService.deleteShipment(shipmentID)
@@ -105,8 +121,8 @@ class ShipmentsTable extends React.Component {
 
 
     render() {
-        const { shipments, user } = this.props;
-        const { modalOpen, currentShipment, displaySentDocuments, displayReceivedDocuments } = this.state
+        const { shipments, user, updateShipmentToState } = this.props;
+        const { modalOpen, currentShipment, displaySentDocuments, displayReceivedDocuments, editShipmentModalOpen } = this.state
         return (
             <Container fluid className="main-content-container px-4">
                 <ToastContainer />
@@ -119,6 +135,14 @@ class ShipmentsTable extends React.Component {
                     receivedDocuments={displayReceivedDocuments}
                     updateShipmentDocuments={this.updateShipmentDocuments}
                 />
+
+                <EditShipmentModal
+                    modalOpen={editShipmentModalOpen}
+                    toggleEditShipmentModal={this.toggleEditShipmentModal}
+                    currentShipment={currentShipment}
+                    updateShipmentToState={updateShipmentToState}
+                />
+
 
                 {
                     shipments.length > 0 ? <table className="table mb-0">
@@ -134,8 +158,9 @@ class ShipmentsTable extends React.Component {
                                     Value
                                             </th>
                                 <th scope="col" className="border-0">
-
-                                </th>
+                                    Weight
+                                            </th>
+                                <th scope="col" className="border-0"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -144,27 +169,29 @@ class ShipmentsTable extends React.Component {
                                     <tr key={idx}>
                                         <td>{shipment.shipmentID}</td>
                                         <td>{format(shipment.shipmentDate, 'MMMM Do, YYYY')}</td>
-                                        <td>USD {shipment.shipmentValue}</td>
+                                        <td>USD {formatNumber(shipment.shipmentValue)}</td>
+                                        <td>{formatNumber(shipment.shipmentWeight)} kgs</td>
+
                                         <td>
-                                            <Button size="sm" theme="success" className="mb-2 mr-1" onClick={() => this.toggleModal(shipment)}>View Shipment</Button>
+                                            <Button pill theme="success" className="mb-2 mr-2" onClick={() => this.toggleModal(shipment)} >
+                                                <i className="material-icons mr-1">open_in_new</i> View Shipment
+                                            </Button>
                                         </td>
                                         {
                                             user.role === "Admin" ?
-                                                <td>
-                                                    <Button
-                                                        size="sm"
-                                                        theme="success"
-                                                        className="mb-2 mr-1">
-                                                        Edit Shipment
+                                                <div>
+                                                    <td>
+                                                        <Button pill theme="info" className="mb-2 mr-2" onClick={() => this.toggleEditShipmentModal(shipment)} >
+                                                            <i className="material-icons mr-1">delete</i> Edit Shipment
                                                      </Button>
-                                                     <Button
-                                                        size="sm"
-                                                        theme="danger"
-                                                        className="mb-2 mr-1"
-                                                        onClick={() => this.deleteShipment(shipment.shipmentID)}>
-                                                        Delete
+                                                    </td>
+                                                    <td>
+                                                        <Button pill className="mb-2 mr-2" theme="danger" onClick={() => this.deleteShipment(shipment.shipmentID)} >
+                                                            <i className="material-icons mr-1">delete</i> Delete
                                                      </Button>
-                                                </td> : ""
+                                                    </td>
+                                                </div>
+                                                : ""
                                         }
                                     </tr>
                                 ))

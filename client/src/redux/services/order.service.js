@@ -3,6 +3,7 @@ import { apiUrl } from "../../config";
 
 export const orderService = {
     addOrder,
+    updateOrder,
     deleteOrder,
     getAllOrders,
     addTeaAssets,
@@ -10,6 +11,7 @@ export const orderService = {
     populateDashboard,
     getTeaAssets,
     addShipment,
+    updateShipment,
     getShipmentsByOrderID,
     deleteShipment
 };
@@ -26,6 +28,19 @@ function addOrder(order, user) {
         .then(handleResponse)
         .then(msg => { return msg })
 }
+
+function updateOrder(orderParams) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderParams)
+    };
+
+    return fetch(`${apiUrl}/admin/order/update`, requestOptions)
+        .then(handleResponse)
+        .then(msg => { return msg })
+}
+
 
 
 function getAllOrders(user) {
@@ -124,6 +139,19 @@ function addShipment(shipment) {
     };
 
     return fetch(`${apiUrl}/admin/shipment`, requestOptions)
+        .then(handleResponse)
+        .then(msg => { return msg })
+}
+
+
+function updateShipment(shipment) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify(shipment)
+    };
+
+    return fetch(`${apiUrl}/admin/shipment/update`, requestOptions)
         .then(handleResponse)
         .then(msg => { return msg })
 }

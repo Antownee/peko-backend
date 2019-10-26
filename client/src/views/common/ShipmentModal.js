@@ -1,5 +1,6 @@
 import React from "react";
-import { Container, Row, Col, Card, CardHeader, CardBody, Button, ButtonGroup, ButtonToolbar, Modal, ModalHeader, ModalBody, ModalFooter } from "shards-react";
+import { Container } from "shards-react";
+import Modal from 'react-bootstrap/modal';
 import { connect } from "react-redux";
 import Steps, { Step } from "rc-steps"
 import { format, parse } from 'date-fns';
@@ -25,20 +26,19 @@ class ShipmentModal extends React.Component {
             <Container fluid className="main-content-container px-4">
                 {
                     currentShipment ?
-                        <Modal size="lg" open={modalOpen} toggle={toggleModal}>
-                            <ModalHeader>
+                        <Modal size="lg" show={modalOpen} onHide={toggleModal}>
+                            <Modal.Header closeButton>
                                 <div>
-                                    <h4 className="mb-0">{currentShipment.shipmentID || ""}</h4>
+                                    <Modal.Title>{currentShipment.shipmentID || ""}</Modal.Title>
                                     <span className="text-muted d-block mb-2">{`USD ${currentShipment.shipmentValue}` || ""}</span>
                                 </div>
-                            </ModalHeader>
-                            <ModalBody>
+                            </Modal.Header>
+                            <Modal.Body>
                                 <Tabs>
                                     <TabList>
                                         <Tab><FormattedMessage id="userorderdetails.sent-documents-title" /></Tab>
                                         <Tab><FormattedMessage id="userorderdetails.received-documents-title" /></Tab>
                                     </TabList>
-
                                     <TabPanel>
                                         <SentDocumentsTable
                                             currentShipment={currentShipment}
@@ -52,16 +52,11 @@ class ShipmentModal extends React.Component {
                                             displayDocuments={receivedDocuments} />
                                     </TabPanel>
                                 </Tabs>
-                            </ModalBody>
-                            <ModalFooter>
-                            </ModalFooter>
-                        </Modal>
-                        : ""
+                            </Modal.Body>
+                        </Modal> : ""
                 }
-
             </Container>
         )
-
     }
 }
 

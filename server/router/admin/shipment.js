@@ -12,8 +12,8 @@ router.post('/', (req, res, next) => {
                 return res.status(404).send({ error: result.error })
             }
             let { shipment } = result;
-            orderService.updateOrderStatus(shipment.orderID,"ORDER_SHIPMENT_ADDED");
-            worker.emailQueue.add({ status: "ORDER_SHIPMENT_ADDED", shipment});
+            orderService.updateOrderStatus(shipment.orderID, "ORDER_SHIPMENT_ADDED");
+            worker.emailQueue.add({ status: "ORDER_SHIPMENT_ADDED", shipment });
             return res.status(200).send({ shipment, message: result.message });
         })
         .catch(err => next(err));
@@ -26,6 +26,18 @@ router.post('/all', (req, res, next) => {
         .then(shipments =>
             shipments ? res.status(200).json(shipments) : res.status(404).send({ error: 'Try again later' })
         )
+        .catch(err => next(err));
+})
+
+router.post('/update', (req, res, next) => {
+    let { shipmentID, shipmentValue, shipmentWeight } = req.body;
+    //Sanitize
+    orderService.updateShipment(shipmentID, shipmentValue, shipmentWeight)
+        .then((shp) => {
+            if (shp) {
+                res.status(200).send({ msg: 'Shipment updated!', shipment: shp });
+            }
+        })
         .catch(err => next(err));
 })
 

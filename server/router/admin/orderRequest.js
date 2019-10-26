@@ -38,6 +38,21 @@ router.post('/all', (req, res, next) => {
         .catch(err => next(err));
 })
 
+router.post('/update', (req, res, next) => {
+    const { orderID, orderValue } = req.body;
+    //Sanitize
+    orderService.updateOrderValue(orderID, orderValue)
+        .then((ord) => {
+            if (ord) {
+                res.status(200).send({ msg: 'Order updated!', order: ord });
+            } else {
+                res.status(404).send({ error: "Try again later." });
+            }
+        })
+        .catch(err => next(err));
+})
+
+
 router.post('/delete', (req, res, next) => {
     const { order } = req.body;
     //Sanitize

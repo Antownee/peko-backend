@@ -25,21 +25,23 @@ class OrderDetails extends React.Component {
             backgroundImage: require("../../images/content-management/17.jpg"),
             currentOrder: this.props.order,
             stepNumber: 0,
-            shipments: []
+            shipments: [],
+            orderValue: 0
         }
         this.goBack = this.goBack.bind(this);
         this.deleteOrder = this.deleteOrder.bind(this);
         this.getShipments = this.getShipments.bind(this);
         this.addShipmentToState = this.addShipmentToState.bind(this);
-        this.removeShipmentfromState = this.removeShipmentfromState.bind(this);
         this.getPaymentProgress = this.getPaymentProgress.bind(this);
+        this.updateShipmentToState = this.updateShipmentToState.bind(this);
+        this.updatePaymentProgress = this.updatePaymentProgress.bind(this);
+        this.removeShipmentfromState = this.removeShipmentfromState.bind(this);
     }
 
     componentDidMount() {
         //get shipments
         this.getShipments();
     }
-
 
     getShipments() {
         let { currentOrder } = this.state;
@@ -59,6 +61,16 @@ class OrderDetails extends React.Component {
         });
     }
 
+    updateShipmentToState(shipment) {
+        this.setState(state => {
+            let shipments = state.shipments.map((shp)=>{
+                if(shp.shipmentID === shipment.shipmentID){ return shipment}
+                return shp
+            });
+            return { shipments };
+        });
+    }
+
     removeShipmentfromState(shipmentID) {
         this.setState(state => {
             let shipments = state.shipments.filter((shipment) => shipment.shipmentID !== shipmentID);
@@ -66,11 +78,10 @@ class OrderDetails extends React.Component {
         });
     }
 
-
     deleteOrder() {
         orderService.deleteOrder(this.state.currentOrder)
             .then((res) => {
-                toast.success(res.msg);
+                toast.success(res.msg); 
                 this.setState({ currentOrder: {} });
                 return this.goBack();
             })
@@ -79,19 +90,21 @@ class OrderDetails extends React.Component {
             })
     }
 
+    updatePaymentProgress(currentOrder) {
+        this.setState({ orderValue: currentOrder.orderValue, currentOrder })
+    }
 
-    getPaymentProgress() {
+    getPaymentProgress(orderValue) {
         //get total order value, get total of all shipments value
-        const { shipments } = this.state;
-        const { order } = this.props;
+        const { shipments, currentOrder } = this.state;
 
         let totalShipmentValue = shipments
             .map(item => item.shipmentValue)
             .reduce((prev, curr) => prev + curr, 0);
 
-        let totalOrderValue = 20000; //order.totalValue
+        let totalOrderValue = currentOrder.orderValue || (orderValue|| 200000);
 
-        return  Math.floor((totalShipmentValue / totalOrderValue * 100));
+        return Math.floor((totalShipmentValue / totalOrderValue * 100));
     }
 
     goBack() {
@@ -102,7 +115,7 @@ class OrderDetails extends React.Component {
 
     render() {
         const { order, user, intl, handleSearchState } = this.props;
-        const { shipments } = this.state;
+        const { shipments, orderValue, currentOrder } = this.state;
         const messages = defineMessages({
             header: { id: "userorderdetails.header" },
             progress1: { id: "userorderdetails.progress-1" },
@@ -115,6 +128,8 @@ class OrderDetails extends React.Component {
             progress4_text: { id: "userorderdetails.progress-4-text" },
         })
 
+        let paymentProgress = this.getPaymentProgress(orderValue);
+
         return (
             <Container fluid className="main-content-container">
                 <ToastContainer />
@@ -124,20 +139,22 @@ class OrderDetails extends React.Component {
                     <PageTitle sm="4" title={intl.formatMessage(messages.header)} className="text-sm-left" />
                 </Row>
                 {
-                    order.orderStatus !== "ORDER_CONF" ?
+                    currentOrder.orderStatus !== "ORDER_CONF" ?
                         <div>
                             <Row>
                                 <Col lg="4">
                                     <OrderDetailsInfo
-                                        order={order}
+                                        order={currentOrder}
                                         user={user}
                                         addShipmentToState={this.addShipmentToState}
                                         deleteOrder={this.deleteOrder}
                                         handleSearchState={handleSearchState}
-                                        paymentProgress={Object.keys(order).length > 0 ? this.getPaymentProgress() : 0} />
+                                        updatePaymentProgress={this.updatePaymentProgress}
+                                        paymentProgress={Object.keys(currentOrder).length > 0 ? paymentProgress : 0}
+                                        orderValue={orderValue} />
                                 </Col>
                                 <Col lg="8">
-                                    <OrderDetailsProgress order={order} />
+                                    <OrderDetailsProgress order={currentOrder} />
                                 </Col>
                             </Row>
                             <Row noGutters className="page-header py-4">
@@ -147,7 +164,10 @@ class OrderDetails extends React.Component {
                                             <h6 className="m-0">Shipments</h6>
                                         </CardHeader>
                                         <CardBody>
-                                            <ShipmentsTable shipments={shipments} removeShipmentfromState={this.removeShipmentfromState} />
+                                            <ShipmentsTable 
+                                            shipments={shipments} 
+                                            removeShipmentfromState={this.removeShipmentfromState}
+                                            updateShipmentToState={this.updateShipmentToState} />
                                         </CardBody>
                                     </Card>
                                 </Col>

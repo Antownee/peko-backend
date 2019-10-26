@@ -17,6 +17,7 @@ shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWX
 module.exports = {
     addTeaItem,
     addOrder,
+    updateOrderValue,
     getAllOrdersUser,
     getAllOrdersAdmin,
     deleteOrder,
@@ -27,6 +28,7 @@ module.exports = {
     isDocumentInStorage,
     getTeaItems,
     addShipment,
+    updateShipment,
     getShipmentsFromOrder,
     getAdminDashboard,
     getUserDashboard,
@@ -230,7 +232,6 @@ async function getUserDashboard(user) {
     };
 }
 
-
 async function getShipmentsFromOrder(orderID) {
     return await Shipment.find({ orderID });
 }
@@ -258,6 +259,10 @@ async function addShipment(shipmentParam, ) {
         })
 }
 
+async function updateShipment(shipmentID, shipmentValue, shipmentWeight) {
+    return await Shipment.findOneAndUpdate({ shipmentID: shipmentID }, { shipmentValue, shipmentWeight }, { new: true })
+}
+
 async function deleteShipment(shipmentID) {
     return await Shipment.findOneAndDelete({ shipmentID });
 }
@@ -265,4 +270,8 @@ async function deleteShipment(shipmentID) {
 
 async function updateOrderStatus(orderRequestID, orderStatus) {
     return await orderRequest.findOneAndUpdate({ orderRequestID: orderRequestID }, { orderStatus }, { new: true })
+}
+
+async function updateOrderValue(orderRequestID, orderValue) {
+    return await orderRequest.findOneAndUpdate({ orderRequestID: orderRequestID }, { orderValue }, { new: true })
 }

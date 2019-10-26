@@ -35,6 +35,7 @@ class OrderDetailsInfo extends React.Component {
       addShipmentModalOpen: !this.state.addShipmentModalOpen,
     });
   }
+  
   toggleEditOrderModal() {
     this.setState({
       orderEditModalOpen: !this.state.orderEditModalOpen,
@@ -60,7 +61,7 @@ class OrderDetailsInfo extends React.Component {
 
 
   render() {
-    let { order, user, addShipmentToState, paymentProgress, totalShipmentValue } = this.props;
+    let { order, user, addShipmentToState, updatePaymentProgress, paymentProgress, orderValue } = this.props;
     let { addShipmentModalOpen, orderEditModalOpen } = this.state;
 
     return (
@@ -71,8 +72,9 @@ class OrderDetailsInfo extends React.Component {
           modalOpen={orderEditModalOpen}
           toggleEditOrderModal={this.toggleEditOrderModal}
           order={order}
+          updatePaymentProgress={updatePaymentProgress}
         />
-        
+
         <AddShipmentmodal
           modalOpen={addShipmentModalOpen}
           toggleAddShipmentModal={this.toggleAddShipmentModal}
@@ -87,18 +89,18 @@ class OrderDetailsInfo extends React.Component {
             <h4 className="mb-0">{order.orderRequestID}</h4>
             <span className="text-muted d-block mb-1">{format(order.requestDate, 'MMMM Do, YYYY')}</span>
             <span className="text-muted d-block mb-1">
-              {Object.keys(order).length > 0 ? `${this.getTotalOrderWeight(order)} kgs` : "0 kgs"}
+              {Object.keys(order).length > 0 ? `${this.getTotalOrderWeight(order)} kgs - ${formatNumber(order.orderValue || orderValue)} USD` : "0 kgs - 0 USD"}
             </span>
             {
               user.role === "Admin" ?
                 <div>
-                  <Button pill outline size="sm" className="mb-2 mr-2" onClick={this.toggleAddShipmentModal}>
-                    <i className="material-icons mr-1">person_add</i> Add shipment
+                  <Button pill theme="primary" className="mb-2 mr-2" onClick={this.toggleAddShipmentModal}>
+                    <i className="material-icons mr-1">note_add</i> Add shipment
                 </Button>
-                  <Button pill outline size="sm" className="mb-2 mr-2" onClick={this.toggleEditOrderModal} >
-                    <i className="material-icons mr-1">delete</i> Edit Order
+                  <Button pill theme="info" className="mb-2 mr-2" onClick={this.toggleEditOrderModal} >
+                    <i className="material-icons mr-1">insert_drive_file</i> Edit Order
                 </Button>
-                  <Button pill outline size="sm" className="mb-2" theme="danger" onClick={this.deleteOrder}>
+                  <Button pill theme="danger" className="mb-2" theme="danger" onClick={this.deleteOrder}>
                     <i className="material-icons mr-1">delete</i> Delete Order
           </Button>
                 </div>
@@ -134,9 +136,6 @@ class OrderDetailsInfo extends React.Component {
                       <ul className="mb-2" key={idx}>
                         <li >
                           <strong> {teaOrder.teaName} - {`${teaOrder.weight} kgs`}</strong>
-                          <Button pill outline size="sm" className="ml-3" onClick={this.toggleAddShipmentModal}>
-                            <i className="material-icons mr-1">attach_money</i> Edit price
-                    </Button>
                         </li>
                       </ul>
                     )) : ""
