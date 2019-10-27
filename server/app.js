@@ -26,7 +26,6 @@ app.use(cors());
 app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(errorHandler);
 app.use(hpp());
 app.disable("x-powered-by");
 app.use(rateLimit({
@@ -52,6 +51,8 @@ app.get('*', function (req, res) {
 
 app.use('/api', apiRouter);
 app.use('/auth', authRouter);
+app.use(errorHandler);
+
 
 app.get('/alive', (req, res) => {
     return res.status(200).send({ message: 'COJ server is alive.' })
