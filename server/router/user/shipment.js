@@ -3,8 +3,6 @@ const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const orderService = require("../../utils/orderService");
 
-
-
 router.post('/all', [
     check('orderID').isAlphanumeric().trim().escape(),
 ], (req, res, next) => {

@@ -179,7 +179,7 @@ async function getUserTotalOrderWeight(userID) {
             }
         }
     ]);
-    return total.length === 0 ? 0 : `${total[0].shipmentWeight} kgs`;
+    return total.length === 0 ? 0 : `${total[0].totalOrderWeight} kgs`;
 }
 
 
@@ -207,19 +207,19 @@ async function getAdminDashboard() {
     };
 }
 
-async function getUserDashboard(user) {
+async function getUserDashboard(userID) {
     //Historical price 
     const historicalPrices = await getMonthData();
     //Price of tea
     //const priceOfTea = await getPrice();
     //Number of orders made
-    const numberOfOrders = await orderRequest.countDocuments({ userID: user.userID });
-    //Pending orders
-    const shippedOrders = await orderRequest.countDocuments({ userID: user.userID, orderStatus: "ORDER_SHIPMENT_ADDED" });
+    const numberOfOrders = await orderRequest.countDocuments({ userID});
+    //Shipped orders
+    const shippedOrders = await orderRequest.countDocuments({ userID, orderStatus: "ORDER_SHIPMENT_ADDED" });
     //Last 5 orders
-    const recentOrders = await orderRequest.find({ userID: user.userID }).sort('date').limit(5);
+    const recentOrders = await orderRequest.find({ userID}).sort('date').limit(5);
     //Total kgs moved by all clients to date
-    const totalOrderWeight = await getUserTotalOrderWeight(user.userID);
+    const totalOrderWeight = await getUserTotalOrderWeight(userID);
 
 
     return {

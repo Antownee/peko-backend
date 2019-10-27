@@ -84,16 +84,11 @@ class UserPlaceOrder extends React.Component {
 
     this.setState({ submitted: true });
 
-    const { selectedTeaItems, orderRequestID } = this.state;
-    const { user } = this.props;
-    const order = {
-      teaOrders: selectedTeaItems,
-      userID: user.userID,
-      orderRequestID
-    }
+    const {  selectedTeaItems, orderRequestID } = this.state;
+    const { userID } = this.props.user;
 
-    if (selectedTeaItems.length > 0) {
-      orderService.addOrder(order, user)
+    if (selectedTeaItems.length > 0 && orderRequestID) {
+      orderService.addOrder(orderRequestID, userID, selectedTeaItems)
         .then(
           msg => {
             toast.success(msg.message);
@@ -115,7 +110,6 @@ class UserPlaceOrder extends React.Component {
       orderRequestID: '',
       selectedTeaItems: teas
     })
-    let f = this.state;
   }
 
   render() {

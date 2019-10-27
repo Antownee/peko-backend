@@ -42,7 +42,7 @@ class EditOrderModal extends React.Component {
                     <Modal.Body>
                         <Formik
                             initialValues={{
-                                orderValue: this.state.orderValue || order.orderValue,
+                                orderValue:  order.orderValue,
                             }}
                             validationSchema={Yup.object().shape({
                                 orderValue: Yup.number().required('Cannot be empty')
@@ -89,7 +89,7 @@ class EditOrderModal extends React.Component {
                                                                 <span className="text-semibold text-fiord-blue">{item.teaName}</span>
                                                             </Col>
                                                             <Col md="6" className="form-group">
-                                                                <FormInput type="number" placeholder={item.weight} name={item.teaName} className="mb-2" onChange={this.onTeaOrderWeightChange} />
+                                                                <FormInput type="number" placeholder={item.weight} name={item.teaName} value={order.teaOrders[item.teaName]} className="mb-2" onChange={this.onTeaOrderWeightChange} />
                                                             </Col>
                                                         </ListGroupItem>
                                                     ))}

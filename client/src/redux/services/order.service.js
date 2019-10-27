@@ -17,11 +17,11 @@ export const orderService = {
 };
 
 
-function addOrder(order, user) {
+function addOrder(orderRequestID, userID, teaOrders ) {
     const requestOptions = {
         method: 'POST',
         headers: { ...authHeader(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order, user })
+        body: JSON.stringify({ orderRequestID, userID, teaOrders } )
     };
 
     return fetch(`${apiUrl}/users/order`, requestOptions)
@@ -65,7 +65,7 @@ function deleteOrder(orderRequestID) {
     const requestOptions = {
         method: 'POST',
         headers: { ...authHeader(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({orderRequestID})
+        body: JSON.stringify({ orderRequestID })
     };
 
     return fetch(`${apiUrl}/admin/order/delete`, requestOptions)
@@ -113,7 +113,7 @@ function populateDashboard(user) {
     const requestOptions = {
         method: 'POST',
         headers: { ...authHeader(), 'Content-Type': 'application/json' },
-        body: JSON.stringify(user)
+        body: JSON.stringify({ userID: user.userID })
     };
 
     if (user.role === "Admin") {

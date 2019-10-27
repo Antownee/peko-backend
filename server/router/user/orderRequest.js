@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const worker = require("../../utils/bgworkers/worker");
+const emailWorker = require("../../utils/bgworkers/worker");
 const { check, validationResult } = require('express-validator');
 const orderService = require("../../utils/orderService");
 const multer = require('multer');
@@ -44,7 +44,7 @@ router.post('/', [
     orderService.addOrder(orderRequestID, userID, teaOrders)
         .then((result) => {
             if (result) {
-                worker.emailQueue.add({ status: "ORDER_INIT", order });
+                emailWorker.emailQueue.add({ status: "ORDER_INIT", userID });
                 return res.status(200).send({ message: result });
             } else {
                 return res.status(404).send({ message: 'Try again later' })

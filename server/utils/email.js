@@ -12,7 +12,7 @@ module.exports = {
     sendShipmentNotificationtoClient,
 }
 
-async function sendNewOrdertoCOJ(order) {
+async function sendNewOrdertoCOJ() {
     let emails = await orderService.getCOJEmails();
 
     const msg = {

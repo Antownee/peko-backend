@@ -5,10 +5,10 @@ const emailQueue = new Queue('Sending email', global.gConfig.redis);
 
 
 emailQueue.process(function (job, done) {
-    let { order, status, shipment } = job.data;
+    let { status, shipment } = job.data;
     switch (status) {
         case "ORDER_INIT":
-            sendNewOrdertoCOJ(order);
+            sendNewOrdertoCOJ();
             done();
             break;
         case "ORDER_SHIPMENT_ADDED":
@@ -22,10 +22,10 @@ emailQueue.process(function (job, done) {
 })
 
 emailQueue.on('completed', (job, result) => {
-    const { order, status, shipment } = job.data;
+    const { userID, status, shipment } = job.data;
     switch (status) {
         case "ORDER_INIT":
-            console.log(`ORDER PLACED BY USER: ${order.userID}`);
+            console.log(`ORDER PLACED BY USER: ${userID}`);
             break;
         case "ORDER_SHIPMENT_ADDED":
             console.log(`SHIPMENT ADDED: ${shipment.shipmentID}`);
