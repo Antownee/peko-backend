@@ -28,16 +28,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(hpp());
 app.disable("x-powered-by");
-app.use(rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100
-}));
 
 //Router
 const apiRouter = require('./router/apiRouter');
 const authRouter = require('./router/authRouter');
 
-app.use(favicon(path.join(__dirname, '../client/build/favicon.ico')));
+app.use(favicon(path.join(__dirname, '../client/assets/favicon.ico')));
 app.use(express.static(path.join(__dirname, '../client/build')));//Front end
 app.use(express.static(path.join(__dirname, '../documents'))); //Client documents
 
@@ -61,7 +57,7 @@ app.get('/seed', (req, res) => {
 
 //Load the front end
 app.get('/*', function (req, res) {
-    res.sendFile(path.join(__dirname, '../client/build', 'index.html'))
+    return res.sendFile(path.join(__dirname, '../client/build', 'index.html'))
 });
 
 app.listen(global.gConfig.port, () => {

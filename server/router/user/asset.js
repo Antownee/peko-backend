@@ -24,7 +24,7 @@ router.post('/dashboard', [
             if (em) {
                 res.json(em)
             } else {
-                res.status(404).send({ error: 'Try again later' })
+                return res.status(404).send({ error: 'Try again later' })
             }
         })
         .catch(err => next(err));

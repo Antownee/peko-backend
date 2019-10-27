@@ -7,7 +7,7 @@ const Email = require("../models/email");
 const User = require('../models/user');
 const Shipment = require('../models/shipment');
 const fs = require('fs');
-const Qty = require('js-quantities');
+const Sentry = require('@sentry/node');
 require('dotenv').config();
 
 //Required
@@ -141,7 +141,10 @@ async function getPrice() {
 }
 
 async function getMonthData() {
-    const html = await rp("https://ycharts.com/indicators/mombasa_tea_price");
+    const html = await rp("https://ycharts.com/indicators/mombasa_tea_price")
+        .catch((e) => {
+            Sentry.captureException(e)
+        });
     const rows = cheerio('table.histDataTable tbody tr td', html).slice(0, 10);
 
     let data = [];
@@ -193,7 +196,7 @@ async function getAdminDashboard() {
     //Pending orders
     const shippedOrders = await orderRequest.countDocuments({ orderStatus: "ORDER_SHIPMENT_ADDED" });
     //Last 5 orders
-    const recentOrders = await orderRequest.find().sort('date').limit(5)
+    const recentOrders = await orderRequest.find().sort('-date').limit(5)
     //Total kgs moved by all clients to date
     const totalOrderWeight = await getAdminTotalOrderWeight();
 
@@ -213,11 +216,11 @@ async function getUserDashboard(userID) {
     //Price of tea
     //const priceOfTea = await getPrice();
     //Number of orders made
-    const numberOfOrders = await orderRequest.countDocuments({ userID});
+    const numberOfOrders = await orderRequest.countDocuments({ userID });
     //Shipped orders
     const shippedOrders = await orderRequest.countDocuments({ userID, orderStatus: "ORDER_SHIPMENT_ADDED" });
     //Last 5 orders
-    const recentOrders = await orderRequest.find({ userID}).sort('date').limit(5);
+    const recentOrders = await orderRequest.find({ userID }).sort('-date').limit(5)
     //Total kgs moved by all clients to date
     const totalOrderWeight = await getUserTotalOrderWeight(userID);
 
@@ -236,7 +239,7 @@ async function getShipmentsFromOrder(orderID) {
     return await Shipment.find({ orderID });
 }
 
-async function addShipment(shipmentParam ) {
+async function addShipment(shipmentParam) {
     let newShipment = new Shipment({
         userID: shipmentParam.userID,
         shipmentID: shipmentParam.shipmentID,

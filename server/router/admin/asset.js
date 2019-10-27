@@ -5,8 +5,8 @@ const { check, validationResult } = require('express-validator');
 
 
 router.post('/tea', [
-    check('teaName').isAlphanumeric().trim().escape(),
-    check('teaDescription').isAlphanumeric().trim().escape()
+    check('teaName').isString().trim().escape(),
+    check('teaDescription').isString().trim().escape()
 ], (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -43,9 +43,9 @@ router.post('/dashboard', (req, res, next) => {
     orderService.getAdminDashboard()
         .then((em) => {
             if (em) {
-                res.json(em)
+                return res.json(em)
             } else {
-                res.status(404).send({ error: 'Try again later' })
+                return res.status(404).send({ error: 'Try again later' })
             }
         })
         .catch(err => next(err));

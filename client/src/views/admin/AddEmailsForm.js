@@ -18,10 +18,10 @@ const AddEmailsForm = () => (
           .email('Please enter a valid email')
           .required('Please enter an email')
       })}
-      onSubmit={({ email }, { setStatus, setSubmitting }) => {
-
+      onSubmit={({ email }, { setStatus, setSubmitting, resetForm }) => {
         orderService.addEmailAssets({ email })
           .then((res) => {
+            resetForm();
             setSubmitting(false);
             toast.success(res);
           })

@@ -93,6 +93,7 @@ class UserPlaceOrder extends React.Component {
           msg => {
             toast.success(msg.message);
             this.clearState();
+            window.location.reload(false);
           },
           error => {
             toast.error(error);
