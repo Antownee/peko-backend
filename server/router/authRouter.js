@@ -6,10 +6,10 @@ const userService = require('../utils/userService');
 
 //Sign up
 router.post('/register', [
-    // check('firstName').isAlphanumeric().trim().escape(),
-    // check('lastName').isAlphanumeric().trim().escape(),
-    // check('email').isEmail().normalizeEmail(),
-    //check('username').isAlphanumeric().trim().escape(),
+    check('firstName').isAlphanumeric().trim().escape(),
+    check('lastName').isAlphanumeric().trim().escape(),
+    check('email').isEmail().normalizeEmail(),
+    check('username').isAlphanumeric().trim().escape(),
 ], (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -25,6 +25,7 @@ router.post('/register', [
 //Login
 router.post('/login', [
     check('username').isAlphanumeric(),
+    check('password').isAlphanumeric(),
 ], (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

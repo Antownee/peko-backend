@@ -8,16 +8,18 @@ import { orderService } from "../../redux/services/order.service";
 
 const AddEmailsForm = () => (
   <div>
-    <ToastContainer/>
+    <ToastContainer />
     <Formik
       initialValues={{
         email: '',
       }}
       validationSchema={Yup.object().shape({
-        email: Yup.string().required('Cannot be empty'),
+        email: Yup.string()
+          .email('Please enter a valid email')
+          .required('Please enter an email')
       })}
       onSubmit={({ email }, { setStatus, setSubmitting }) => {
-        
+
         orderService.addEmailAssets({ email })
           .then((res) => {
             setSubmitting(false);

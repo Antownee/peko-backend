@@ -3,16 +3,15 @@ const router = express.Router();
 const multer = require('multer');
 const { check, validationResult } = require('express-validator');
 const orderService = require("../../utils/orderService");
-const orderConstants = require("../../utils/orderConstants");4
+const orderConstants = require("../../utils/orderConstants"); 4
 let receivedDocumentData = {};
 
 
 const storage = multer.diskStorage({
     fileFilter: function (req, file, cb) {
-        let extArray = file.mimetype.split("/");
-        let extension = extArray[extArray.length - 1];
-        if (extension !== "pdf") {
-            return cb(new Error('Only pdf files are allowed!'), false);
+        if (file.mimetype !== "application/pdf") {
+            req.fileValidationError = 'Only pdf files are allowed!';
+            return cb(new Error('Only pdf files are allowed!'));
         }
         cb(null, true);
     },
@@ -38,9 +37,16 @@ router.post('/all', (req, res, next) => {
         .catch(err => next(err));
 })
 
-router.post('/update', (req, res, next) => {
+router.post('/update', [
+    check('orderID').trim().escape(),
+    check('orderValue').isNumeric().trim().escape()
+], (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(404).send({ error: 'Try again later' })
+    }
+
     const { orderID, orderValue, teaOrders } = req.body;
-    //Sanitize
     orderService.updateOrderValue(orderID, orderValue, teaOrders)
         .then((ord) => {
             if (ord) {
@@ -53,15 +59,20 @@ router.post('/update', (req, res, next) => {
 })
 
 
-router.post('/delete', (req, res, next) => {
-    const { order } = req.body;
-    //Sanitize
-    orderService.deleteOrder(order)
+router.post('/delete', [
+    check('orderRequestID').trim().escape(),
+], (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(404).send({ error: 'Try again later' })
+    }
+    const { orderRequestID } = req.body;
+    orderService.deleteOrder(orderRequestID)
         .then((ord) => {
             if (ord) {
-                res.status(200).send({ msg: 'Order deleted!' });
+                return res.status(200).send({ msg: 'Order deleted!' });
             } else {
-                res.status(404).send({ error: ord.error });
+                return res.status(404).send({ error: ord.error });
             }
         })
         .catch(err => next(err));
@@ -69,6 +80,10 @@ router.post('/delete', (req, res, next) => {
 
 router.post('/documents', (req, res, next) => {
     upload(req, res, function (err) {
+        if (req.file.mimetype !== "application/pdf") {
+            return res.status(500).json("only pdfs allowed");;
+        }
+
         if (err instanceof multer.MulterError) {
             return res.status(500).json(err)
         } else if (err) {

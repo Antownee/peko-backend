@@ -33,8 +33,6 @@ app.use(rateLimit({
     max: 100
 }));
 
-
-
 //Router
 const apiRouter = require('./router/apiRouter');
 const authRouter = require('./router/authRouter');
@@ -43,21 +41,16 @@ app.use(favicon(path.join(__dirname, '../client/build/favicon.ico')));
 app.use(express.static(path.join(__dirname, '../client/build')));//Front end
 app.use(express.static(path.join(__dirname, '../documents'))); //Client documents
 
-
-app.get('*', function (req, res) {
-    res.sendFile(path.join(__dirname, '../client/build', 'index.html'))
-});
-
-
 app.use('/api', apiRouter);
 app.use('/auth', authRouter);
 app.use(errorHandler);
 
-
+//Check if server is alive
 app.get('/alive', (req, res) => {
-    return res.status(200).send({ message: 'COJ server is alive.' })
+    return res.send('COJ server is alive.')
 })
 
+//Seed the DB
 app.get('/seed', (req, res) => {
     //Seed the db with an Admin user and initial tea types as well as the emails to be used for communication
     seed.createAdmin()
@@ -65,6 +58,11 @@ app.get('/seed', (req, res) => {
             seed.addTeaTypes().then(() => { return res.send('Seeding complete.') });
         })
 })
+
+//Load the front end
+app.get('/*', function (req, res) {
+    res.sendFile(path.join(__dirname, '../client/build', 'index.html'))
+});
 
 app.listen(global.gConfig.port, () => {
     console.log(`cup of joe is running on PORT ${global.gConfig.port}`)

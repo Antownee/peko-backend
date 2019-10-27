@@ -6,12 +6,11 @@ const orderService = require("../../utils/orderService");
 const multer = require('multer');
 let receivedDocumentData = {};
 
-const storage = multer.diskStorage({
+let storage = multer.diskStorage({
     fileFilter: function (req, file, cb) {
-        let extArray = file.mimetype.split("/");
-        let extension = extArray[extArray.length - 1];
-        if (extension !== "pdf") {
-            return cb(new Error('Only pdf files are allowed!'), false);
+        if (file.mimetype !== "application/pdf") {
+            req.fileValidationError = 'Only pdf files are allowed!';
+            return cb(new Error('Only pdf files are allowed!'));
         }
         cb(null, true);
     },
@@ -33,18 +32,16 @@ const upload = multer({ storage: storage }).single("filepond")
 
 //Create order
 router.post('/', [
-    // check('order.teaID').not().isEmpty(),
-    // check('order.amount').not().isEmpty(),
-    // check('order.amount').isNumeric()
+    check('orderRequestID').not().isEmpty(),
+    check('userID').not().isEmpty(),
 ], (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(404).send({ message: 'Try again later' })
     }
 
-
-    const { user, order } = req.body;
-    orderService.addOrder(order)
+    const { orderRequestID, userID, teaOrders } = req.body;
+    orderService.addOrder(orderRequestID, userID, teaOrders)
         .then((result) => {
             if (result) {
                 worker.emailQueue.add({ status: "ORDER_INIT", order });
@@ -56,9 +53,17 @@ router.post('/', [
         .catch(err => next(err));
 });
 
-router.post('/all', (req, res, next) => {
-    //sanitize
-    orderService.getAllOrdersUser(req.body)
+router.post('/all', [
+    check('userID').not().isEmpty(),
+    check('userID').trim().escape(),
+], (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(404).send({ message: 'Try again later' })
+    }
+
+    let { userID } = req.body;
+    orderService.getAllOrdersUser(userID)
         .then(orders => orders ? res.status(200).json(orders) : res.status(404).send({ message: 'Try again later' }))
         .catch(err => next(err));
 })
@@ -66,6 +71,10 @@ router.post('/all', (req, res, next) => {
 
 router.post('/documents', (req, res, next) => {
     upload(req, res, function (err) {
+        if (req.file.mimetype !== "application/pdf") {
+            return  res.status(500).json("only pdfs allowed");;
+        }
+
         if (err instanceof multer.MulterError) {
             return res.status(500).json(err)
         } else if (err) {

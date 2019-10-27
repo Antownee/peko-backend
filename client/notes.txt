@@ -1,0 +1,2 @@
+Client
+In user guide, explicitly mention taht if you don't upload a pdf, it'll throw an error

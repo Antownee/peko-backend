@@ -29,7 +29,6 @@ class OrderDetails extends React.Component {
             orderValue: 0
         }
         this.goBack = this.goBack.bind(this);
-        this.deleteOrder = this.deleteOrder.bind(this);
         this.getShipments = this.getShipments.bind(this);
         this.addShipmentToState = this.addShipmentToState.bind(this);
         this.getPaymentProgress = this.getPaymentProgress.bind(this);
@@ -76,18 +75,6 @@ class OrderDetails extends React.Component {
             let shipments = state.shipments.filter((shipment) => shipment.shipmentID !== shipmentID);
             return { shipments };
         });
-    }
-
-    deleteOrder() {
-        orderService.deleteOrder(this.state.currentOrder)
-            .then((res) => {
-                toast.success(res.msg); 
-                this.setState({ currentOrder: {} });
-                return this.goBack();
-            })
-            .catch((e) => {
-                toast.error(e.message);
-            })
     }
 
     updatePaymentProgress(currentOrder) {
@@ -147,7 +134,6 @@ class OrderDetails extends React.Component {
                                         order={currentOrder}
                                         user={user}
                                         addShipmentToState={this.addShipmentToState}
-                                        deleteOrder={this.deleteOrder}
                                         handleSearchState={handleSearchState}
                                         updatePaymentProgress={this.updatePaymentProgress}
                                         paymentProgress={Object.keys(currentOrder).length > 0 ? paymentProgress : 0}

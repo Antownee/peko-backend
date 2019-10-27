@@ -18,10 +18,9 @@ async function sendNewOrdertoCOJ(order) {
     const msg = {
         to: emails,
         from: 'Cup Of Joe <portal@cupofjoe.co.ke>',
-        subject: 'ORDER CONFIRMATION',
+        subject: 'ORDER PLACED',
         text: 'Hello plain world!',
-        html: `A new order has been placed by user id: ${order.userID}. 
-        Kindly head to the portal to confirm the order.`,
+        html: `A new order has been placed. Kindly head to the portal to process it.`,
     };
     sgMail.send(msg)
         .then((res) => {
@@ -39,7 +38,7 @@ async function sendShipmentNotificationtoClient(shipment) {
         to: email,
         from: 'Cup Of Joe <portal@cupofjoe.co.ke>',
         subject: 'SHIPMENT CREATION',
-        text: `Shipment No. ${shipment.shipmentID} has been added to your recent order ${shipment.orderID} which you placed on ${format(shipment.shipmentDate, "DD/MM/YYYY")}.
+        text: `A shipment has been added to your recent order ${shipment.orderID} which you placed on ${format(shipment.shipmentDate, "DD/MM/YYYY")}.
         Proceed to the portal to upload the necessary documents to complete your order.
         Regards,
         Cup of Joe.`.trim()

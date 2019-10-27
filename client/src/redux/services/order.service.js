@@ -61,11 +61,11 @@ function getAllOrders(user) {
     }
 }
 
-function deleteOrder(order) {
+function deleteOrder(orderRequestID) {
     const requestOptions = {
         method: 'POST',
         headers: { ...authHeader(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order })
+        body: JSON.stringify({orderRequestID})
     };
 
     return fetch(`${apiUrl}/admin/order/delete`, requestOptions)
@@ -85,6 +85,7 @@ function addTeaAssets(tea) {
         .then(msg => { return msg })
 }
 
+//For the Place Order page
 function getTeaAssets() {
     const requestOptions = {
         method: 'POST',

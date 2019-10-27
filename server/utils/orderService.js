@@ -37,18 +37,17 @@ module.exports = {
 };
 
 //USER
-async function addOrder(orderParams) {
-    //Sanitise
+async function addOrder(orderRequestID, userID, teaOrders) {
     const order = new orderRequest({
-        orderRequestID: orderParams.orderRequestID,
-        userID: orderParams.userID,
+        orderRequestID: orderRequestID,
+        userID: userID,
         confirmed: false,
         requestDate: Date.now().toString(),
         orderStatus: "ORDER_INIT",
-        teaOrders: orderParams.teaOrders
+        teaOrders: teaOrders
     })
 
-    if (await orderRequest.findOne({ orderRequestID: order.orderRequestID })) {
+    if (await orderRequest.findOne({ orderRequestID: orderRequestID })) {
         throw `Order has already been created`;
     }
 
@@ -56,8 +55,8 @@ async function addOrder(orderParams) {
     return "Order successfully added";
 }
 
-async function getAllOrdersUser(orderParams) {
-    return await orderRequest.find({ userID: orderParams.userID });
+async function getAllOrdersUser(userID) {
+    return await orderRequest.find({ userID });
 }
 
 //ADMIN
@@ -65,8 +64,9 @@ async function getAllOrdersAdmin() {
     return await orderRequest.find({});
 }
 
-async function deleteOrder(order) {
-    return await orderRequest.findOneAndDelete({ orderRequestID: order.orderRequestID });
+async function deleteOrder(orderRequestID) {
+    await Shipment.deleteMany({ orderID: orderRequestID })
+    return await orderRequest.findOneAndDelete({ orderRequestID });
 }
 
 
@@ -94,12 +94,12 @@ function isDocumentInStorage(orderID, documentCode) {
     return res ? res : ""
 }
 
-async function addTeaItem(tea) {
+async function addTeaItem(teaName, teaDescription) {
     //Sanitise
     const teaItem = new TeaItem({
         teaID: `CH-${shortid.generate()}`,
-        teaName: tea.teaName,
-        teaDescription: tea.teaDescription
+        teaName: teaName,
+        teaDescription: teaDescription
     });
 
     if (await TeaItem.findOne({ teaID: teaItem.teaID })) {
@@ -114,10 +114,10 @@ async function getTeaItems() {
     return await TeaItem.find({});
 }
 
-async function addEmail(e) {
-    const em = new Email({ email: e.email })
+async function addEmail(email) {
+    const em = new Email({ email })
 
-    if (await Email.findOne({ email: em.email })) {
+    if (await Email.findOne({ email })) {
         throw `Email has already been created`;
     }
 
@@ -236,7 +236,7 @@ async function getShipmentsFromOrder(orderID) {
     return await Shipment.find({ orderID });
 }
 
-async function addShipment(shipmentParam, ) {
+async function addShipment(shipmentParam ) {
     let newShipment = new Shipment({
         userID: shipmentParam.userID,
         shipmentID: shipmentParam.shipmentID,

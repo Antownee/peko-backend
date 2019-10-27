@@ -23,7 +23,7 @@ class FileUpload extends React.Component {
         this.updateState = this.updateState.bind(this);
     }
 
-    updateState(){
+    updateState() {
         this.props.onSubmit();
     }
 
@@ -36,7 +36,7 @@ class FileUpload extends React.Component {
 
     render() {
         let { document, currentShipment, user } = this.props;
-        let uploadUrl = user.role === "Admin" ?  `${apiUrl}/admin/order/documents` : `${apiUrl}/users/order/documents`;
+        let uploadUrl = user.role === "Admin" ? `${apiUrl}/admin/order/documents` : `${apiUrl}/users/order/documents`;
         return (
             <FilePond
                 server={
@@ -58,12 +58,14 @@ class FileUpload extends React.Component {
                         files[0].setMetadata("shipmentID", currentShipment.shipmentID)
                     }
                 }}
-                onprocessfile={(err,file)=>{
-                    if(file){
+                onprocessfile={(err, file) => {
+                    if (file) {
                         this.props.updateShipmentDocuments(document.documentCode, file.filename)
                     }
                 }}
-                
+                labelFileProcessingError={(serverError) => { return serverError; }}
+
+
 
             >
             </FilePond>

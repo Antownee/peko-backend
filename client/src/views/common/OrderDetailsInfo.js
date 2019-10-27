@@ -35,7 +35,7 @@ class OrderDetailsInfo extends React.Component {
       addShipmentModalOpen: !this.state.addShipmentModalOpen,
     });
   }
-  
+
   toggleEditOrderModal() {
     this.setState({
       orderEditModalOpen: !this.state.orderEditModalOpen,
@@ -43,7 +43,8 @@ class OrderDetailsInfo extends React.Component {
   }
 
   deleteOrder() {
-    orderService.deleteOrder(this.props.order)
+    let { orderRequestID } = this.props.order;
+    orderService.deleteOrder(orderRequestID)
       .then((res) => {
         toast.success(res.msg);
         return this.props.handleSearchState(false);//go back
