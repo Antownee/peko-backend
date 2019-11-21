@@ -5,6 +5,7 @@
 5. install MongoDB
 6. update redis path and mongo path in config.json
 7. set environment appropriately in .env  (production, staging, development)
+8. pm2 start app
 8. run the seed script 
 9. use the ping path to check if server is alive
 

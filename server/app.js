@@ -57,7 +57,7 @@ app.get('/seed', (req, res) => {
 
 //Load the front end
 app.get('/*', function (req, res) {
-    return res.sendFile(path.join(__dirname, '../client/build', 'index.html'))
+    return res.sendFile('./client/build', 'index.html');
 });
 
 app.listen(global.gConfig.port, () => {
