@@ -7,13 +7,13 @@ const cors = require('cors');
 const helmet = require('helmet');
 const config = require('./config/config');
 const jwt = require('jsonwebtoken');
-//const Sentry = require('@sentry/node');
+const Sentry = require('@sentry/node');
 const seed = require('./utils/seed/seed');
 const hpp = require('hpp');
 const rateLimit = require("express-rate-limit");
 
 //Sentry config
-//Sentry.init({ dsn: 'https://57af6529557442cf95c516bf787d0f08@sentry.io/1546068' });
+Sentry.init({ dsn: 'https://57af6529557442cf95c516bf787d0f08@sentry.io/1546068' });
 
 //Run db
 const { mongoose } = require('./utils/db.js');

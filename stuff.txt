@@ -1,8 +1,13 @@
-Redis
-Mongo
+1. install Redis
+2. install Mongo
 
-Run the seed script 
-Add path that runs the script
+3. update redis path and mongo path in config.json
 
-Git submodules
-git submodule add git@github:https://github.com/Antownee/coj-frontend.git ./client
+4. set environment appropriately in .env  (production, staging, development)
+5. run the seed script 
+6. use the ping path to check if server is alive
+
+2LAMsCe9fzLgp4u6 
+
+
+

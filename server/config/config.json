@@ -20,7 +20,7 @@
         "config_id": "production",
         "port": 5000,
         "app_name": "cup of joe-production",
-        "secret": "",
+        "secret": "a6J2ZWPqxHjXGMLw",
         "redis": "redis://coj-redis-service:db1da5291db17ddd7b2411ca76c84009ffcadc154ae509d598896aaf028bc2f9@dokku-redis-coj-redis-service:6379",
         "database": "mongodb://coj-db:992e32b385b0cad453324a8c18b21d38@dokku-mongo-coj-db:27017/coj_db"
     }
