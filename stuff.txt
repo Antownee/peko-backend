@@ -1,11 +1,12 @@
-1. install Redis
-2. install Mongo
-
-3. update redis path and mongo path in config.json
-
-4. set environment appropriately in .env  (production, staging, development)
-5. run the seed script 
-6. use the ping path to check if server is alive
+1. install NGINX
+2. install PM2
+3. add SSL
+4. install Redis
+5. install MongoDB
+6. update redis path and mongo path in config.json
+7. set environment appropriately in .env  (production, staging, development)
+8. run the seed script 
+9. use the ping path to check if server is alive
 
 2LAMsCe9fzLgp4u6 
 

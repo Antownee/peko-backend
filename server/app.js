@@ -33,9 +33,9 @@ app.disable("x-powered-by");
 const apiRouter = require('./router/apiRouter');
 const authRouter = require('./router/authRouter');
 
-app.use(favicon(path.join(__dirname, '../client/assets/favicon.ico')));
-app.use(express.static(path.join(__dirname, '../client/build')));//Front end
-app.use(express.static(path.join(__dirname, '../documents'))); //Client documents
+app.use(favicon('./client/assets/favicon.ico'));
+app.use(express.static('./client/build'));//Front end
+app.use(express.static('./documents')); //Client documents
 
 app.use('/api', apiRouter);
 app.use('/auth', authRouter);
