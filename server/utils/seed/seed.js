@@ -39,7 +39,7 @@ async function createAdmin() {
 async function addTeaTypes() {
     //read from json
     //for each object, create a tea object
-    let teatypes = fs.readFileSync("./server/utils/seed/tea-types.json");
+    let teatypes = fs.readFileSync("./tea-types.json");
     let teaObjects = JSON.parse(teatypes);
 
     for (let i = 0; i < teaObjects.length; i++) {
