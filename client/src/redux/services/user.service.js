@@ -17,8 +17,8 @@ function login(username, password) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
     };
-    let v = apiUrl;
 
+    
     return fetch(`${baseUrl}/auth/login`, requestOptions)
         .then(handleResponse)
         .then(user => {
