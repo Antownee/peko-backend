@@ -55,7 +55,7 @@ async function addTeaTypes() {
             return;
         }
         await teaItem.save();
-        console.log(`${tea.teaName} has been added.`)
+        console.log(`${tea.teaName} has been added.`);
     }
 }
 

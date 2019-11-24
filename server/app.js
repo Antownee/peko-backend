@@ -21,7 +21,6 @@ const { mongoose } = require('./utils/db.js');
 /// init ///
 const app = express();
 app.enable("trust proxy");
-const corsOptions = require("./utils/cors");
 app.use(cors());
 app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: true }));
