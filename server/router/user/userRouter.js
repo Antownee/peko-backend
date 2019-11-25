@@ -7,7 +7,7 @@ const shipmentRouter = require('./shipment');
 const assetRouter = require('./asset');
 
 router.use((req, res, next) => {
-    return req.decoded.role === "User" || "Admin" ? next() : res.status(403).send({ message: 'Unauthorized access.' });
+    return req.decoded.role === "User" ? next() : res.status(403).send({ message: 'Unauthorized access.' });
 });
 
 router.use('/order', orderRequestRouter);

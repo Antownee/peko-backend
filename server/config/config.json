@@ -4,7 +4,6 @@
         "app_name": "cup of joe-development",
         "secret": "a6J2ZWPqxHjXGMLw",
         "port": 5000,
-        "old_port": 4985,
         "redis": "redis://127.0.0.1:6379",
         "database": "mongodb://localhost:27017/coj"
     },

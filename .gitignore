@@ -93,4 +93,3 @@ deploy_instructions.txt
 .vscode
 
 # End of https://www.gitignore.io/api/node
-sendgrid.env

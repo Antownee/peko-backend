@@ -8,7 +8,8 @@ const adminRouter = require('./admin/adminRouter');
 
 
 router.use((req, res, next) => {
-    let token = req.headers['authorization_token'];
+    let token = req.headers['authorization-token'];
+    
 
     if (token) {
         jwt.verify(token, global.gConfig.secret , (err, decoded) => {
