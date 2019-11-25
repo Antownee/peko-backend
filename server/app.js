@@ -50,7 +50,11 @@ app.get('/seed', (req, res) => {
     //Seed the db with an Admin user and initial tea types as well as the emails to be used for communication
     seed.createAdmin()
         .then(() => {
-            seed.addTeaTypes().then(() => { return res.send('Seeding complete.') });
+            seed.addTeaTypes()
+                .then(() => {
+                    seed.createDocumentFolder();
+                    return res.send('Seeding complete.')
+                });
         })
 })
 

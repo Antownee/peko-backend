@@ -15,7 +15,7 @@ const config = require("../../config/config");
 module.exports = {
     createAdmin,
     addTeaTypes,
-    //create document folders
+    createDocumentFolder
 }
 
 
@@ -58,6 +58,14 @@ async function addTeaTypes() {
         }
         await teaItem.save();
         console.log(`${tea.teaName} has been added.`);
+    }
+}
+
+function createDocumentFolder() {
+    let dir = path.resolve(__dirname, "../../../documents/documents");
+
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
     }
 }
 
