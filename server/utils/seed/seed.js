@@ -8,12 +8,14 @@ const shortid = require('shortid');
 const User = require('../../models/user');
 const TeaItem = require("../../models/tea");
 const fs = require('fs');
+const path = require("path");
 //const mongoose = require('mongoose');
 const config = require("../../config/config");
 
 module.exports = {
     createAdmin,
     addTeaTypes,
+    //create document folders
 }
 
 
@@ -39,7 +41,7 @@ async function createAdmin() {
 async function addTeaTypes() {
     //read from json
     //for each object, create a tea object
-    let teatypes = fs.readFileSync("./tea-types.json");
+    let teatypes = fs.readFileSync(path.resolve(__dirname, "./tea-types.json"));
     let teaObjects = JSON.parse(teatypes);
 
     for (let i = 0; i < teaObjects.length; i++) {

@@ -3,20 +3,14 @@ const router = express.Router();
 const multer = require('multer');
 const { check, validationResult } = require('express-validator');
 const orderService = require("../../utils/orderService");
-const orderConstants = require("../../utils/orderConstants"); 4
+const orderConstants = require("../../utils/orderConstants"); 
+const path = require("path");
 let receivedDocumentData = {};
 
 
 const storage = multer.diskStorage({
-    fileFilter: function (req, file, cb) {
-        if (file.mimetype !== "application/pdf") {
-            req.fileValidationError = 'Only pdf files are allowed!';
-            return cb(new Error('Only pdf files are allowed!'));
-        }
-        cb(null, true);
-    },
     destination: function (req, file, cb) {
-        cb(null, './documents/documents')
+        cb(null, path.resolve(__dirname, "../../../documents/documents"))
     },
     filename: function (req, file, cb) {
         let receivedMetadata = JSON.parse(req.body.filepond);
@@ -29,7 +23,16 @@ const storage = multer.diskStorage({
         cb(null, file.originalname)
     }
 })
-const upload = multer({ storage: storage }).single("filepond")
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype !== "application/pdf") {
+        req.fileValidationError = 'Only pdf files are allowed!';
+        return cb(new Error('Only pdf files are allowed!'));
+    }
+    cb(null, true);
+}
+
+const upload = multer({ storage: storage, fileFilter: fileFilter }).single("filepond")
 
 router.post('/all', (req, res, next) => {
     orderService.getAllOrdersAdmin()
@@ -80,10 +83,6 @@ router.post('/delete', [
 
 router.post('/documents', (req, res, next) => {
     upload(req, res, function (err) {
-        if (req.file.mimetype !== "application/pdf") {
-            return res.status(500).json("only pdfs allowed");;
-        }
-
         if (err instanceof multer.MulterError) {
             return res.status(500).json(err)
         } else if (err) {

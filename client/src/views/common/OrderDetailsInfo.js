@@ -57,8 +57,8 @@ class OrderDetailsInfo extends React.Component {
   getTotalOrderWeight(order) {
     return order.teaOrders
       .map(item => item.weight)
-      .reduce((prev, curr) => formatNumber(prev + curr), 0)
-  }
+      .reduce((prev, curr) => formatNumber( parseInt(prev) + parseInt(curr)), 0)
+    }
 
 
   render() {

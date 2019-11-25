@@ -4,18 +4,12 @@ const emailWorker = require("../../utils/bgworkers/worker");
 const { check, validationResult } = require('express-validator');
 const orderService = require("../../utils/orderService");
 const multer = require('multer');
+const path = require("path");
 let receivedDocumentData = {};
 
 let storage = multer.diskStorage({
-    fileFilter: function (req, file, cb) {
-        if (file.mimetype !== "application/pdf") {
-            req.fileValidationError = 'Only pdf files are allowed!';
-            return cb(new Error('Only pdf files are allowed!'));
-        }
-        cb(null, true);
-    },
     destination: function (req, file, cb) {
-        cb(null, './documents/documents')
+        cb(null, path.resolve(__dirname, "../../../documents/documents"))
     },
     filename: function (req, file, cb) {
         let receivedMetadata = JSON.parse(req.body.filepond);
@@ -28,7 +22,16 @@ let storage = multer.diskStorage({
         cb(null, file.originalname)
     }
 })
-const upload = multer({ storage: storage }).single("filepond")
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype !== "application/pdf") {
+        req.fileValidationError = 'Only pdf files are allowed!';
+        return cb(new Error('Only pdf files are allowed!'));
+    }
+    cb(null, true);
+}
+
+const upload = multer({ storage: storage, fileFilter: fileFilter }).single("filepond")
 
 //Create order
 router.post('/', [
