@@ -10,11 +10,11 @@
     },
     "staging": {
         "config_id": "staging",
-        "port": 5000,
+        "port": 5005,
         "app_name": "cup of joe-staging",
         "secret": "a6J2ZWPqxHjXGMLw",
         "redis": "redis://127.0.0.1:6379",
-        "database": "mongodb://localhost:27017/coj",
+        "database": "mongodb://localhost:27017/coj-staging",
         "sendgrid_key": "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"
     },
     "production": {

@@ -10,7 +10,8 @@ const jwt = require('jsonwebtoken');
 const Sentry = require('@sentry/node');
 const seed = require('./utils/seed/seed');
 const hpp = require('hpp');
-const rateLimit = require("express-rate-limit");
+require('dotenv').config();
+
 
 //Sentry config
 Sentry.init({ dsn: 'https://57af6529557442cf95c516bf787d0f08@sentry.io/1546068' });
