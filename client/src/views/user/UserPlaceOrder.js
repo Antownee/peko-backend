@@ -118,6 +118,8 @@ class UserPlaceOrder extends React.Component {
     const { intl } = this.props;
     const messages = defineMessages({
       header: { id: "placeorder.title" },
+      ref_placeholder: { id: "placeorder.ref-no-placeholder-text"},
+      weight_placeholder: { id: "placeorder.weight-placeholder-text"}
     })
 
     return (
@@ -134,7 +136,7 @@ class UserPlaceOrder extends React.Component {
               <span style={{ fontSize: "16px" }} className="d-block mb-2 text-muted">
                 <strong><FormattedMessage id="placeorder.title2" /></strong>
               </span>
-              <FormInput placeholder="ENTER REFERENCE NUMBER" type="text" className="mb-2" value={orderRequestID} onChange={this.handleOrderRequestIDInput} name="orderRequestID" />
+              <FormInput placeholder={intl.formatMessage(messages.ref_placeholder)} type="text" className="mb-2" value={orderRequestID} onChange={this.handleOrderRequestIDInput} name="orderRequestID" />
             </Col>
           </Row>
           <Row>
@@ -153,7 +155,7 @@ class UserPlaceOrder extends React.Component {
                           {tea.teaName}
                         </a>
                       </h5>
-                      <FormInput placeholder="Enter weight (kilograms)" type="Number" className="mb-2" onChange={this.handleAmountFieldChange} name={tea.teaName} />
+                      <FormInput placeholder={intl.formatMessage(messages.weight_placeholder)} type="Number" className="mb-2" onChange={this.handleAmountFieldChange} name={tea.teaName} />
                     </CardBody>
                   </Card>
                 </a>

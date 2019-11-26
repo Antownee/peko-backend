@@ -62,10 +62,10 @@ async function addTeaTypes() {
 }
 
 function createDocumentFolder() {
-    let dir = path.resolve(__dirname, "../../../documents/documents");
+    let dir = path.resolve(__dirname, "../../../docu/documents");
 
     if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
+        fs.mkdirSync(dir, { recursive: true });
     }
 }
 

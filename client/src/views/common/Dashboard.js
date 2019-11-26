@@ -33,7 +33,7 @@ class Dashboard extends React.Component {
         const { smallStats } = this.state;
         //number of orders made
         smallStats[0].value = res.numberOfOrders;
-        //pending orders
+        //shipped orders
         smallStats[1].value = res.shippedOrders;
         //total weight of orders
         smallStats[2].value = res.totalOrderWeight;
@@ -46,7 +46,7 @@ class Dashboard extends React.Component {
 
       })
       .catch((e) => {
-        //Throw and error
+        //Throw an error
       })
   }
 
@@ -144,7 +144,7 @@ Dashboard.defaultProps = {
       ]
     },
     {
-      label: "Pending orders",
+      label: "Shipments made",
       value: "0",
       increase: true,
       chartLabels: [null, null, null, null, null, null, null],

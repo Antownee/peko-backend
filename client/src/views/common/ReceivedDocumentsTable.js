@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { apiUrl, fileUrl } from "../../config";
+import { fileUrl } from "../../config";
 import { format } from 'date-fns';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 

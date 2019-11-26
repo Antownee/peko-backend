@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {
   Card,
   CardHeader,
@@ -8,12 +7,14 @@ import {
   ListGroupItem,
   Progress
 } from "shards-react";
-import { format, parse } from 'date-fns';
+import { format } from 'date-fns';
 import AddShipmentmodal from '../admin/AddShipmentModal';
 import EditorderModal from '../admin/EditOrderModal';
 import { formatNumber } from "../../utils/numberFormatter";
 import { orderService } from "../../redux/services/order.service";
 import { ToastContainer, toast } from 'react-toastify';
+import { injectIntl, defineMessages } from 'react-intl';
+
 
 class OrderDetailsInfo extends React.Component {
   constructor(props) {
@@ -62,8 +63,15 @@ class OrderDetailsInfo extends React.Component {
 
 
   render() {
-    let { order, user, addShipmentToState, updatePaymentProgress, paymentProgress, orderValue } = this.props;
+    let { order, user, addShipmentToState, updatePaymentProgress, paymentProgress, orderValue, intl } = this.props;
     let { addShipmentModalOpen, orderEditModalOpen } = this.state;
+    const messages = defineMessages({
+      add_shipment: { id: "userorderdetails.add_shipment" },
+      edit_order: { id: "userorderdetails.edit_order" },
+      delete_order: { id: "userorderdetails.delete_order" },
+      payment_progress: { id: "userorderdetails.payment_progress" },
+      particulars: { id: "userorderdetails.particulars" }
+  })
 
     return (
       <div>
@@ -96,13 +104,13 @@ class OrderDetailsInfo extends React.Component {
               user.role === "Admin" ?
                 <div>
                   <Button pill theme="primary" className="mb-2 mr-2" onClick={this.toggleAddShipmentModal}>
-                    <i className="material-icons mr-1">note_add</i> Add shipment
+                    <i className="material-icons mr-1">note_add</i> {intl.formatMessage(messages.add_shipment)}
                 </Button>
                   <Button pill theme="info" className="mb-2 mr-2" onClick={this.toggleEditOrderModal} >
-                    <i className="material-icons mr-1">insert_drive_file</i> Edit Order
+                    <i className="material-icons mr-1">insert_drive_file</i> {intl.formatMessage(messages.edit_order)}
                 </Button>
                   <Button pill theme="danger" className="mb-2" theme="danger" onClick={this.deleteOrder}>
-                    <i className="material-icons mr-1">delete</i> Delete Order
+                    <i className="material-icons mr-1">delete</i> {intl.formatMessage(messages.delete_order)}
           </Button>
                 </div>
 
@@ -114,7 +122,7 @@ class OrderDetailsInfo extends React.Component {
             <ListGroupItem className="px-4">
               <div className="progress-wrapper">
                 <strong className="text-muted d-block mb-2">
-                  Payment Progress
+                {intl.formatMessage(messages.payment_progress)}
                </strong>
                 <Progress
                   className="progress-sm"
@@ -128,7 +136,10 @@ class OrderDetailsInfo extends React.Component {
             </ListGroupItem>
             <ListGroupItem className="p-4">
               <strong className="text-muted d-block mb-2">
-                Particulars
+                <span>
+                {intl.formatMessage(messages.particulars)}
+
+                </span>
               </strong>
               <div>
                 {
@@ -153,4 +164,4 @@ class OrderDetailsInfo extends React.Component {
 
 
 
-export default OrderDetailsInfo;
+export default injectIntl(OrderDetailsInfo);

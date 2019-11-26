@@ -15,6 +15,3 @@ const finalConfig = _.merge(defaultConfig, environmentConfig);
 global.gConfig = finalConfig;
 
 module.exports = finalConfig;
-
-// log global.gConfig
-//console.log(`global.gConfig: ${JSON.stringify(global.gConfig, undefined, global.gConfig.json_indentation)}`);

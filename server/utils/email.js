@@ -4,7 +4,7 @@ const sgMail = require('@sendgrid/mail');
 const Sentry = require('@sentry/node');
 
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+sgMail.setApiKey(global.gConfig.sendgrid_key);
 
 
 module.exports = {

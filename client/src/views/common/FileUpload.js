@@ -5,7 +5,7 @@ import '../style/filepond.css'
 import FilePondPluginFileRename from 'filepond-plugin-file-rename';
 import { authHeader } from '../../redux/helpers';
 import { apiUrl } from '../../config';
-
+import { injectIntl, defineMessages } from 'react-intl';
 
 
 registerPlugin(FilePondPluginFileRename); //Register plugin
@@ -35,8 +35,11 @@ class FileUpload extends React.Component {
     }
 
     render() {
-        let { document, currentShipment, user } = this.props;
+        let { document, currentShipment, user, intl } = this.props;
         let uploadUrl = user.role === "Admin" ? `${apiUrl}/admin/order/documents` : `${apiUrl}/users/order/documents`;
+        const messages = defineMessages({
+            upload_file: { id: "fileupload.upload_file" }
+        })
         return (
             <FilePond
                 server={
@@ -47,7 +50,7 @@ class FileUpload extends React.Component {
                 }
                 allowDrop={false}
                 allowReplace={true}
-                labelIdle='<span class="filepond--label-action"> Upload file </span>'
+                labelIdle={`<span class="filepond--label-action"> ${intl.formatMessage(messages.upload_file)} </span>`}
                 fileRenameFunction={(file) => {
                     return `${currentShipment.shipmentID}_${document.documentCode}${file.extension}`;
                 }}
@@ -73,4 +76,4 @@ class FileUpload extends React.Component {
     }
 }
 
-export default FileUpload;  
+export default injectIntl(FileUpload);  

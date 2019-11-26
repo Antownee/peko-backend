@@ -1,18 +1,11 @@
 import React from "react";
 import { Container, Row, Col, Card, CardHeader, CardBody, Button, ButtonGroup, ButtonToolbar, Modal, ModalHeader, ModalBody, ModalFooter } from "shards-react";
 import { connect } from "react-redux";
-import Steps, { Step } from "rc-steps"
-import { format, parse } from 'date-fns';
 import PageTitle from "../../components/common/PageTitle";
 import { orderService } from "../../redux/services/order.service";
 import { ToastContainer, toast } from 'react-toastify';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import "react-tabs/style/react-tabs.css";
-import SentDocumentsTable from "../common/SentDocumentsTable";
-import { documentHandler } from '../../utils/documentHandler';
-import { userUploads, adminUploads } from "../../documents";
-import ReceivedDocumentsTable from "../common/ReceivedDocumentsTable";
-import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
+import { injectIntl, defineMessages } from 'react-intl';
 import ShipmentsTable from './ShipmentsTable'
 import OrderDetailsInfo from "./OrderDetailsInfo";
 import OrderDetailsProgress from "./OrderDetailsProgress";

@@ -26,7 +26,7 @@ class OrderDetailsProgress extends React.Component {
   render() {
     const { intl } = this.props;
     const messages = defineMessages({
-      header: { id: "userorderdetails.header" },
+      header: { id: "userorderdetails.order-progress-header" },
       progress1: { id: "userorderdetails.progress-1" },
       progress1_text: { id: "userorderdetails.progress-1-text" },
       progress2: { id: "userorderdetails.progress-2" },
@@ -40,7 +40,7 @@ class OrderDetailsProgress extends React.Component {
     return (
       <Card small className="mb-4">
         <CardHeader className="border-bottom">
-          <h6 className="m-0">Order Progress</h6>
+          <h6 className="m-0">{intl.formatMessage(messages.header)}</h6>
         </CardHeader>
         <CardBody>
           <Steps current={this.state.currentPosition} style={{ marginTop: 10 }}>

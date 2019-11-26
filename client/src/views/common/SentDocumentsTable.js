@@ -3,7 +3,9 @@ import FileUpload from "./FileUpload";
 import { connect } from "react-redux";
 import { format } from 'date-fns';
 import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
-import { Col, Row, FormInput } from "shards-react";
+import { Col, Row } from "shards-react";
+import { fileUrl } from "../../config";
+
 
 class SentDocumentsTable extends React.Component {
     constructor(props) {
@@ -32,44 +34,59 @@ class SentDocumentsTable extends React.Component {
         })
 
         return (
-        < Row >
-            {
-                displayDocuments ?
-                    displayDocuments.map((document, idx) => (
-                        <Col md="6" key={idx}>
-                            <div className="blog-comments__item p-3">
-                                <div className="blog-comments__content">
-                                    <div className="blog-comments__meta text-mutes">
-                                        <a className="text-secondary" >
-                                            {intl.formatMessage(messages[document.documentCode])}
-                                        </a>{" "}
-                                        <div>
-                                            {
-                                                document.submitted ?
-                                                    <span className="badge badge-success mr-2"><FormattedMessage id="userorderdetails.label-submitted" /></span> :
-                                                    <span className="badge badge-danger mr-2"><FormattedMessage id="userorderdetails.label-not-submitted" /></span>
-                                            }
-                                            <span>{(document.dateAdded) ? format(document.dateAdded, 'DD/MM/YYYY') : ""}</span>
-                                            <div className="mt-2">
-                                                <FileUpload
-                                                    document={document}
-                                                    currentShipment={this.props.currentShipment}
-                                                    updateShipmentDocuments={updateShipmentDocuments}
-                                                    user={this.props.user} />
+            < Row >
+                {
+                    displayDocuments ?
+                        displayDocuments.map((document, idx) => (
+                            <Col md="6" key={idx}>
+                                <div className="blog-comments__item p-3">
+                                    <div className="blog-comments__content">
+                                        <div className="blog-comments__meta text-mutes">
+                                            <a className="text-secondary" >
+                                                {intl.formatMessage(messages[document.documentCode])}
+                                            </a>{" "}
+                                            <div>
+                                                {
+                                                    document.submitted ?
+                                                        <div>
+                                                            <span className="badge badge-success mr-2"><FormattedMessage id="userorderdetails.label-submitted" /></span> 
+                                                            <br/>
+                                                            <span>
+                                                                <a style={{ display: "table-cell" }}
+                                                                    href={`${fileUrl}/documents/${currentShipment.shipmentID}_${document.documentCode}.pdf`}
+                                                                    download={`${currentShipment.shipmentID}_${document.documentCode}.pdf`}
+                                                                    target="_blank"
+                                                                    rel="noopener " >
+                                                                    <FormattedMessage id="userorderdetails.label-download" defaultMessage="Download" />
+                                                                </a>
+                                                            </span>
+                                                        </div> :
+                                                        <span className="badge badge-danger mr-2"><FormattedMessage id="userorderdetails.label-not-submitted" /></span>
+                                                }
+                                                <span>{(document.dateAdded) ? format(document.dateAdded, 'DD/MM/YYYY') : ""}</span>
+                                                <br />
+
+
+                                                <div className="mt-2">
+                                                    <FileUpload
+                                                        document={document}
+                                                        currentShipment={this.props.currentShipment}
+                                                        updateShipmentDocuments={updateShipmentDocuments}
+                                                        user={this.props.user} />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </Col>
-                    )) :
-                    <h6 className="card-title">
-                        <a className="text-fiord-blue" href="#">
-                            You cannot view any documents yet because the order is yet to be confirmed by Cup Of Joe.
+                            </Col>
+                        )) :
+                        <h6 className="card-title">
+                            <a className="text-fiord-blue" href="#">
+                                You cannot view any documents yet because the order is yet to be confirmed by Cup Of Joe.
                                  </a>
-                    </h6>
-            }
-        </Row >
+                        </h6>
+                }
+            </Row >
         )
     }
 }
