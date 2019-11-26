@@ -31,6 +31,8 @@ class ShipmentModal extends React.Component {
                                 <div>
                                     <Modal.Title>{currentShipment.shipmentID || ""}</Modal.Title>
                                     <span className="text-muted d-block mb-2">{`USD ${currentShipment.shipmentValue}` || ""}</span>
+                                    <span className="badge badge-danger mr-2"><FormattedMessage id="userorderdetails.pdf-warning" /></span>
+
                                 </div>
                             </Modal.Header>
                             <Modal.Body>

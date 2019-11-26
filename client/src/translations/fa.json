@@ -59,6 +59,7 @@
 	"userorderdetails.shipment-instructions": "دستورالعمل حمل و نقل",
 	"userorderdetails.swift-copies": "کپی های SWIFT",
 	"userorderdetails.upload-file": "آپلود فایل",
+	"userorderdetails.pdf-warning": "به روز رسانی فقط .PDF FILES!",
 	"userorderslist.date": "تاریخ",
 	"userorderslist.label-shipmentAdded": "حمل و نقل اضافه شد",
 	"userorderslist.label-orderPlaced": "سفارش ثبت شد",

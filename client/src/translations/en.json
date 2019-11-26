@@ -62,6 +62,7 @@
 	"userorderdetails.shipment-instructions": "Shipment instructions",
 	"userorderdetails.swift-copies": "SWIFT copies",
 	"userorderdetails.upload-file": "Upload file",
+	"userorderdetails.pdf-warning": "UPLOAD ONLY .PDF FILES!",
 	"userorderslist.date": "Date",
 	"userorderslist.label-shipmentAdded": "SHIPMENT ADDED",
 	"userorderslist.label-orderPlaced": "ORDER PLACED",
