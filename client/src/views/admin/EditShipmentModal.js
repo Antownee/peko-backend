@@ -3,7 +3,7 @@ import { Container, Col, Row } from "shards-react";
 import Modal from 'react-bootstrap/modal';
 import { connect } from "react-redux";
 import "react-tabs/style/react-tabs.css";
-import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
@@ -16,9 +16,8 @@ class EditShipmentModal extends React.Component {
         super(props);
     }
 
-
     render() {
-        let { user, intl, modalOpen, toggleEditShipmentModal, currentShipment, updateShipmentToState } = this.props;
+        let { modalOpen, toggleEditShipmentModal, currentShipment, updateShipmentToState } = this.props;
         let { shipmentID, shipmentValue, shipmentWeight } = currentShipment;
         return (
             <Container fluid className="main-content-container px-4">
@@ -71,7 +70,8 @@ class EditShipmentModal extends React.Component {
                                             </Row>
                                             <div className="form-group">
                                                 <button type="submit" className="btn btn-primary" disabled={isSubmitting}>Save</button>
-                                                {isSubmitting &&
+                                                {
+                                                    isSubmitting &&
                                                     <img alt="" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
                                                 }
                                             </div>

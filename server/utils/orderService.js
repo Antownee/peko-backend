@@ -263,6 +263,8 @@ async function addShipment(shipmentParam) {
 }
 
 async function updateShipment(shipmentID, shipmentValue, shipmentWeight) {
+    //Check total weight of order. Is total shipment larger than total order weight? send message
+
     return await Shipment.findOneAndUpdate({ shipmentID: shipmentID }, { shipmentValue, shipmentWeight }, { new: true })
 }
 

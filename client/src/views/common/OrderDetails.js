@@ -87,10 +87,11 @@ class OrderDetails extends React.Component {
         return Math.floor((totalShipmentValue / totalOrderValue * 100));
     }
 
+    //Going back to the orderSearch component
     goBack() {
         //Change state
         this.props.handleSearchState(false);
-        this.setState({});
+        this.setState({}); //Clear the state as we move to a new component
     }
 
     render() {

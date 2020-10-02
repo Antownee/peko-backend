@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
-mongoose.connect(global.gConfig.database, { useCreateIndex: true, useNewUrlParser: true });
+mongoose.connect(global.gConfig.database, { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true });
 
 var db = mongoose.connection;
 

@@ -2,16 +2,11 @@ import React from "react";
 import { Container } from "shards-react";
 import Modal from 'react-bootstrap/modal';
 import { connect } from "react-redux";
-import Steps, { Step } from "rc-steps"
-import { format, parse } from 'date-fns';
-import PageTitle from "../../components/common/PageTitle";
-import { orderService } from "../../redux/services/order.service";
-import { ToastContainer, toast } from 'react-toastify';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import "react-tabs/style/react-tabs.css";
 import SentDocumentsTable from "./SentDocumentsTable";
 import ReceivedDocumentsTable from "./ReceivedDocumentsTable";
-import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 
 
 class ShipmentModal extends React.Component {
@@ -22,6 +17,7 @@ class ShipmentModal extends React.Component {
 
     render() {
         const { user, intl, modalOpen, toggleModal, sentDocuments, receivedDocuments, currentShipment, updateShipmentDocuments } = this.props;
+        
         return (
             <Container fluid className="main-content-container px-4">
                 {
@@ -32,7 +28,6 @@ class ShipmentModal extends React.Component {
                                     <Modal.Title>{currentShipment.shipmentID || ""}</Modal.Title>
                                     <span className="text-muted d-block mb-2">{`USD ${currentShipment.shipmentValue}` || ""}</span>
                                     <span className="badge badge-danger mr-2"><FormattedMessage id="userorderdetails.pdf-warning" /></span>
-
                                 </div>
                             </Modal.Header>
                             <Modal.Body>
@@ -51,7 +46,8 @@ class ShipmentModal extends React.Component {
                                     <TabPanel>
                                         <ReceivedDocumentsTable
                                             currentShipment={currentShipment}
-                                            displayDocuments={receivedDocuments} />
+                                            displayDocuments={receivedDocuments}
+                                        />
                                     </TabPanel>
                                 </Tabs>
                             </Modal.Body>

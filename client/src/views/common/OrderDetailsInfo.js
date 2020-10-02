@@ -5,11 +5,12 @@ import {
   Button,
   ListGroup,
   ListGroupItem,
-  Progress
+  Progress, timeoutsShape
 } from "shards-react";
 import { format } from 'date-fns';
 import AddShipmentmodal from '../admin/AddShipmentModal';
 import EditorderModal from '../admin/EditOrderModal';
+import AskDeleteModal from '../admin/AskDeleteModal';
 import { formatNumber } from "../../utils/numberFormatter";
 import { orderService } from "../../redux/services/order.service";
 import { ToastContainer, toast } from 'react-toastify';
@@ -23,12 +24,13 @@ class OrderDetailsInfo extends React.Component {
     this.state = {
       addShipmentModalOpen: false,
       orderEditModalOpen: false,
+      askDeleteModalOpen: false
     }
 
-    this.deleteOrder = this.deleteOrder.bind(this);
     this.toggleAddShipmentModal = this.toggleAddShipmentModal.bind(this);
     this.toggleEditOrderModal = this.toggleEditOrderModal.bind(this);
     this.getTotalOrderWeight = this.getTotalOrderWeight.bind(this);
+    this.toggleAskDeleteModal = this.toggleAskDeleteModal.bind(this);
   }
 
   toggleAddShipmentModal() {
@@ -43,35 +45,29 @@ class OrderDetailsInfo extends React.Component {
     });
   }
 
-  deleteOrder() {
-    let { orderRequestID } = this.props.order;
-    orderService.deleteOrder(orderRequestID)
-      .then((res) => {
-        toast.success(res.msg);
-        return this.props.handleSearchState(false);//go back
-      })
-      .catch((e) => {
-        toast.error(e.message);
-      })
+  toggleAskDeleteModal(){
+    this.setState({
+      askDeleteModalOpen: !this.state.askDeleteModalOpen,
+    });
   }
 
   getTotalOrderWeight(order) {
     return order.teaOrders
       .map(item => item.weight)
-      .reduce((prev, curr) => formatNumber( parseInt(prev) + parseInt(curr)), 0)
-    }
+      .reduce((prev, curr) => formatNumber(parseInt(prev) + parseInt(curr)), 0)
+  }
 
 
   render() {
     let { order, user, addShipmentToState, updatePaymentProgress, paymentProgress, orderValue, intl } = this.props;
-    let { addShipmentModalOpen, orderEditModalOpen } = this.state;
+    let { addShipmentModalOpen, orderEditModalOpen, askDeleteModalOpen } = this.state;
     const messages = defineMessages({
       add_shipment: { id: "userorderdetails.add_shipment" },
       edit_order: { id: "userorderdetails.edit_order" },
       delete_order: { id: "userorderdetails.delete_order" },
       payment_progress: { id: "userorderdetails.payment_progress" },
       particulars: { id: "userorderdetails.particulars" }
-  })
+    })
 
     return (
       <div>
@@ -91,8 +87,22 @@ class OrderDetailsInfo extends React.Component {
           addShipmentToState={addShipmentToState}
         />
 
+        <AskDeleteModal
+          modalOpen={askDeleteModalOpen}
+          toggleAskDeleteModal={this.toggleAskDeleteModal}
+          message={"Do you want to delete this shipment?"}
+          order={order}
+          handleSearchState={this.props.handleSearchState}
+        />
 
 
+
+        {/**
+         * This is the card that has the:
+         * 1 Order summary
+         * 2. Add shipment, edit order and delete order buttons
+         * 3. Payment Progress
+         */}
         <Card small className="mb-4 pt-3">
           <CardHeader className="border-bottom text-center">
             <h4 className="mb-0">{order.orderRequestID}</h4>
@@ -105,25 +115,29 @@ class OrderDetailsInfo extends React.Component {
                 <div>
                   <Button pill theme="primary" className="mb-2 mr-2" onClick={this.toggleAddShipmentModal}>
                     <i className="material-icons mr-1">note_add</i> {intl.formatMessage(messages.add_shipment)}
-                </Button>
+                  </Button>
                   <Button pill theme="info" className="mb-2 mr-2" onClick={this.toggleEditOrderModal} >
                     <i className="material-icons mr-1">insert_drive_file</i> {intl.formatMessage(messages.edit_order)}
-                </Button>
-                  <Button pill theme="danger" className="mb-2" theme="danger" onClick={this.deleteOrder}>
+                  </Button>
+                  <Button pill theme="danger" className="mb-2" theme="danger" onClick={this.toggleAskDeleteModal}>
                     <i className="material-icons mr-1">delete</i> {intl.formatMessage(messages.delete_order)}
-          </Button>
+                  </Button>
                 </div>
 
                 : ""
             }
 
           </CardHeader>
+
+          {/**
+           * Payment progress bar
+           */}
           <ListGroup flush>
             <ListGroupItem className="px-4">
               <div className="progress-wrapper">
                 <strong className="text-muted d-block mb-2">
-                {intl.formatMessage(messages.payment_progress)}
-               </strong>
+                  {intl.formatMessage(messages.payment_progress)}
+                </strong>
                 <Progress
                   className="progress-sm"
                   value={paymentProgress}
@@ -137,7 +151,7 @@ class OrderDetailsInfo extends React.Component {
             <ListGroupItem className="p-4">
               <strong className="text-muted d-block mb-2">
                 <span>
-                {intl.formatMessage(messages.particulars)}
+                  {intl.formatMessage(messages.particulars)}
 
                 </span>
               </strong>
