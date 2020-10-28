@@ -141,16 +141,18 @@ async function getPrice() {
 }
 
 async function getMonthData() {
-    const html = await rp("https://ycharts.com/indicators/mombasa_tea_price")
+    const url1 = "https://www.indexmundi.com/commodities/?commodity=tea&months=5";
+    const url2 = "https://ycharts.com/indicators/mombasa_tea_price";
+    const html = await rp(url1)
         .catch((e) => {
             Sentry.captureException(e)
         });
-    const rows = cheerio('table.histDataTable tbody tr td', html).slice(0, 10);
+    const rows = cheerio('table.tblData tbody tr td', html);
 
     let data = [];
-    for (let i = 0; i < rows.length; i += 2) {
+    for (let i = 0; i < rows.length; i += 3) {
         const month = rows[i].children[0].data;
-        const price = parseFloat(rows[i + 1].children[0].data) * 100;
+        const price = parseFloat(rows[i + 1].children[0].data);
         data.push({ month, price });
     }
 
