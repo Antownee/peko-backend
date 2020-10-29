@@ -36,7 +36,7 @@ export default class DashboardGraph extends React.Component {
                 data: { stroke: "#00b8d8" },
                 parent: { border: "1px solid #ccc" }
               }}
-              data={historicalPrices.reverse()}
+              data={historicalPrices}
               x="month"
               y="price"
               animate={{

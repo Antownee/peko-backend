@@ -33,7 +33,8 @@ module.exports = {
     getAdminDashboard,
     getUserDashboard,
     deleteShipment,
-    updateOrderStatus
+    updateOrderStatus,
+    getAssetPage
 };
 
 //USER
@@ -187,6 +188,13 @@ async function getUserTotalOrderWeight(userID) {
     return total.length === 0 ? 0 : `${total[0].totalOrderWeight} kgs`;
 }
 
+async function getAssetPage() {
+    const teaList = await getTeaItems();
+    const emailList = await getCOJEmails();
+
+    return { teaList, emailList }
+}
+
 
 async function getAdminDashboard() {
     //Historical price 
@@ -242,6 +250,15 @@ async function getShipmentsFromOrder(orderID) {
 }
 
 async function addShipment(shipmentParam) {
+    //Check total weight of order. Is total shipment larger than total order weight? send message
+    // if (await checkTotalShipmentValue) {
+    //     return { error: `Shipment value exceeds current total order value. \nFirst update the order value.` }
+    // }
+
+    // if (await checkTotalShipmentWeight(shipmentParam.orderID)) {
+    //     return { error: `Shipment weight exceeds current total order weight. \nFirst update the order weight.` }
+    // }
+
     let newShipment = new Shipment({
         userID: shipmentParam.userID,
         shipmentID: shipmentParam.shipmentID,
@@ -262,6 +279,31 @@ async function addShipment(shipmentParam) {
         }).catch((err) => {
             throw err
         })
+}
+
+//This function checks the total shipment weight in an order to the already defined total order value
+//This shipment value is not supposed to exceed the order value
+async function checkTotalShipmentWeight(orderID) {
+    //Weight: New shipment value + current total shipment value < total order value
+
+    //Get total shipment weight shipments from orderID
+    let shipments = getShipmentsFromOrder(orderID);
+    //const totalShipmentValue = 0
+    const checkTotalShipmentValue = shipments.reduce((accum, item) => accum + item.shipmentValue, 0)
+
+    for (const shipment in shipments) {
+        totalShipmentValue += shipment.shipmentValue
+    }
+    console.log(totalShipmentValue);
+    //Sum the shipment values
+    //Get order
+    let order = await orderRequest.findOne({ orderRequestID: orderID });
+    //compare that to total order value
+    return false;
+}
+
+async function checkTotalShipmentValue() {
+    return false;
 }
 
 async function updateShipment(shipmentID, shipmentValue, shipmentWeight) {

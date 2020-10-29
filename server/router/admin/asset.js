@@ -25,6 +25,12 @@ router.post('/alltea', (req, res, next) => {
         .catch(err => next(err));
 })
 
+router.post('/populate', (req, res, next) => {
+    orderService.getAssetPage()
+        .then(resp => resp ? res.json(resp) : res.status(404).send({ error: 'Try again later' }))
+        .catch(err => next(err));
+})
+
 router.post('/email', [
     check('email').isEmail(),
 ], (req, res, next) => {

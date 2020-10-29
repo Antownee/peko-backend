@@ -39,6 +39,26 @@ class AddShipmentModal extends React.Component {
                                     shipmentValue: Yup.number().required('Cannot be empty'),
                                     shipmentWeight: Yup.number().required('Cannot be empty'),
                                 })}
+                                // validate={(values) => {
+                                //     const errors = {};
+                                //     const totalShipmentValue = 0;
+                                //     orderService.getShipmentsByOrderID(order.orderRequestID, user.role)
+                                //         .then((res) => {
+                                //             let initialValue = 0
+                                //             totalShipmentValue = res.reduce(function (accumulator, currentValue) {
+                                //                 return accumulator + currentValue.shipmentValue
+                                //             }, initialValue)
+                                //             console.log(totalShipmentValue);
+                                //         })
+                                //     console.log(totalShipmentValue);
+
+                                //     const currentTotalShipmentValue = values.shipmentValue + totalShipmentValue;
+                                //     if (currentTotalShipmentValue > order.orderValue) {
+                                //         errors.shipmentValue = "Cannot be larger than total order value."
+                                //     }
+
+                                //     return errors;
+                                // }}
                                 onSubmit={({ shipmentID, shipmentValue, shipmentWeight }, { setStatus, setSubmitting, resetForm }) => {
                                     setStatus();
                                     orderService.addShipment({ shipmentID, shipmentValue, orderID: order.orderRequestID, shipmentWeight, userID: order.userID })

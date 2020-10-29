@@ -13,7 +13,8 @@ export const orderService = {
     addShipment,
     updateShipment,
     getShipmentsByOrderID,
-    deleteShipment
+    deleteShipment, 
+    populateAssetPage
 };
 
 
@@ -126,6 +127,19 @@ function populateDashboard(user) {
             .then(msg => { return msg })
     }
 }
+
+
+function populateAssetPage() {
+    const requestOptions = {
+        method: 'POST',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' }
+    };
+
+    return fetch(`${apiUrl}/admin/asset/populate`, requestOptions)
+        .then(handleResponse)
+        .then(msg => { return msg })
+}
+
 
 function logout() {
     // remove user from local storage to log user out
